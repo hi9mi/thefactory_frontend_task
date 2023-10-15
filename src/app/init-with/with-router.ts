@@ -1,7 +1,7 @@
-import type { App } from "vue";
-import type { RouteRecordRaw } from "vue-router";
+import type { App } from 'vue'
+import type { RouteRecordRaw } from 'vue-router'
 
-import { createAppRouter } from "@tf-app/routing";
+import { createAppRouter } from '@tf-app/routing'
 
 interface Params {
   app: App
@@ -10,9 +10,9 @@ interface Params {
 }
 
 export function withRouter({ app, routesMap, baseUrl }: Params) {
-  const router = createAppRouter(routesMap, baseUrl);
+  const router = createAppRouter(routesMap, baseUrl)
 
-  app.use(router);
+  app.use(router)
 
-  return router;
+  return router
 }

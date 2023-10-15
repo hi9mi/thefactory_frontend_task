@@ -1,48 +1,48 @@
 <script setup lang="ts">
-import VueInlineSvg from "vue-inline-svg";
-import { useRoute } from "vue-router";
+import VueInlineSvg from 'vue-inline-svg'
+import { useRoute } from 'vue-router'
 
-import { routes } from "@tf-app/routing";
-import heartIcon from "@tf-app/shared/assets/icons/heart.svg";
-import searchIcon from "@tf-app/shared/assets/icons/search.svg";
+import { routes } from '@tf-app/routing'
+import heartIcon from '@tf-app/shared/assets/icons/heart.svg'
+import searchIcon from '@tf-app/shared/assets/icons/search.svg'
 
-const route = useRoute();
+const route = useRoute()
 </script>
 
 <template>
   <header class="header">
-    <div class="container header_wrapper">
+    <div class="container header-wrapper">
       <img
         src="/logo.png"
         alt="logo"
-      />
+      >
       <div class="links">
         <RouterLink
           v-if="route.path !== routes.gallery.path"
           :to="routes.gallery.path"
           class="link"
         >
-          <vue-inline-svg
+          <VueInlineSvg
             :src="searchIcon"
             fill="none"
             width="23"
             height="23"
             aria-label="Поиск"
           />
-          <span class="link_text">Поиск</span>
+          <span class="link-text">Поиск</span>
         </RouterLink>
         <RouterLink
           :to="routes.favorites.path"
           class="link"
         >
-          <vue-inline-svg
+          <VueInlineSvg
             :src="heartIcon"
             fill="none"
             width="23"
             height="21"
             aria-label="Избранное"
           />
-          <span class="link_text">Избранное</span>
+          <span class="link-text">Избранное</span>
         </RouterLink>
       </div>
     </div>
@@ -51,40 +51,40 @@ const route = useRoute();
 
 <style scoped>
 .header {
-    background-color: #000;
-    height: 148px;
-    display: flex;
-    align-items: center;
+  background-color: #000;
+  height: 148px;
+  display: flex;
+  align-items: center;
 }
 
 .links {
-    display: flex;
-    gap: 20px;
-    align-items: center;
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 
 .link {
-    color: #fff;
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-    text-decoration: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
 }
 
-.link_text {
+.link-text {
   font-size: 18px;
 }
 
-.header_wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
+.header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
 }
-@media screen and (max-width: 560px) {
-  .link_text {
+
+@media screen and (width <= 560px) {
+  .link-text {
     display: none;
   }
 }

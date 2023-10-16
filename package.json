@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepare": "simple-git-hooks"
+    "prepare": "simple-git-hooks",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "pinia": "^2.1.6",

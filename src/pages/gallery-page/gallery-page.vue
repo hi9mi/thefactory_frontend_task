@@ -16,8 +16,8 @@ const isEmptySearch = computed(() => searchQuery.value?.trim().length > 0 && pho
 
 <template>
   <TfGallerySearch v-model="searchQuery" />
-  <main class="container">
-    <div
+  <div class="container">
+    <section
       v-if="!isLoadingGallery"
       class="gallery"
     >
@@ -43,10 +43,10 @@ const isEmptySearch = computed(() => searchQuery.value?.trim().length > 0 && pho
           :photo="photo"
         />
       </template>
-    </div>
+    </section>
     <TfLoader v-else />
     <TfAffix />
-  </main>
+  </div>
 </template>
 
 <style scoped>

@@ -1,5 +1,5 @@
-import { storeToRefs } from 'pinia'
 import type { RouteRecordRaw } from 'vue-router'
+import { storeToRefs } from 'pinia'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
 import { routes } from '@tf-app/routing'

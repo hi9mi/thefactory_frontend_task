@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import VueInlineSvg from 'vue-inline-svg'
+import { storeToRefs } from 'pinia'
 
 import { useDetailsPhotoStore } from '@tf-app/entities/details-photo'
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'

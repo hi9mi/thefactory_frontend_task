@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { defineStore } from 'pinia'
 
 import { routes } from '@tf-app/routing'
 import * as api from '@tf-app/shared/api'

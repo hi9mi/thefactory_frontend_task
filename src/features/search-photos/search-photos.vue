@@ -38,7 +38,14 @@ watch(searchQuery, (value) => {
 
 <template>
   <div class="wrapper">
-    <img src="/bg.jpg" sizes="(max-width: 480px) 384w, 1920w" srcset="/bg-mobile.jpg 384w, /bg.jpg 1920w" alt="" role="presentation" class="bg">
+    <img
+      src="/bg.jpg"
+      sizes="(max-width: 480px) 384w, 1920w"
+      srcset="/bg-mobile.jpg 384px, /bg.jpg 1920px"
+      alt=""
+      role="presentation"
+      class="bg"
+    >
     <div class="container search-container">
       <form
         class="form"

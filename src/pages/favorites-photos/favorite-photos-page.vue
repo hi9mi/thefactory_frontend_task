@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
-import TfAffix from '@tf-app/shared/ui/tf-affix.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card.vue'
+
+const TfAffix = defineAsyncComponent(() => import('@tf-app/shared/ui/tf-affix.vue'))
 
 const favoritePhotosStore = useFavoritePhotosStore()
 const { favoritePhotos } = storeToRefs(favoritePhotosStore)

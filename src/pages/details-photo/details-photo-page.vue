@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
 import { storeToRefs } from 'pinia'
 
@@ -6,11 +7,24 @@ import { useDetailsPhotoStore } from '@tf-app/entities/details-photo'
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
 import downloadIcon from '@tf-app/shared/assets/icons/download.svg'
 import heartIcon from '@tf-app/shared/assets/icons/heart.svg'
+import maximazeIcon from '@tf-app/shared/assets/icons/maximaze.svg'
 import TfLoader from '@tf-app/shared/ui/tf-loader.vue'
 
 const detailsPhotoStore = useDetailsPhotoStore()
 const favoritePhotosStore = useFavoritePhotosStore()
 const { detailsPhoto, isLoadingDetailsPhoto } = storeToRefs(detailsPhotoStore)
+
+const isShowFullPhoto = ref(false)
+
+function handleShowFullPhoto() {
+  document.body.style.overflow = 'hidden'
+  isShowFullPhoto.value = true
+}
+
+function handleHideFullPhoto() {
+  document.body.style.overflow = 'initial'
+  isShowFullPhoto.value = false
+}
 
 function downloadPhoto() {
   if (detailsPhoto.value)
@@ -19,11 +33,13 @@ function downloadPhoto() {
 </script>
 
 <template>
-  <main class="wrapper">
+  <div class="wrapper">
     <template v-if="!isLoadingDetailsPhoto && detailsPhoto">
       <img
         class="photo-bg"
         :src="detailsPhoto?.urls.full"
+        :srcset="`${detailsPhoto?.urls.small} 560w, ${detailsPhoto?.urls.regular} 1100w, ${detailsPhoto?.urls.full} 1920w`"
+        sizes="(max-width: 600px) 560px, 1100px"
         alt=""
         role="presentation"
       >
@@ -71,24 +87,81 @@ function downloadPhoto() {
             </button>
           </div>
         </div>
-        <img
-          :src="detailsPhoto?.urls.regular"
-          :alt="detailsPhoto?.alt_description"
-          class="photo"
-        >
+        <div class="photo-wrapper">
+          <img
+            :src="detailsPhoto?.urls.full"
+            :alt="detailsPhoto?.alt_description"
+            :srcset="`${detailsPhoto?.urls.small} 560w, ${detailsPhoto?.urls.regular} 1100w, ${detailsPhoto?.urls.full} 1920w`"
+            sizes="(max-width: 600px) 560px, 1100px"
+            class="photo"
+          >
+          <button class="preview-btn" @click="handleShowFullPhoto">
+            <VueInlineSvg
+              :src="maximazeIcon"
+              aria-label="Открыть на весь экран фото"
+              width="24"
+              height="24"
+            />
+          </button>
+        </div>
       </div>
     </template>
     <TfLoader v-else />
-  </main>
+  </div>
+  <div
+    v-if="isShowFullPhoto"
+    class="full-photo-wrapper"
+    @click="handleHideFullPhoto"
+  >
+    <div class="full-photo-overlay" />
+    <img
+      :src="detailsPhoto?.urls.full"
+      :alt="detailsPhoto?.alt_description"
+      class="full-photo"
+      @click.stop
+    >
+  </div>
 </template>
 
 <style scoped>
+.full-photo-wrapper {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.full-photo-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgb(0 0 0 / 50%);
+  cursor: pointer;
+}
+
+.full-photo {
+  position: relative;
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  z-index: 100;
+}
+
 .wrapper {
   position: relative;
   margin: 100px 0;
 }
 
-.photo-bg{
+.photo-bg {
   position: absolute;
   top: -15%;
   left: 0;
@@ -153,6 +226,7 @@ function downloadPhoto() {
   align-items: center;
   gap: 10px;
   cursor: pointer;
+  box-shadow: 0 0 4px 0 rgb(0 0 0 / 25%);
 }
 
 .favorite {
@@ -168,20 +242,42 @@ function downloadPhoto() {
   font-size: 20px;
 }
 
+.photo-wrapper {
+  position: relative;
+  width: 100%;
+  height: 740px;
+}
+
 .photo {
   width: 100%;
-  height: 800px;
+  height: 100%;
   object-fit: cover;
   object-position: center;
+  border-radius: 8px;
+}
+
+.preview-btn {
+  position: absolute;
+  bottom: 30px;
+  right: 40px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 @media screen and (width <= 560px) {
+  .photo-bg {
+    display: none;
+  }
+
   .user-name {
     font-size: 18px;
+    color: #000;
   }
 
   .user-nickname {
     font-size: 14px;
+    color: #BDBDBD;
   }
 
   .action-text {
@@ -190,6 +286,15 @@ function downloadPhoto() {
 
   .download {
     padding: 13px 11px;
+  }
+
+  .photo-wrapper {
+    height: 228px;
+  }
+
+  .preview-btn {
+    bottom: 8px;
+    right: 9px;
   }
 }
 </style>

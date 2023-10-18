@@ -3,11 +3,15 @@ import type { RouteRecordRaw } from 'vue-router'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
 import { routes } from '@tf-app/routing'
+import TfHeader from '@tf-app/widgets/tf-header.vue'
 
 const GalleryPageRoute: RouteRecordRaw = {
   path: routes.gallery.path,
   name: routes.gallery.name,
-  component: () => import('./gallery-page.vue'),
+  components: {
+    default: () => import('./gallery-page.vue'),
+    TfHeader,
+  },
   beforeEnter: (from) => {
     const galleryStore = useGalleryStore()
     const { searchQuery } = storeToRefs(galleryStore)

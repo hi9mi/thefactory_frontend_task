@@ -14,8 +14,9 @@ const GalleryPageRoute: RouteRecordRaw = {
   beforeEnter: (from) => {
     const galleryStore = useGalleryStore()
     const searchQuery = from.query.q?.toString().trim()
+    const page = Number(from.query.p)
     if (searchQuery && (searchQuery.length > 0))
-      galleryStore.getSearchPhotos(searchQuery)
+      galleryStore.getPhotos(searchQuery, page)
 
     galleryStore.getRandomPhotos()
 

@@ -16,7 +16,7 @@ const { photos } = storeToRefs(galleryStore)
 const searchQuery = ref(route.query.q?.toString() ?? '')
 
 function searchPhotosByQuery(searchQuery: string) {
-  galleryStore.getSearchPhotos(searchQuery)
+  galleryStore.getPhotos(searchQuery, 1)
 }
 
 const [debouncedSearchPhotosByQuery] = debounce(searchPhotosByQuery)
@@ -24,7 +24,7 @@ const [debouncedSearchPhotosByQuery] = debounce(searchPhotosByQuery)
 function onChangeSearch(event: Event) {
   const target = event.target as HTMLInputElement
   searchQuery.value = target.value
-  router.push({ replace: true, path: routes.gallery.path, query: { q: target.value } })
+  router.push({ replace: true, path: routes.gallery.path, query: { q: target.value, p: 1 } })
 
   if (target.value.trim().length > 0)
     debouncedSearchPhotosByQuery(target.value)
@@ -41,7 +41,7 @@ watch(searchQuery, (value) => {
     <img
       src="/bg.jpg"
       sizes="(max-width: 480px) 384w, 1920w"
-      srcset="/bg-mobile.jpg 384px, /bg.jpg 1920px"
+      srcset="/bg-mobile.jpg 384w, /bg.jpg 1920w"
       alt=""
       role="presentation"
       class="bg"

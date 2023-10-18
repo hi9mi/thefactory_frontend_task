@@ -5,7 +5,6 @@ defineProps<{ photo: Photo }>()
 <template>
   <article class="photo-card">
     <img
-      :key="photo.id"
       :src="photo.urls.regular"
       :alt="photo.alt_description"
       :srcset="`${photo.urls.small} 320w, ${photo.urls.regular} 440w, ${photo.urls.full} 1920w`"

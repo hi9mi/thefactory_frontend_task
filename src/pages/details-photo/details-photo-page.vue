@@ -216,7 +216,7 @@ function downloadPhoto() {
 }
 
 .action {
-  background-color: none;
+  background-color: transparent;
   border: none;
   border-radius: 8px;
   outline: none;

@@ -1,18 +1,13 @@
-import { computed, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
-import { routes } from '@tf-app/routing'
 import * as api from '@tf-app/shared/api'
-import { debounce } from '@tf-app/shared/libs'
 
 export const useGalleryStore = defineStore('gallery', () => {
-  const router = useRouter()
   const randomPhotos = ref<Photo[]>([])
   const isLoadingRandomPhotos = ref(false)
-  const photos = ref<Photo[]>([])
+  const photos = ref<Photo[] | null>(null)
   const isLoadingPhotos = ref(false)
-  const searchQuery = ref('')
 
   async function getRandomPhotos() {
     isLoadingRandomPhotos.value = true
@@ -20,26 +15,13 @@ export const useGalleryStore = defineStore('gallery', () => {
     isLoadingRandomPhotos.value = false
   }
 
-  async function getSearchPhotos() {
-    photos.value = await api.getSearchPhotos(searchQuery.value)
+  async function getSearchPhotos(searchQuery: string) {
+    isLoadingPhotos.value = true
+    photos.value = await api.getSearchPhotos(searchQuery)
+    isLoadingPhotos.value = false
   }
-
-  const [getSearchPhotosDebounced, teardownGetSearchPhotos] = debounce(getSearchPhotos, 500)
 
   const isLoadingGallery = computed(() => isLoadingPhotos.value || isLoadingRandomPhotos.value)
 
-  watch(searchQuery, async (searchQuery) => {
-    if (searchQuery.trim().length > 0) {
-      isLoadingPhotos.value = true
-      router.push({ path: routes.gallery.path, query: { q: searchQuery }, replace: true })
-      await getSearchPhotosDebounced()
-      isLoadingPhotos.value = false
-    }
-    else {
-      photos.value = []
-      teardownGetSearchPhotos()
-    }
-  })
-
-  return { randomPhotos, photos, isLoadingGallery, searchQuery, getRandomPhotos }
+  return { randomPhotos, photos, isLoadingGallery, getRandomPhotos, getSearchPhotos }
 })

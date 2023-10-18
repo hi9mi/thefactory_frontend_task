@@ -8,8 +8,8 @@ defineProps<{ photo: Photo }>()
       :key="photo.id"
       :src="photo.urls.regular"
       :alt="photo.alt_description"
-      :srcset="`${photo.urls.small} 480w, ${photo.urls.regular} 800w, ${photo.urls.full} 1920w`"
-      sizes="(max-width: 600px) 480px, 800px"
+      :srcset="`${photo.urls.small} 320w, ${photo.urls.regular} 440w, ${photo.urls.full} 1920w`"
+      sizes="(max-width: 600px) 320px, 440px"
       class="photo"
     >
     <h3 class="photo-name">

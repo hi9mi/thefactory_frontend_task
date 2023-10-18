@@ -4,11 +4,9 @@ export function debounce<A = unknown, R = void>(fn: (...args: A[]) => R, ms = 30
   function debouncedFn(this: unknown, ...args: A[]) {
     clearTimeout(timeoutId)
 
-    return new Promise<R>((resolve) => {
-      timeoutId = setTimeout(() => {
-        resolve(fn.apply(this, args))
-      }, ms)
-    })
+    timeoutId = setTimeout(() => {
+      fn.apply(this, args)
+    }, ms)
   }
 
   const teardown = () => clearTimeout(timeoutId)

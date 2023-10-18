@@ -1,5 +1,4 @@
 import type { RouteRecordRaw } from 'vue-router'
-import { storeToRefs } from 'pinia'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
 import { routes } from '@tf-app/routing'
@@ -14,8 +13,9 @@ const GalleryPageRoute: RouteRecordRaw = {
   },
   beforeEnter: (from) => {
     const galleryStore = useGalleryStore()
-    const { searchQuery } = storeToRefs(galleryStore)
-    searchQuery.value = from.query.q?.toString() ?? ''
+    const searchQuery = from.query.q?.toString().trim()
+    if (searchQuery && (searchQuery.length > 0))
+      galleryStore.getSearchPhotos(searchQuery)
 
     galleryStore.getRandomPhotos()
 

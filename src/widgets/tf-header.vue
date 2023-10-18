@@ -16,7 +16,7 @@ const route = useRoute()
         src="/logo.png"
         alt="logo"
       >
-      <div class="links">
+      <nav class="links">
         <RouterLink
           v-if="route.path !== routes.gallery.path"
           :to="routes.gallery.path"
@@ -44,7 +44,7 @@ const route = useRoute()
           />
           <span class="link-text">Избранное</span>
         </RouterLink>
-      </div>
+      </nav>
     </div>
   </header>
 </template>

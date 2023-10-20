@@ -39,9 +39,9 @@ watch(searchQuery, (value) => {
 <template>
   <div class="wrapper">
     <img
-      src="/bg.jpg"
+      src="/img/bg.jpg"
       sizes="(max-width: 480px) 384w, 1920w"
-      srcset="/bg-mobile.jpg 384w, /bg.jpg 1920w"
+      srcset="/img/bg-mobile.jpg 384w, /img/bg.jpg 1920w"
       alt=""
       role="presentation"
       class="bg"

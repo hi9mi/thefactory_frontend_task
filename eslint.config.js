@@ -5,6 +5,7 @@ export default antfu({
   ignores: [
     'node_modules',
     'dist',
+    'dev-dist',
     '*.html',
     '*.md',
   ],
@@ -27,5 +28,9 @@ export default antfu({
       ],
     }],
     'eslintPluginSimpleImportSort/exports': 'error',
+  },
+}, {
+  rules: {
+    'node/prefer-global/process': 'off',
   },
 })

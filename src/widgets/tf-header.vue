@@ -13,7 +13,7 @@ const route = useRoute()
   <header class="header">
     <div class="container header-wrapper">
       <img
-        src="/logo.png"
+        src="/img/logo.png"
         alt="logo"
       >
       <nav class="links">

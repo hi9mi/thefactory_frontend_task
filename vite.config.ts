@@ -71,6 +71,10 @@ export default defineConfig(({ mode }) => {
                 cacheableResponse: {
                   statuses: [0, 200],
                 },
+                expiration: {
+                  maxAgeSeconds: 60 * 30,
+                  maxEntries: 18,
+                },
               },
             },
             {
@@ -80,6 +84,10 @@ export default defineConfig(({ mode }) => {
                 cacheName: 'api-cache',
                 cacheableResponse: {
                   statuses: [0, 200],
+                },
+                expiration: {
+                  maxAgeSeconds: 60 * 60,
+                  maxEntries: 20,
                 },
               },
             },

@@ -73,7 +73,7 @@ export default defineConfig(({ mode }) => {
                 },
                 expiration: {
                   maxAgeSeconds: 60 * 30,
-                  maxEntries: 18,
+                  maxEntries: 36,
                 },
               },
             },

@@ -1,7 +1,7 @@
 export function debounce<A = unknown, R = void>(fn: (...args: A[]) => R, ms = 300) {
   let timeoutId: ReturnType<typeof setTimeout>
 
-  function debouncedFn(this: unknown, ...args: A[]) {
+  function debouncedFn<T = unknown>(this: T, ...args: A[]) {
     clearTimeout(timeoutId)
 
     timeoutId = setTimeout(() => {

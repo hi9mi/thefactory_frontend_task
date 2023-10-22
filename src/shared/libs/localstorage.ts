@@ -1,7 +1,7 @@
 export function getItemFromLS<T = unknown>(key: string, defaultValue: T): T {
-  const favoritePhotos = globalThis.localStorage.getItem(key)
+  const dataFromLS = globalThis.localStorage.getItem(key)
 
-  return favoritePhotos ? JSON.parse(favoritePhotos) : defaultValue
+  return dataFromLS ? JSON.parse(dataFromLS) : defaultValue
 }
 
 export function setItemToLS<T = unknown>(key: string, value: T) {

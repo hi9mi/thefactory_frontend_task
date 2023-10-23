@@ -4,14 +4,12 @@ import VueInlineSvg from 'vue-inline-svg'
 import { storeToRefs } from 'pinia'
 
 import { useDetailsPhotoStore } from '@tf-app/entities/details-photo'
-import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
+import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import downloadIcon from '@tf-app/shared/assets/icons/download.svg'
-import heartIcon from '@tf-app/shared/assets/icons/heart.svg'
 import maximazeIcon from '@tf-app/shared/assets/icons/maximaze.svg'
 import TfLoader from '@tf-app/shared/ui/tf-loader.vue'
 
 const detailsPhotoStore = useDetailsPhotoStore()
-const favoritePhotosStore = useFavoritePhotosStore()
 const { detailsPhoto, isLoadingDetailsPhoto } = storeToRefs(detailsPhotoStore)
 
 const isShowFullPhoto = ref(false)
@@ -61,18 +59,7 @@ function downloadPhoto() {
             </div>
           </div>
           <div class="photo-actions">
-            <button
-              class="action favorite"
-              @click="favoritePhotosStore.toggleFavoritePhoto(detailsPhoto)"
-            >
-              <VueInlineSvg
-                :src="heartIcon"
-                fill="none"
-                width="23"
-                height="21"
-                aria-label="Избранное"
-              />
-            </button>
+            <ToggleFavoritePhoto :photo="detailsPhoto" />
             <button
               class="action download"
               @click="downloadPhoto"

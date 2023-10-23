@@ -19,7 +19,7 @@ function searchPhotosByQuery(searchQuery: string) {
   galleryStore.getPhotos(searchQuery, 1)
 }
 
-const [debouncedSearchPhotosByQuery] = debounce(searchPhotosByQuery)
+const [debouncedSearchPhotosByQuery, teardown] = debounce(searchPhotosByQuery, 500)
 
 function onChangeSearch(event: Event) {
   const target = event.target as HTMLInputElement
@@ -31,8 +31,10 @@ function onChangeSearch(event: Event) {
 }
 
 watch(searchQuery, (value) => {
-  if (value.trim().length === 0)
+  if (value.trim().length === 0) {
+    teardown()
     photos.value = null
+  }
 })
 </script>
 

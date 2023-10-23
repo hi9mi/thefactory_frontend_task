@@ -65,7 +65,7 @@ export default defineConfig(({ mode }) => {
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/images\.unsplash\.com\/.*/i,
-              handler: 'CacheFirst',
+              handler: 'NetworkFirst',
               options: {
                 cacheName: 'api-photos-cache',
                 cacheableResponse: {
@@ -79,7 +79,7 @@ export default defineConfig(({ mode }) => {
             },
             {
               urlPattern: /^https:\/\/api\.unsplash\.com\/.*/i,
-              handler: 'CacheFirst',
+              handler: 'NetworkFirst',
               options: {
                 cacheName: 'api-cache',
                 cacheableResponse: {

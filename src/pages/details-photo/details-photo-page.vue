@@ -4,6 +4,7 @@ import VueInlineSvg from 'vue-inline-svg'
 import { storeToRefs } from 'pinia'
 
 import { useDetailsPhotoStore } from '@tf-app/entities/details-photo'
+import ShowFullPhoto from '@tf-app/features/show-full-photo/show-full-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import downloadIcon from '@tf-app/shared/assets/icons/download.svg'
 import maximazeIcon from '@tf-app/shared/assets/icons/maximaze.svg'
@@ -15,12 +16,10 @@ const { detailsPhoto, isLoadingDetailsPhoto } = storeToRefs(detailsPhotoStore)
 const isShowFullPhoto = ref(false)
 
 function handleShowFullPhoto() {
-  document.body.style.overflow = 'hidden'
   isShowFullPhoto.value = true
 }
 
 function handleHideFullPhoto() {
-  document.body.style.overflow = 'initial'
   isShowFullPhoto.value = false
 }
 
@@ -95,54 +94,16 @@ function downloadPhoto() {
     </template>
     <TfLoader v-else />
   </div>
-  <div
-    v-if="isShowFullPhoto"
-    class="full-photo-wrapper"
-    @click="handleHideFullPhoto"
-  >
-    <div class="full-photo-overlay" />
-    <img
-      :src="detailsPhoto?.urls.full"
-      :alt="detailsPhoto?.alt_description"
-      class="full-photo"
-      @click.stop
-    >
-  </div>
+  <ShowFullPhoto
+    v-if="detailsPhoto"
+    :is-show="isShowFullPhoto"
+    :url="detailsPhoto.urls.full"
+    :description="detailsPhoto.alt_description"
+    @hide-full-photo="handleHideFullPhoto"
+  />
 </template>
 
 <style scoped>
-.full-photo-wrapper {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  padding: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.full-photo-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  background-color: rgb(0 0 0 / 50%);
-  cursor: pointer;
-}
-
-.full-photo {
-  position: relative;
-  width: auto;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  z-index: 100;
-}
-
 .wrapper {
   position: relative;
   margin: 100px 0;

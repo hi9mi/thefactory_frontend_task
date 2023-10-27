@@ -13,11 +13,11 @@ export const useFavoritePhotosStore = defineStore('favoritePhotos', () => {
     const favPhotoIndex = favoritePhotos.value.findIndex(favPhoto => favPhoto.id === photo.id)
     if (favPhotoIndex !== -1) {
       favoritePhotos.value.splice(favPhotoIndex, 1)
-      notify({ title: 'Успех!', message: 'Фото добавлено в избранное', type: 'success' })
+      notify({ title: 'Успех!', message: 'Фото удалено из избранного', type: 'success' })
     }
     else {
       favoritePhotos.value.push(photo)
-      notify({ title: 'Успех!', message: 'Фото удалено из избранного', type: 'success' })
+      notify({ title: 'Успех!', message: 'Фото добавлено в избранное', type: 'success' })
     }
 
     setItemToLS(LS_KEY, favoritePhotos.value)

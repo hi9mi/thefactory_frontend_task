@@ -31,23 +31,38 @@ onBeforeUnmount(() => {
 
 <template>
   <Teleport to="#affix">
-    <button
-      v-if="isShowAffix"
-      class="affix"
-      @click="scrollToTop"
+    <Transition
+      name="affix"
     >
-      <VueInlineSvg
-        :src="arrowTopIcon"
-        fill="none"
-        width="18"
-        height="18"
-        aria-label="Вернуться наверх"
-      />
-    </button>
+      <button
+        v-if="isShowAffix"
+        class="affix"
+        @click="scrollToTop"
+      >
+        <VueInlineSvg
+          :src="arrowTopIcon"
+          fill="none"
+          width="18"
+          height="18"
+          aria-label="Вернуться наверх"
+        />
+      </button>
+    </Transition>
   </Teleport>
 </template>
 
 <style scoped>
+.affix-enter-active,
+.affix-leave-active {
+  transition: all 0.5s ease;
+}
+
+.affix-enter-from,
+.affix-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
 .affix {
   position: fixed;
   bottom: 20px;

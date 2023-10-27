@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
 import SearchPhotos from '@tf-app/features/search-photos/search-photos.vue'
+import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 import TfLoader from '@tf-app/shared/ui/tf-loader.vue'
 import TfPagination from '@tf-app/shared/ui/tf-pagination.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card.vue'
@@ -71,8 +72,15 @@ watch(() => route.query.p, () => {
       @next-page="handleNextPage"
       @prev-page="handlePrevPage"
     />
+
     <TfAffix />
   </div>
+  <button style="margin-left: 400px;" @click="notify({ message: 'notification', type: 'success' })">
+    add notification
+  </button>
+  <button style="margin-left: 400px;" @click="notify({ title: 'Error', message: 'Lorem ipsum dolor sit amet', type: 'error' })">
+    add notification
+  </button>
 </template>
 
 <style scoped>

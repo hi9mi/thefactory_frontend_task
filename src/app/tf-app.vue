@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
 
+import TfNotifications from '@tf-app/shared/ui/feedback/tf-notification/tf-notifications.vue'
+
 const TfPrompt = defineAsyncComponent(() => import('@tf-app/shared/ui/tf-prompt.vue'))
-const TfNotifications = defineAsyncComponent(() => import('@tf-app/shared/ui/feedback/tf-notification/tf-notifications.vue'))
 </script>
 
 <template>
@@ -10,7 +11,7 @@ const TfNotifications = defineAsyncComponent(() => import('@tf-app/shared/ui/fee
   <RouterView />
   <TfPrompt />
   <TfNotifications
-    :auto-hide-in-ms="3000"
+    :auto-hide-in-ms="5000"
     :should-not-hide-on-hover="true"
     :has-remove-button="true"
   />

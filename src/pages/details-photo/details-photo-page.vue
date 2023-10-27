@@ -92,7 +92,7 @@ function downloadPhoto() {
         </div>
       </div>
     </template>
-    <TfLoader v-else />
+    <TfLoader v-else-if="isLoadingDetailsPhoto" />
   </div>
   <ShowFullPhoto
     v-if="detailsPhoto"

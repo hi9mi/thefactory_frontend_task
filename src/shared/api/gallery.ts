@@ -4,6 +4,9 @@ export async function getRandomPhotos(): Promise<Photo[]> {
   randomPhotosURL.searchParams.set('count', '9')
 
   const res = await fetch(randomPhotosURL)
+  if (!res.ok)
+    throw new Error('Error fetching photos')
+
   return res.json()
 }
 
@@ -15,7 +18,8 @@ export async function getSearchPhotos(query: string, page: number): Promise<{ re
   photosURL.searchParams.set('query', query)
 
   const res = await fetch(photosURL)
-  const photos = await res.json()
+  if (!res.ok)
+    throw new Error('Error fetching photos')
 
-  return photos
+  return res.json()
 }

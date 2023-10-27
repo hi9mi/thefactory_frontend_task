@@ -2,6 +2,7 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 import * as api from '@tf-app/shared/api'
+import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
 export const useGalleryStore = defineStore('gallery', () => {
   const randomPhotos = ref<Photo[]>([])
@@ -11,13 +12,23 @@ export const useGalleryStore = defineStore('gallery', () => {
 
   async function getRandomPhotos() {
     isLoadingRandomPhotos.value = true
-    randomPhotos.value = await api.getRandomPhotos()
+    try {
+      randomPhotos.value = await api.getRandomPhotos()
+    }
+    catch (error) {
+      notify({ title: 'Ошибка при загрузке фотографий', message: 'Что-то пошло не так, попробуйте позже', type: 'error' })
+    }
     isLoadingRandomPhotos.value = false
   }
 
   async function getPhotos(query: string, page: number) {
     isLoadingPhotos.value = true
-    photos.value = await api.getSearchPhotos(query, page)
+    try {
+      photos.value = await api.getSearchPhotos(query, page)
+    }
+    catch (error) {
+      notify({ title: 'Ошибка при загрузке фотографий', message: 'Что-то пошло не так, попробуйте позже', type: 'error' })
+    }
     isLoadingPhotos.value = false
   }
 

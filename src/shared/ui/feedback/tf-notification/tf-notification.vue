@@ -4,13 +4,15 @@ import VueInlineSvg from 'vue-inline-svg'
 
 import xMarkIcon from '@tf-app/shared/assets/icons/x-mark.svg'
 
-// eslint-disable-next-line sort-imports
 import { NOTIFICATION_COLORS, NOTIFICATIONS_CONTEXT_SYMBOL } from './config'
 import type { NotificationOptions } from './libs'
 import { emitter } from './libs'
 
 const props = defineProps<{
   notification: NotificationOptions
+}>()
+const emit = defineEmits<{
+  (e: 'click', notification: NotificationOptions): void
 }>()
 const context = inject(NOTIFICATIONS_CONTEXT_SYMBOL)
 
@@ -50,6 +52,7 @@ onBeforeUnmount(() => {
     :style="styleVariables"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
+    @click="emit('click', notification)"
   >
     <span
       v-if="notification.title"

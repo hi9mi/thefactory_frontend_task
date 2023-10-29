@@ -8,15 +8,26 @@ import { emitter } from './libs'
 import TfNotification from './tf-notification.vue'
 
 const props = defineProps<NotificationsContext>()
+const emit = defineEmits<{
+  (e: 'click', notification: NotificationOptions): void
+  (e: 'remove', notification: NotificationOptions): void
+}>()
 provide(NOTIFICATIONS_CONTEXT_SYMBOL, props)
+
 const notifications = reactive<NotificationOptions[]>([])
+
 function notificationAdded(options: NotificationOptions) {
   notifications.push(options)
 }
 
 function notificationRemoved(id: string) {
   const notificationIndex = notifications.findIndex(notification => notification.id === id)
+  emit('remove', notifications[notificationIndex])
   notifications.splice(notificationIndex, 1)
+}
+
+function notificationClicked(notification: NotificationOptions) {
+  emit('click', notification)
 }
 
 onMounted(() => {
@@ -43,8 +54,10 @@ onBeforeUnmount(() => {
         aria-relevant="additions removals"
       >
         <TfNotification
-          v-for="notification of notifications" :key="notification.id"
+          v-for="notification of notifications"
+          :key="notification.id"
           :notification="notification"
+          @click="notificationClicked"
         />
       </TransitionGroup>
     </div>

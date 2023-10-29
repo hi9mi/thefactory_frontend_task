@@ -69,11 +69,11 @@ export default defineConfig(({ mode }) => {
               options: {
                 cacheName: 'api-photos-cache',
                 cacheableResponse: {
-                  statuses: [0, 200],
+                  statuses: [200],
                 },
                 expiration: {
-                  maxAgeSeconds: 60 * 30,
-                  maxEntries: 36,
+                  maxEntries: 50,
+                  maxAgeSeconds: 1800,
                 },
               },
             },
@@ -83,10 +83,11 @@ export default defineConfig(({ mode }) => {
               options: {
                 cacheName: 'api-cache',
                 cacheableResponse: {
-                  statuses: [0, 200],
+                  statuses: [200],
                 },
                 expiration: {
-                  maxAgeSeconds: 60 * 60,
+                  maxEntries: 50,
+                  maxAgeSeconds: 3600,
                 },
               },
             },

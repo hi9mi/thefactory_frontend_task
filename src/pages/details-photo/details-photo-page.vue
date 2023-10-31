@@ -4,11 +4,11 @@ import VueInlineSvg from 'vue-inline-svg'
 import { storeToRefs } from 'pinia'
 
 import { useDetailsPhotoStore } from '@tf-app/entities/details-photo'
-import ShowFullPhoto from '@tf-app/features/show-full-photo/show-full-photo.vue'
-import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
+import { ShowFullPhoto } from '@tf-app/features/show-full-photo'
+import { ToggleFavoritePhoto } from '@tf-app/features/toggle-favorite-photo'
 import downloadIcon from '@tf-app/shared/assets/icons/download.svg'
 import maximazeIcon from '@tf-app/shared/assets/icons/maximaze.svg'
-import TfLoader from '@tf-app/shared/ui/tf-loader.vue'
+import { TfActionButton, TfButton, TfLoader } from '@tf-app/shared/ui'
 
 const detailsPhotoStore = useDetailsPhotoStore()
 const { detailsPhoto, isLoadingDetailsPhoto } = storeToRefs(detailsPhotoStore)
@@ -40,6 +40,7 @@ function downloadPhoto() {
         alt=""
         role="presentation"
       >
+      <div class="backdrop" />
       <div class="container">
         <div class="photo-header">
           <div class="user-details">
@@ -59,18 +60,19 @@ function downloadPhoto() {
           </div>
           <div class="photo-actions">
             <ToggleFavoritePhoto :photo="detailsPhoto" />
-            <button
-              class="action download"
+            <TfButton
+              bg-color="yellow"
+              type="button"
               @click="downloadPhoto"
             >
               <VueInlineSvg
                 :src="downloadIcon"
                 width="23"
-                height="23"
+                height="21"
                 aria-label="Скачать фото"
               />
               <span class="action-text">Скачать</span>
-            </button>
+            </TfButton>
           </div>
         </div>
         <div class="photo-wrapper">
@@ -81,14 +83,18 @@ function downloadPhoto() {
             sizes="(max-width: 600px) 560px, 1100px"
             class="photo"
           >
-          <button class="preview-btn" @click="handleShowFullPhoto">
+          <TfActionButton
+            type="button"
+            class="preview-btn"
+            @click="handleShowFullPhoto"
+          >
             <VueInlineSvg
               :src="maximazeIcon"
               aria-label="Открыть на весь экран фото"
               width="24"
               height="24"
             />
-          </button>
+          </TfActionButton>
         </div>
       </div>
     </template>
@@ -113,10 +119,20 @@ function downloadPhoto() {
   position: absolute;
   top: -15%;
   left: 0;
-  z-index: -1;
-  filter: grayscale(100%) blur(2px);;
+  z-index: -2;
   object-position: center center;
   object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.backdrop {
+  background: rgb(0 0 0 / 50%);
+  backdrop-filter: blur(4px);
+  position: absolute;
+  top: -15%;
+  left: 0;
+  z-index: -1;
   width: 100%;
   height: 100%;
 }
@@ -132,12 +148,12 @@ function downloadPhoto() {
 
 .user-details {
   display: flex;
-  align-items: start;
+  align-items: center;
   gap: 10px;
 }
 
 .user-bio {
-  color: #F2F2F2;
+  color: var(--c-white-smoke);
 }
 
 .user-name {
@@ -153,8 +169,8 @@ function downloadPhoto() {
   height: 55px;
   object-fit: cover;
   object-position: center;
-  border: 1px solid #fff;
-  border-radius: 8px;
+  border: 1px solid var(--c-white);
+  border-radius: var(--border-radius-md);
 }
 
 .photo-actions {
@@ -163,31 +179,9 @@ function downloadPhoto() {
   gap: 20px;
 }
 
-.action {
-  background-color: transparent;
-  border: none;
-  border-radius: 8px;
-  outline: none;
-  color: #000;
-  padding: 13px 11px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  box-shadow: 0 0 4px 0 rgb(0 0 0 / 25%);
-}
-
-.favorite {
-  background-color: #fff;
-}
-
-.download {
-  background-color: #FFF200;
-  padding: 13px 20px;
-}
-
 .action-text {
   font-size: 20px;
+  line-height: 0;
 }
 
 .photo-wrapper {
@@ -201,16 +195,13 @@ function downloadPhoto() {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
 }
 
 .preview-btn {
   position: absolute;
   bottom: 30px;
   right: 40px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
 }
 
 @media screen and (width <= 560px) {
@@ -218,22 +209,22 @@ function downloadPhoto() {
     display: none;
   }
 
+  .backdrop {
+    display: none;
+  }
+
   .user-name {
     font-size: 18px;
-    color: #000;
+    color: var(--c-black);
   }
 
   .user-nickname {
     font-size: 14px;
-    color: #BDBDBD;
+    color: var(--c-silver);
   }
 
   .action-text {
     display: none;
-  }
-
-  .download {
-    padding: 13px 11px;
   }
 
   .photo-wrapper {

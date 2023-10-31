@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
 import heartIcon from '@tf-app/shared/assets/icons/heart.svg'
+import { TfButton } from '@tf-app/shared/ui'
 
 const props = defineProps<{
   photo: Photo
@@ -16,8 +17,10 @@ const isFavoritePhoto = computed(() => favoritePhotos.value.some(f => f.id === p
 </script>
 
 <template>
-  <button
+  <TfButton
     class="btn"
+    bg-color="white"
+    type="button"
     @click="favoritePhotosStore.toggleFavoritePhoto(photo)"
   >
     <VueInlineSvg
@@ -31,30 +34,16 @@ const isFavoritePhoto = computed(() => favoritePhotos.value.some(f => f.id === p
         ['favorite']: isFavoritePhoto,
       }"
     />
-  </button>
+  </TfButton>
 </template>
 
 <style scoped>
-.btn {
-  background-color: #fff;
-  border: none;
-  border-radius: 8px;
-  outline: none;
-  color: #000;
-  padding: 13px 11px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  box-shadow: 0 0 4px 0 rgb(0 0 0 / 25%);
-}
-
 .icon {
-  color: #000;
+  color: var(--c-black);
 }
 
 .favorite {
-  fill: #FF0800;
-  color: #FF0800;
+  fill: var(--c-candy-apple);
+  color: var(--c-candy-apple);
 }
 </style>

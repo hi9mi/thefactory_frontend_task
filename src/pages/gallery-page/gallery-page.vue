@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
 import SearchPhotos from '@tf-app/features/search-photos/search-photos.vue'
-import TfLoader from '@tf-app/shared/ui/tf-loader.vue'
+import { TfLoader } from '@tf-app/shared/ui'
 import TfPagination from '@tf-app/shared/ui/tf-pagination.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card.vue'
 

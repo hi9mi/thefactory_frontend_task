@@ -1,2 +1,4 @@
-export { notify } from './libs'
-export { default as TfNotifications } from './tf-notifications.vue'
+import { notify } from './libs'
+import TfNotifications from './tf-notifications.vue'
+
+export { notify, TfNotifications }

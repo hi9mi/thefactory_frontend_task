@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, watch } from 'vue'
+import VueInlineSvg from 'vue-inline-svg'
+
+import xMarkIcon from '@tf-app/shared/assets/icons/x-mark.svg'
+import { useFocusTrap } from '@tf-app/shared/libs'
+import { TfActionButton } from '@tf-app/shared/ui'
 
 const props = defineProps<{
   isShow: boolean
@@ -9,6 +14,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'hideFullPhoto'): void
 }>()
+
+const { trapRef } = useFocusTrap()
 
 onMounted(() => {
   document.addEventListener('keydown', handleHideFullPhoto)
@@ -24,6 +31,10 @@ function handleHideFullPhoto(event: MouseEvent | KeyboardEvent) {
     emit('hideFullPhoto')
 }
 
+function handleOverlayKeyDown(event: KeyboardEvent) {
+  event.key === ' ' && emit('hideFullPhoto')
+}
+
 watch(() => props.isShow, (isShowFullPhoto) => {
   isShowFullPhoto ? (document.body.style.overflow = 'hidden') : (document.body.style.overflow = 'initial')
 })
@@ -32,14 +43,33 @@ watch(() => props.isShow, (isShowFullPhoto) => {
 <template>
   <div
     v-if="isShow"
+    ref="trapRef"
     class="full-photo-wrapper"
   >
-    <div class="full-photo-overlay" @click="handleHideFullPhoto" />
+    <div
+      class="full-photo-overlay"
+      role="button"
+      tabindex="0"
+      @keydown="handleOverlayKeyDown"
+      @click="handleHideFullPhoto"
+    />
     <img
       :src="url"
       :alt="description"
       class="full-photo"
     >
+    <TfActionButton
+      type="button"
+      class="close-btn"
+      @click="handleHideFullPhoto"
+    >
+      <VueInlineSvg
+        :src="xMarkIcon"
+        aria-label="Закрыть"
+        width="24"
+        height="24"
+      />
+    </TfActionButton>
   </div>
 </template>
 
@@ -68,11 +98,18 @@ watch(() => props.isShow, (isShowFullPhoto) => {
 }
 
 .full-photo {
-  position: relative;
   width: auto;
   height: 100%;
   object-fit: contain;
   object-position: center;
   z-index: 100;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  color: var(--c-white);
 }
 </style>

@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 
 import { routes } from '@tf-app/routing'
-import TfHeader from '@tf-app/widgets/tf-header.vue'
+import { TfHeader } from '@tf-app/widgets/tf-header'
 
 const FavoritePhotosRoute: RouteRecordRaw = {
   path: routes.favorites.path,

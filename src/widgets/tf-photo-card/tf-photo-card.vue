@@ -24,7 +24,7 @@ defineProps<{ photo: Photo }>()
 }
 
 .photo-card > .photo-link {
-  color: #000;
+  color: var(--c-black);
   font-weight: 600;
   font-size: 16px;
   text-decoration: none;

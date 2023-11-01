@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 import { useDetailsPhotoStore } from '@tf-app/entities/details-photo'
 import { routes } from '@tf-app/routing'
-import TfHeader from '@tf-app/widgets/tf-header.vue'
+import { TfHeader } from '@tf-app/widgets/tf-header'
 
 const DetailPhotoRoute: RouteRecordRaw = {
   path: routes.photoPage.path,

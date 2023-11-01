@@ -3,16 +3,19 @@ import { defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
-import TfPhotoCard from '@tf-app/widgets/tf-photo-card.vue'
+import { TfPhotoCard } from '@tf-app/widgets/tf-photo-card'
 
-const TfAffix = defineAsyncComponent(() => import('@tf-app/shared/ui/tf-affix.vue'))
+const TfAffix = defineAsyncComponent(async () => {
+  const module = await import('@tf-app/shared/ui/overlays/tf-affix')
+  return module.TfAffix
+})
 
 const favoritePhotosStore = useFavoritePhotosStore()
 const { favoritePhotos } = storeToRefs(favoritePhotosStore)
 </script>
 
 <template>
-  <main class="container">
+  <div class="container">
     <h1 class="title">
       Избранное
     </h1>
@@ -33,7 +36,7 @@ const { favoritePhotos } = storeToRefs(favoritePhotosStore)
       В избранном пусто...
     </p>
     <TfAffix />
-  </main>
+  </div>
 </template>
 
 <style scoped>
@@ -47,15 +50,19 @@ const { favoritePhotos } = storeToRefs(favoritePhotosStore)
 .gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: auto;
   grid-gap: 20px;
   margin: 100px 0;
 }
 
-.favorites-empty{
+.favorites-empty {
   font-size: 18px;
   text-align: center;
-  margin: 20px 0;
+  display: grid;
+  grid-column: 2;
+  grid-row: 1;
+  grid-template-columns: subgrid;
+  place-self: center center;
 }
 
 @media screen and (width <= 760px) {

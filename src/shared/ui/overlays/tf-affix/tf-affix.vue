@@ -2,7 +2,7 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
 
-import arrowTopIcon from '../assets/icons/arrow-top.svg'
+import arrowTopIcon from '@tf-app/shared/assets/icons/arrow-top.svg'
 
 const isShowAffix = ref(false)
 
@@ -44,7 +44,7 @@ onBeforeUnmount(() => {
           fill="none"
           width="18"
           height="18"
-          aria-label="Вернуться наверх"
+          aria-label="Вернуться наверх страницы"
         />
       </button>
     </Transition>
@@ -68,17 +68,17 @@ onBeforeUnmount(() => {
   bottom: 20px;
   right: 20px;
   z-index: 100;
-  background-color: #fff;
+  background-color: var(--c-white);
   border: none;
   outline: none;
-  box-shadow: 0 0 4px 2px rgb(0 0 0 / 20%);
-  border-radius: 4px;
+  box-shadow: var(--box-shadow-md);
+  border-radius: var(--border-radius-sm);
   display: flex;
   justify-content: center;
   align-items: center;
   width: 50px;
   height: 50px;
-  color: #000;
+  color: var(--c-black);
   cursor: pointer;
 }
 </style>

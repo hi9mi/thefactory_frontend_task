@@ -51,7 +51,7 @@ const route = useRoute()
 
 <style scoped>
 .header {
-  background-color: #000;
+  background-color: var(--c-black);
   height: 148px;
   display: flex;
   align-items: center;
@@ -64,7 +64,7 @@ const route = useRoute()
 }
 
 .link {
-  color: #fff;
+  color: var(--c-white);
   display: flex;
   align-items: center;
   gap: 10px;

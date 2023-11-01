@@ -81,9 +81,9 @@ onBeforeUnmount(() => {
 .notification {
   position: relative;
   padding: 10px 22px;
-  background-color: #fff;
-  box-shadow: 3px 4px 10px -2px rgb(34 60 80 / 30%);
-  border-radius: 4px;
+  background-color: var(--c-white);
+  box-shadow: var(--box-shadow-lg);
+  border-radius: var(--border-radius-sm);
   min-width: 220px;
   display: flex;
   flex-direction: column;
@@ -99,13 +99,13 @@ onBeforeUnmount(() => {
   display: block;
   width: 3px;
   height: 80%;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
 }
 
 .title {
   font-size: 14px;
   font-weight: 500;
-  color: #000;
+  color: var(--c-black);
   display: inline-block;
   margin-bottom: 3px;
 }
@@ -113,7 +113,7 @@ onBeforeUnmount(() => {
 .message {
   font-size: 14px;
   font-weight: 400;
-  color: #868e96;
+  color: var(--c-light-slate-grey);
   display: inline-block;
 }
 

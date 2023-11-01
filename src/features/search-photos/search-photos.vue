@@ -51,17 +51,19 @@ watch(searchQuery, (value) => {
     <div class="container search-container">
       <form
         class="form"
+        role="search"
         @submit.prevent
       >
         <input
           id="search-photos"
-          type="text"
+          type="search"
           inputmode="text"
           name="search-photos"
           placeholder="Поиск"
           class="input"
           spellcheck="true"
           :value="searchQuery"
+          aria-label="Поиск фотографий"
           @input="onChangeSearch"
         >
         <button
@@ -86,7 +88,7 @@ watch(searchQuery, (value) => {
 .wrapper {
   height: 250px;
   position: relative;
-  border-bottom: 16px solid #C4C4C4;
+  border-bottom: 16px solid var(--c-weathered-stone);
 }
 
 .bg {
@@ -111,7 +113,7 @@ watch(searchQuery, (value) => {
 .form {
   max-width: 860px;
   width: 100%;
-  background-color: #fff;
+  background-color: var(--c-white);
   padding-left: 20px;
   padding-right: 50px;
   position: relative;
@@ -126,8 +128,13 @@ watch(searchQuery, (value) => {
   width: 100%;
 }
 
+.input[type="search"]::-webkit-search-decoration,
+.input[type="search"]::-webkit-search-cancel-button,
+.input[type="search"]::-webkit-search-results-button,
+.input[type="search"]::-webkit-search-results-decoration { display: none; }
+
 .input::placeholder {
-  color: #000;
+  color: var(--c-black);
 }
 
 .icon-button {
@@ -139,7 +146,7 @@ watch(searchQuery, (value) => {
   background-color: transparent;
   border: none;
   outline: none;
-  color: #000;
+  color: var(--c-black);
   cursor: pointer;
 }
 

@@ -76,7 +76,7 @@ h6 {
   padding: 0 20px;
 }
 
-.sr-only {
+.srOnly {
   position: absolute;
   width: 1px;
   height: 1px;

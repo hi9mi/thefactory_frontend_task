@@ -44,11 +44,11 @@ onBeforeUnmount(() => {
   <Teleport
     to="#notifications"
   >
-    <div class="notifications-container">
+    <div :class="classes.notificationsContainer">
       <TransitionGroup
         name="notifications"
         tag="ul"
-        class="notifications"
+        :class="classes.notifications"
         role="status"
         aria-live="polite"
         aria-relevant="additions removals"
@@ -65,6 +65,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* stylelint-disable selector-class-pattern */
 .notifications-enter-active,
 .notifications-leave-active {
   transition: all 0.5s ease;
@@ -75,8 +76,11 @@ onBeforeUnmount(() => {
   opacity: 0;
   transform: translateX(-30px);
 }
+/* stylelint-enable selector-class-pattern */
+</style>
 
-.notifications-container {
+<style module="classes">
+.notificationsContainer {
   position: fixed;
   bottom: 0;
   left: 0;

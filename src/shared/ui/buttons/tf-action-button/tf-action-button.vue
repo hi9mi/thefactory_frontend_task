@@ -2,13 +2,13 @@
 </script>
 
 <template>
-  <button class="action-btn">
+  <button :class="classes.actionBtn">
     <slot />
   </button>
 </template>
 
-<style scoped>
-.action-btn {
+<style module="classes">
+.actionBtn {
   background-color: transparent;
   border: none;
   border-radius: var(--border-radius-md);
@@ -19,16 +19,16 @@
   cursor: pointer;
 }
 
-.action-btn:focus {
+.actionBtn:focus {
   outline: none
 }
 
-.action-btn:focus-visible {
+.actionBtn:focus-visible {
   outline: 3px dashed var(--c-black);
   outline-offset: 2px;
 }
 
-.action-btn:active {
+.actionBtn:active {
   transform: translateY(2px);
 }
 </style>

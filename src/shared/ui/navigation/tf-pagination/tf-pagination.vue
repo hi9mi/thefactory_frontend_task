@@ -24,9 +24,9 @@ function nextPage() {
 </script>
 
 <template>
-  <div class="wrapper">
+  <div :class="classes.wrapper">
     <button
-      class="btn"
+      :class="classes.btn"
       :disabled="!hasPrevPage || disabled"
       type="button"
       @click="prevPage"
@@ -34,7 +34,7 @@ function nextPage() {
       Предыдущая страница
     </button>
     <button
-      class="btn"
+      :class="classes.btn"
       :disabled="!hasNextPage || disabled"
       type="button"
       @click="nextPage"
@@ -44,7 +44,7 @@ function nextPage() {
   </div>
 </template>
 
-<style scoped>
+<style module="classes">
 .wrapper {
   display: flex;
   align-items: center;

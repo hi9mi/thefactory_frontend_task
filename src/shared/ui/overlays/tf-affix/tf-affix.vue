@@ -36,7 +36,7 @@ onBeforeUnmount(() => {
     >
       <button
         v-if="isShowAffix"
-        class="affix"
+        :class="classes.affix"
         @click="scrollToTop"
       >
         <VueInlineSvg
@@ -52,6 +52,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* stylelint-disable selector-class-pattern */
 .affix-enter-active,
 .affix-leave-active {
   transition: all 0.5s ease;
@@ -62,7 +63,10 @@ onBeforeUnmount(() => {
   opacity: 0;
   transform: translateX(30px);
 }
+/* stylelint-enable selector-class-pattern */
+</style>
 
+<style module="classes">
 .affix {
   position: fixed;
   bottom: 20px;

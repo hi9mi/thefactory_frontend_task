@@ -7,20 +7,20 @@ import loaderIcon from '@tf-app/shared/assets/icons/loader.svg'
 <template>
   <div
     role="status"
-    class="loader"
+    :class="classes.loader"
   >
     <VueInlineSvg
       :src="loaderIcon"
       width="22"
       height="22"
       aria-hidden="true"
-      class="spinner"
+      :class="classes.spinner"
     />
-    <span class="sr-only">Загрузка...</span>
+    <span class="srOnly">Загрузка...</span>
   </div>
 </template>
 
-<style scoped>
+<style module="classes">
 .loader {
   margin: 100px auto;
   width: max-content;

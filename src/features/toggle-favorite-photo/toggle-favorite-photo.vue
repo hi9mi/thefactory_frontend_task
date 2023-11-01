@@ -18,7 +18,7 @@ const isFavoritePhoto = computed(() => favoritePhotos.value.some(f => f.id === p
 
 <template>
   <TfButton
-    class="btn"
+    :class="classes.btn"
     bg-color="white"
     type="button"
     @click="favoritePhotosStore.toggleFavoritePhoto(photo)"
@@ -29,15 +29,15 @@ const isFavoritePhoto = computed(() => favoritePhotos.value.some(f => f.id === p
       width="23"
       height="21"
       aria-label="Избранное"
-      class="icon"
       :class="{
-        ['favorite']: isFavoritePhoto,
+        [classes.favorite]: isFavoritePhoto,
+        [classes.icon]: true,
       }"
     />
   </TfButton>
 </template>
 
-<style scoped>
+<style module="classes">
 .icon {
   color: var(--c-black);
 }

@@ -39,18 +39,18 @@ watch(searchQuery, (value) => {
 </script>
 
 <template>
-  <div class="wrapper">
+  <div :class="classes.wrapper">
     <img
       src="/img/bg.jpg"
       sizes="(max-width: 480px) 384w, 1920w"
       srcset="/img/bg-mobile.jpg 384w, /img/bg.jpg 1920w"
       alt=""
       role="presentation"
-      class="bg"
+      :class="classes.bg"
     >
-    <div class="container search-container">
+    <div class="container" :class="classes.searchContainer">
       <form
-        class="form"
+        :class="classes.form"
         role="search"
         @submit.prevent
       >
@@ -60,14 +60,14 @@ watch(searchQuery, (value) => {
           inputmode="text"
           name="search-photos"
           placeholder="Поиск"
-          class="input"
+          :class="classes.input"
           spellcheck="true"
           :value="searchQuery"
           aria-label="Поиск фотографий"
           @input="onChangeSearch"
         >
         <button
-          class="icon-button"
+          :class="classes.iconButton"
           type="submit"
         >
           <VueInlineSvg
@@ -75,7 +75,7 @@ watch(searchQuery, (value) => {
             fill="none"
             width="23"
             height="23"
-            class="icon"
+            :class="classes.icon"
             aria-label="Поиск"
           />
         </button>
@@ -84,7 +84,7 @@ watch(searchQuery, (value) => {
   </div>
 </template>
 
-<style scoped>
+<style module="classes">
 .wrapper {
   height: 250px;
   position: relative;
@@ -103,7 +103,7 @@ watch(searchQuery, (value) => {
   object-position: center center;
 }
 
-.search-container {
+.searchContainer {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -137,7 +137,7 @@ watch(searchQuery, (value) => {
   color: var(--c-black);
 }
 
-.icon-button {
+.iconButton {
   position: absolute;
   z-index: 10;
   right: 10px;

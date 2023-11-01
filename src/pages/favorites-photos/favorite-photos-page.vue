@@ -16,12 +16,12 @@ const { favoritePhotos } = storeToRefs(favoritePhotosStore)
 
 <template>
   <div class="container">
-    <h1 class="title">
+    <h1 :class="classes.title">
       Избранное
     </h1>
     <div
       v-if="favoritePhotos.length > 0"
-      class="gallery"
+      :class="classes.gallery"
     >
       <TfPhotoCard
         v-for="favPhoto of favoritePhotos"
@@ -31,7 +31,7 @@ const { favoritePhotos } = storeToRefs(favoritePhotosStore)
     </div>
     <p
       v-else
-      class="favorites-empty"
+      :class="classes.favoritesEmpty"
     >
       В избранном пусто...
     </p>
@@ -39,7 +39,7 @@ const { favoritePhotos } = storeToRefs(favoritePhotosStore)
   </div>
 </template>
 
-<style scoped>
+<style module="classes">
 .title {
   font-size: 72px;
   font-weight: 700;
@@ -55,7 +55,7 @@ const { favoritePhotos } = storeToRefs(favoritePhotosStore)
   margin: 100px 0;
 }
 
-.favorites-empty {
+.favoritesEmpty {
   font-size: 18px;
   text-align: center;
   display: grid;
@@ -74,6 +74,10 @@ const { favoritePhotos } = storeToRefs(favoritePhotosStore)
     font-size: 56px;
     margin: 70px 0;
   }
+
+  .favoritesEmpty {
+    grid-column: span 2;
+  }
 }
 
 @media screen and (width <= 560px) {
@@ -84,6 +88,10 @@ const { favoritePhotos } = storeToRefs(favoritePhotosStore)
 
   .gallery {
     grid-template-columns: repeat(1, 1fr);
+  }
+
+  .favoritesEmpty {
+    grid-column: 1;
   }
 }
 </style>

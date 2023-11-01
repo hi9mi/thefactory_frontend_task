@@ -44,10 +44,10 @@ watch(() => props.isShow, (isShowFullPhoto) => {
   <div
     v-if="isShow"
     ref="trapRef"
-    class="full-photo-wrapper"
+    :class="classes.wrapper"
   >
     <div
-      class="full-photo-overlay"
+      :class="classes.overlay"
       role="button"
       tabindex="0"
       @keydown="handleOverlayKeyDown"
@@ -56,11 +56,11 @@ watch(() => props.isShow, (isShowFullPhoto) => {
     <img
       :src="url"
       :alt="description"
-      class="full-photo"
+      :class="classes.photo"
     >
     <TfActionButton
       type="button"
-      class="close-btn"
+      :class="classes.closeBtn"
       @click="handleHideFullPhoto"
     >
       <VueInlineSvg
@@ -73,8 +73,8 @@ watch(() => props.isShow, (isShowFullPhoto) => {
   </div>
 </template>
 
-<style scoped>
-.full-photo-wrapper {
+<style module="classes">
+.wrapper {
   position: fixed;
   width: 100%;
   height: 100%;
@@ -86,7 +86,7 @@ watch(() => props.isShow, (isShowFullPhoto) => {
   justify-content: center;
 }
 
-.full-photo-overlay {
+.overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -97,7 +97,7 @@ watch(() => props.isShow, (isShowFullPhoto) => {
   cursor: pointer;
 }
 
-.full-photo {
+.photo {
   width: auto;
   height: 100%;
   object-fit: contain;
@@ -105,7 +105,7 @@ watch(() => props.isShow, (isShowFullPhoto) => {
   z-index: 100;
 }
 
-.close-btn {
+.closeBtn {
   position: absolute;
   top: 20px;
   right: 20px;

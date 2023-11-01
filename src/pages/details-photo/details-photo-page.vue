@@ -30,35 +30,35 @@ function downloadPhoto() {
 </script>
 
 <template>
-  <div class="wrapper">
+  <div :class="classes.wrapper">
     <template v-if="!isLoadingDetailsPhoto && detailsPhoto">
       <img
-        class="photo-bg"
+        :class="classes.photoBg"
         :src="detailsPhoto?.urls.full"
         :srcset="`${detailsPhoto?.urls.small} 560w, ${detailsPhoto?.urls.regular} 1100w, ${detailsPhoto?.urls.full} 1920w`"
         sizes="(max-width: 600px) 560px, 1100px"
         alt=""
         role="presentation"
       >
-      <div class="backdrop" />
+      <div :class="classes.backdrop" />
       <div class="container">
-        <div class="photo-header">
-          <div class="user-details">
+        <div :class="classes.photoHeader">
+          <div :class="classes.userDetails">
             <img
-              class="user-profile-img"
+              :class="classes.userProfileImg"
               :src="detailsPhoto?.user.profile_image.medium"
               :alt="detailsPhoto?.user.name"
             >
-            <div class="user-bio">
-              <p class="user-name">
+            <div :class="classes.userBio">
+              <p :class="classes.userName">
                 {{ detailsPhoto?.user.name }}
               </p>
-              <p class="user-nickname">
+              <p :class="classes.userNickname">
                 @{{ detailsPhoto?.user.username }}
               </p>
             </div>
           </div>
-          <div class="photo-actions">
+          <div :class="classes.photoActions">
             <ToggleFavoritePhoto :photo="detailsPhoto" />
             <TfButton
               bg-color="yellow"
@@ -71,21 +71,21 @@ function downloadPhoto() {
                 height="21"
                 aria-label="Скачать фото"
               />
-              <span class="action-text">Скачать</span>
+              <span :class="classes.actionText">Скачать</span>
             </TfButton>
           </div>
         </div>
-        <div class="photo-wrapper">
+        <div :class="classes.photoWrapper">
           <img
             :src="detailsPhoto?.urls.full"
             :alt="detailsPhoto?.alt_description"
             :srcset="`${detailsPhoto?.urls.small} 560w, ${detailsPhoto?.urls.regular} 1100w, ${detailsPhoto?.urls.full} 1920w`"
             sizes="(max-width: 600px) 560px, 1100px"
-            class="photo"
+            :class="classes.photo"
           >
           <TfActionButton
             type="button"
-            class="preview-btn"
+            :class="classes.previewBtn"
             @click="handleShowFullPhoto"
           >
             <VueInlineSvg
@@ -109,13 +109,13 @@ function downloadPhoto() {
   />
 </template>
 
-<style scoped>
+<style module="classes">
 .wrapper {
   position: relative;
   margin: 100px 0;
 }
 
-.photo-bg {
+.photoBg {
   position: absolute;
   top: -15%;
   left: 0;
@@ -137,7 +137,7 @@ function downloadPhoto() {
   height: 100%;
 }
 
-.photo-header {
+.photoHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -146,25 +146,25 @@ function downloadPhoto() {
   gap: 20px;
 }
 
-.user-details {
+.userDetails {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.user-bio {
+.userBio {
   color: var(--c-white-smoke);
 }
 
-.user-name {
+.userName {
   font-size: 30px;
 }
 
-.user-nickname {
+.userNickname {
   font-size: 18px;
 }
 
-.user-profile-img {
+.userProfileImg {
   width: 55px;
   height: 55px;
   object-fit: cover;
@@ -173,18 +173,18 @@ function downloadPhoto() {
   border-radius: var(--border-radius-md);
 }
 
-.photo-actions {
+.photoActions {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
-.action-text {
+.actionText {
   font-size: 20px;
   line-height: 0;
 }
 
-.photo-wrapper {
+.photoWrapper {
   position: relative;
   width: 100%;
   height: 740px;
@@ -198,14 +198,14 @@ function downloadPhoto() {
   border-radius: var(--border-radius-md);
 }
 
-.preview-btn {
+.previewBtn {
   position: absolute;
   bottom: 30px;
   right: 40px;
 }
 
 @media screen and (width <= 560px) {
-  .photo-bg {
+  .photoBg {
     display: none;
   }
 
@@ -213,25 +213,25 @@ function downloadPhoto() {
     display: none;
   }
 
-  .user-name {
+  .userName {
     font-size: 18px;
     color: var(--c-black);
   }
 
-  .user-nickname {
+  .userNickname {
     font-size: 14px;
     color: var(--c-silver);
   }
 
-  .action-text {
+  .actionText {
     display: none;
   }
 
-  .photo-wrapper {
+  .photoWrapper {
     height: 228px;
   }
 
-  .preview-btn {
+  .previewBtn {
     bottom: 8px;
     right: 9px;
   }

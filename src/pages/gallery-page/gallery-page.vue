@@ -41,10 +41,10 @@ watch(() => route.query.p, () => {
 
 <template>
   <SearchPhotos />
-  <div class="container gallery-container">
+  <div class="container" :class="classes.galleryContainer">
     <section
       v-if="!isLoadingGallery"
-      class="gallery"
+      :class="classes.gallery"
     >
       <template v-if="photos">
         <template v-if="photos.total > 0">
@@ -56,7 +56,7 @@ watch(() => route.query.p, () => {
         </template>
         <p
           v-else
-          class="gallery-empty"
+          :class="classes.galleryEmpty"
         >
           По вашему запросу не найдено фотографий
         </p>
@@ -83,8 +83,8 @@ watch(() => route.query.p, () => {
   </div>
 </template>
 
-<style scoped>
-.gallery-container {
+<style module="classes">
+.galleryContainer {
   padding-bottom: 40px;
 }
 
@@ -97,7 +97,7 @@ watch(() => route.query.p, () => {
   margin-bottom: 40px;
 }
 
-.gallery-empty {
+.galleryEmpty {
   font-size: 18px;
   text-align: center;
   display: grid;
@@ -113,7 +113,7 @@ watch(() => route.query.p, () => {
     margin-top: 60px;
   }
 
-  .gallery-empty {
+  .galleryEmpty {
     grid-column: span 2;
   }
 }
@@ -123,7 +123,7 @@ watch(() => route.query.p, () => {
     grid-template-columns: repeat(1, 1fr);
   }
 
-  .gallery-empty {
+  .galleryEmpty {
     grid-column: 1;
   }
 

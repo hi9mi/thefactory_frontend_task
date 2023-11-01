@@ -13,12 +13,12 @@ const style = computed(() => ({
 </script>
 
 <template>
-  <button class="btn" :style="style">
+  <button :class="classes.btn" :style="style">
     <slot />
   </button>
 </template>
 
-<style scoped>
+<style module='classes'>
 .btn {
   background-color: var(--background-color);
   border: none;

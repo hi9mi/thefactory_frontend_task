@@ -48,7 +48,7 @@ onBeforeUnmount(() => {
 <template>
   <li
     :key="notification.id"
-    class="notification"
+    :class="classes.notification"
     :style="styleVariables"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
@@ -56,14 +56,14 @@ onBeforeUnmount(() => {
   >
     <span
       v-if="notification.title"
-      class="title"
+      :class="classes.title"
     >
       {{ notification.title }}
     </span>
-    <span class="message">{{ notification.message }}</span>
+    <span :class="classes.message">{{ notification.message }}</span>
     <button
       v-if="context?.hasRemoveButton"
-      class="remove-btn"
+      :class="classes.removeBtn"
       type="button"
       @click="emitter.emit('remove', notification.id)"
     >
@@ -77,7 +77,7 @@ onBeforeUnmount(() => {
   </li>
 </template>
 
-<style scoped>
+<style module="classes">
 .notification {
   position: relative;
   padding: 10px 22px;
@@ -125,7 +125,7 @@ onBeforeUnmount(() => {
   overflow: hidden;
 }
 
-.remove-btn {
+.removeBtn {
   position: absolute;
   right: 6px;
   top: 6px;

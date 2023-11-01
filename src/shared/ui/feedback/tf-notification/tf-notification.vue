@@ -85,8 +85,10 @@ onBeforeUnmount(() => {
   box-shadow: var(--box-shadow-lg);
   border-radius: var(--border-radius-sm);
   min-width: 220px;
+  max-width: 320px;
   display: flex;
   flex-direction: column;
+
 }
 
 .notification::before {
@@ -106,15 +108,21 @@ onBeforeUnmount(() => {
   font-size: 14px;
   font-weight: 500;
   color: var(--c-black);
-  display: inline-block;
   margin-bottom: 3px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .message {
   font-size: 14px;
   font-weight: 400;
   color: var(--c-light-slate-grey);
-  display: inline-block;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .remove-btn {

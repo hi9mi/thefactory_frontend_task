@@ -4,12 +4,18 @@ import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
-import SearchPhotos from '@tf-app/features/search-photos/search-photos.vue'
-import TfLoader from '@tf-app/shared/ui/tf-loader.vue'
-import TfPagination from '@tf-app/shared/ui/tf-pagination.vue'
-import TfPhotoCard from '@tf-app/widgets/tf-photo-card.vue'
+import { SearchPhotos } from '@tf-app/features/search-photos'
+import { TfLoader } from '@tf-app/shared/ui'
+import { TfPhotoCard } from '@tf-app/widgets/tf-photo-card'
 
-const TfAffix = defineAsyncComponent(() => import('@tf-app/shared/ui/tf-affix.vue'))
+const TfAffix = defineAsyncComponent(async () => {
+  const module = await import('@tf-app/shared/ui/overlays/tf-affix')
+  return module.TfAffix
+})
+const TfPagination = defineAsyncComponent(async () => {
+  const module = await import('@tf-app/shared/ui/navigation/tf-pagination')
+  return module.TfPagination
+})
 
 const router = useRouter()
 const route = useRoute()
@@ -35,10 +41,10 @@ watch(() => route.query.p, () => {
 
 <template>
   <SearchPhotos />
-  <div class="container gallery-container">
+  <div class="container" :class="classes.galleryContainer">
     <section
       v-if="!isLoadingGallery"
-      class="gallery"
+      :class="classes.gallery"
     >
       <template v-if="photos">
         <template v-if="photos.total > 0">
@@ -50,7 +56,7 @@ watch(() => route.query.p, () => {
         </template>
         <p
           v-else
-          class="gallery-empty"
+          :class="classes.galleryEmpty"
         >
           По вашему запросу не найдено фотографий
         </p>
@@ -68,6 +74,7 @@ watch(() => route.query.p, () => {
       v-if="photos?.total"
       :total-pages="photos.total_pages"
       :page="page"
+      :disabled="isLoadingGallery"
       @next-page="handleNextPage"
       @prev-page="handlePrevPage"
     />
@@ -76,24 +83,28 @@ watch(() => route.query.p, () => {
   </div>
 </template>
 
-<style scoped>
-.gallery-container {
+<style module="classes">
+.galleryContainer {
   padding-bottom: 40px;
 }
 
 .gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(auto, 1fr);
+  grid-template-rows: auto;
   grid-gap: 20px;
   margin-top: 100px;
   margin-bottom: 40px;
 }
 
-.gallery-empty {
+.galleryEmpty {
   font-size: 18px;
   text-align: center;
-  margin: 20px 0;
+  display: grid;
+  grid-column: 2;
+  grid-row: 1;
+  grid-template-columns: subgrid;
+  place-self: center center;
 }
 
 @media screen and (width <= 760px) {
@@ -101,11 +112,19 @@ watch(() => route.query.p, () => {
     grid-template-columns: repeat(2, 1fr);
     margin-top: 60px;
   }
+
+  .galleryEmpty {
+    grid-column: span 2;
+  }
 }
 
 @media screen and (width <= 560px) {
   .gallery {
     grid-template-columns: repeat(1, 1fr);
+  }
+
+  .galleryEmpty {
+    grid-column: 1;
   }
 
 }

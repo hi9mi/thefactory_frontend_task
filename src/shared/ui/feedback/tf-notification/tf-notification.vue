@@ -48,7 +48,7 @@ onBeforeUnmount(() => {
 <template>
   <li
     :key="notification.id"
-    class="notification"
+    :class="classes.notification"
     :style="styleVariables"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
@@ -56,14 +56,14 @@ onBeforeUnmount(() => {
   >
     <span
       v-if="notification.title"
-      class="title"
+      :class="classes.title"
     >
       {{ notification.title }}
     </span>
-    <span class="message">{{ notification.message }}</span>
+    <span :class="classes.message">{{ notification.message }}</span>
     <button
       v-if="context?.hasRemoveButton"
-      class="remove-btn"
+      :class="classes.removeBtn"
       type="button"
       @click="emitter.emit('remove', notification.id)"
     >
@@ -77,16 +77,18 @@ onBeforeUnmount(() => {
   </li>
 </template>
 
-<style scoped>
+<style module="classes">
 .notification {
   position: relative;
   padding: 10px 22px;
-  background-color: #fff;
-  box-shadow: 3px 4px 10px -2px rgb(34 60 80 / 30%);
-  border-radius: 4px;
+  background-color: var(--c-white);
+  box-shadow: var(--box-shadow-lg);
+  border-radius: var(--border-radius-sm);
   min-width: 220px;
+  max-width: 320px;
   display: flex;
   flex-direction: column;
+
 }
 
 .notification::before {
@@ -99,25 +101,31 @@ onBeforeUnmount(() => {
   display: block;
   width: 3px;
   height: 80%;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
 }
 
 .title {
   font-size: 14px;
   font-weight: 500;
-  color: #000;
-  display: inline-block;
+  color: var(--c-black);
   margin-bottom: 3px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .message {
   font-size: 14px;
   font-weight: 400;
-  color: #868e96;
-  display: inline-block;
+  color: var(--c-light-slate-grey);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.remove-btn {
+.removeBtn {
   position: absolute;
   right: 6px;
   top: 6px;

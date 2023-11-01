@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, watch } from 'vue'
+import VueInlineSvg from 'vue-inline-svg'
+
+import xMarkIcon from '@tf-app/shared/assets/icons/x-mark.svg'
+import { useFocusTrap } from '@tf-app/shared/libs'
+import { TfActionButton } from '@tf-app/shared/ui'
 
 const props = defineProps<{
   isShow: boolean
@@ -9,6 +14,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'hideFullPhoto'): void
 }>()
+
+const { trapRef } = useFocusTrap()
 
 onMounted(() => {
   document.addEventListener('keydown', handleHideFullPhoto)
@@ -24,6 +31,10 @@ function handleHideFullPhoto(event: MouseEvent | KeyboardEvent) {
     emit('hideFullPhoto')
 }
 
+function handleOverlayKeyDown(event: KeyboardEvent) {
+  event.key === ' ' && emit('hideFullPhoto')
+}
+
 watch(() => props.isShow, (isShowFullPhoto) => {
   isShowFullPhoto ? (document.body.style.overflow = 'hidden') : (document.body.style.overflow = 'initial')
 })
@@ -32,19 +43,38 @@ watch(() => props.isShow, (isShowFullPhoto) => {
 <template>
   <div
     v-if="isShow"
-    class="full-photo-wrapper"
+    ref="trapRef"
+    :class="classes.wrapper"
   >
-    <div class="full-photo-overlay" @click="handleHideFullPhoto" />
+    <div
+      :class="classes.overlay"
+      role="button"
+      tabindex="0"
+      @keydown="handleOverlayKeyDown"
+      @click="handleHideFullPhoto"
+    />
     <img
       :src="url"
       :alt="description"
-      class="full-photo"
+      :class="classes.photo"
     >
+    <TfActionButton
+      type="button"
+      :class="classes.closeBtn"
+      @click="handleHideFullPhoto"
+    >
+      <VueInlineSvg
+        :src="xMarkIcon"
+        aria-label="Закрыть"
+        width="24"
+        height="24"
+      />
+    </TfActionButton>
   </div>
 </template>
 
-<style scoped>
-.full-photo-wrapper {
+<style module="classes">
+.wrapper {
   position: fixed;
   width: 100%;
   height: 100%;
@@ -56,7 +86,7 @@ watch(() => props.isShow, (isShowFullPhoto) => {
   justify-content: center;
 }
 
-.full-photo-overlay {
+.overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -67,12 +97,19 @@ watch(() => props.isShow, (isShowFullPhoto) => {
   cursor: pointer;
 }
 
-.full-photo {
-  position: relative;
+.photo {
   width: auto;
   height: 100%;
   object-fit: contain;
   object-position: center;
   z-index: 100;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  color: var(--c-white);
 }
 </style>

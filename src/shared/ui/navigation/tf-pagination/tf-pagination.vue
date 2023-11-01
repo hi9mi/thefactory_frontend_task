@@ -4,6 +4,7 @@ import { computed } from 'vue'
 const props = defineProps<{
   page: number
   totalPages: number
+  disabled?: boolean
 }>()
 const emit = defineEmits<{
   (e: 'nextPage', page: number): void
@@ -23,17 +24,27 @@ function nextPage() {
 </script>
 
 <template>
-  <div class="wrapper">
-    <button class="btn" :disabled="!hasPrevPage" type="button" @click="prevPage">
+  <div :class="classes.wrapper">
+    <button
+      :class="classes.btn"
+      :disabled="!hasPrevPage || disabled"
+      type="button"
+      @click="prevPage"
+    >
       Предыдущая страница
     </button>
-    <button class="btn" :disabled="!hasNextPage" type="button" @click="nextPage">
+    <button
+      :class="classes.btn"
+      :disabled="!hasNextPage || disabled"
+      type="button"
+      @click="nextPage"
+    >
       Следующая страница
     </button>
   </div>
 </template>
 
-<style scoped>
+<style module="classes">
 .wrapper {
   display: flex;
   align-items: center;
@@ -44,18 +55,19 @@ function nextPage() {
 .btn {
   background-color: transparent;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   outline: none;
-  color: #000;
+  color: var(--c-black);
   padding: 13px 11px;
   display: flex;
   align-items: center;
   cursor: pointer;
-  box-shadow: 0 0 4px 0 rgb(0 0 0 / 25%);
+  box-shadow: var(--box-shadow-sm);
 }
 
 .btn:disabled {
-  background-color: #C4C4C4;
+  background-color: var(--c-weathered-stone);
   cursor: default;
+  pointer-events: none;
 }
 </style>

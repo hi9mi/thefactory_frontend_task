@@ -1,3 +1,21 @@
+:root {
+  --c-white: #fff;
+  --c-black: #000;
+  --c-silver: #BDBDBD;
+  --c-white-smoke: #F2F2F2;
+  --c-weathered-stone: #C4C4C4;
+  --c-sunshine: #FFF200;
+  --c-sunset-orange: #FA5252;
+  --c-fruit-salad: #40C057;
+  --c-candy-apple: #FF0800;
+  --c-light-slate-grey: #868e96;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --box-shadow-sm: 0 0 4px 0 rgb(0 0 0 / 25%);
+  --box-shadow-md: 0 0 4px 2px rgb(0 0 0 / 20%);
+  --box-shadow-lg: 3px 4px 10px -2px rgb(34 60 80 / 30%);
+}
+
 *,
 *::before,
 *::after {
@@ -58,7 +76,7 @@ h6 {
   padding: 0 20px;
 }
 
-.sr-only {
+.srOnly {
   position: absolute;
   width: 1px;
   height: 1px;

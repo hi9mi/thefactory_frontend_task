@@ -10,17 +10,17 @@ const route = useRoute()
 </script>
 
 <template>
-  <header class="header">
-    <div class="container header-wrapper">
+  <header :class="classes.header">
+    <div class="container" :class="classes.headerWrapper">
       <img
         src="/img/logo.png"
         alt="logo"
       >
-      <nav class="links">
+      <nav :class="classes.links">
         <RouterLink
           v-if="route.path !== routes.gallery.path"
           :to="routes.gallery.path"
-          class="link"
+          :class="classes.link"
         >
           <VueInlineSvg
             :src="searchIcon"
@@ -29,11 +29,11 @@ const route = useRoute()
             height="23"
             aria-label="Поиск"
           />
-          <span class="link-text">Поиск</span>
+          <span :class="classes.linkText">Поиск</span>
         </RouterLink>
         <RouterLink
           :to="routes.favorites.path"
-          class="link"
+          :class="classes.link"
         >
           <VueInlineSvg
             :src="heartIcon"
@@ -42,16 +42,16 @@ const route = useRoute()
             height="21"
             aria-label="Избранное"
           />
-          <span class="link-text">Избранное</span>
+          <span :class="classes.linkText">Избранное</span>
         </RouterLink>
       </nav>
     </div>
   </header>
 </template>
 
-<style scoped>
+<style module="classes">
 .header {
-  background-color: #000;
+  background-color: var(--c-black);
   height: 148px;
   display: flex;
   align-items: center;
@@ -64,18 +64,18 @@ const route = useRoute()
 }
 
 .link {
-  color: #fff;
+  color: var(--c-white);
   display: flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
 }
 
-.link-text {
+.linkText {
   font-size: 18px;
 }
 
-.header-wrapper {
+.headerWrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -84,7 +84,7 @@ const route = useRoute()
 }
 
 @media screen and (width <= 560px) {
-  .link-text {
+  .linkText {
     display: none;
   }
 }

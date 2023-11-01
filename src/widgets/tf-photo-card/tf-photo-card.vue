@@ -3,28 +3,28 @@ defineProps<{ photo: Photo }>()
 </script>
 
 <template>
-  <article class="photo-card">
+  <article :class="classes.photoCard">
     <img
       :src="photo.urls.regular"
       :alt="photo.alt_description"
       :srcset="`${photo.urls.small} 320w, ${photo.urls.regular} 440w, ${photo.urls.full} 1920w`"
       sizes="(max-width: 600px) 320px, 440px"
-      class="photo"
+      :class="classes.photo"
     >
-    <RouterLink :to="`/${photo.id}`" class="photo-link" />
+    <RouterLink :to="`/${photo.id}`" :class="classes.photoLink" />
   </article>
 </template>
 
-<style scoped>
-.photo-card {
+<style module="classes">
+.photoCard {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.photo-card > .photo-link {
-  color: #000;
+.photoCard > .photoLink {
+  color: var(--c-black);
   font-weight: 600;
   font-size: 16px;
   text-decoration: none;
@@ -38,7 +38,7 @@ defineProps<{ photo: Photo }>()
   object-position: center;
 }
 
-.photo-card > .photo-link::before {
+.photoCard > .photoLink::before {
   position: absolute;
   content: '';
   inset: 0;

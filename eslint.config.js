@@ -11,6 +11,7 @@ export default antfu({
     'dev-dist',
     '*.html',
     '*.md',
+    '.histoire',
   ],
 }, {
   plugins: {

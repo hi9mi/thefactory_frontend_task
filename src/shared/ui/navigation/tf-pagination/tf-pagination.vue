@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
+import { TfButton } from '@tf-app/shared/ui'
+
 const props = defineProps<{
   page: number
   totalPages: number
@@ -25,22 +27,22 @@ function nextPage() {
 
 <template>
   <div :class="classes.wrapper">
-    <button
-      :class="classes.btn"
+    <TfButton
+      bg-color="white"
       :disabled="!hasPrevPage || disabled"
       type="button"
       @click="prevPage"
     >
       Предыдущая страница
-    </button>
-    <button
-      :class="classes.btn"
+    </TfButton>
+    <TfButton
+      bg-color="white"
       :disabled="!hasNextPage || disabled"
       type="button"
       @click="nextPage"
     >
       Следующая страница
-    </button>
+    </TfButton>
   </div>
 </template>
 

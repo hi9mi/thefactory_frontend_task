@@ -5,6 +5,7 @@ import { BUTTON_BG_COLORS } from './config'
 
 const props = defineProps<{
   bgColor: 'white' | 'yellow'
+  disabled?: boolean
 }>()
 
 const style = computed(() => ({
@@ -13,7 +14,7 @@ const style = computed(() => ({
 </script>
 
 <template>
-  <button :class="classes.btn" :style="style">
+  <button :class="classes.btn" :style="style" :disabled="disabled">
     <slot />
   </button>
 </template>
@@ -48,5 +49,11 @@ const style = computed(() => ({
 
 .btn:active {
   transform: translateY(2px);
+}
+
+.btn:disabled {
+  background-color: var(--c-weathered-stone);
+  cursor: default;
+  pointer-events: none;
 }
 </style>

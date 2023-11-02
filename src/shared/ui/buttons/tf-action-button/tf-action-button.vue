@@ -31,4 +31,10 @@
 .actionBtn:active {
   transform: translateY(2px);
 }
+
+.actionBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
 </style>

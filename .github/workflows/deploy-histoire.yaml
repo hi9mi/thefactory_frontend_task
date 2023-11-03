@@ -16,6 +16,9 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+env:
+  HISTOIRE_BASE: /thefactory_frontend_task/
+
 jobs:
   deploy:
     environment:
@@ -28,8 +31,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20.9.0
-          cache: npm
+          node-version: 20
       - name: Install dependencies
         run: npm install
       - name: Build

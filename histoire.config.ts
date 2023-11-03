@@ -14,4 +14,5 @@ export default defineConfig({
     logoHref: '/',
     favicon: '/favicon.ico',
   },
+  viteIgnorePlugins: ['vite-plugin-pwa:dev-sw', 'vite-plugin-pwa:build', 'vite-plugin-pwa:info', 'vite-plugin-pwa', 'html-plugin'],
 })

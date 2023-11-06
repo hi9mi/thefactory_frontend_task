@@ -38,6 +38,10 @@ const isFavoritePhoto = computed(() => favoritePhotos.value.some(f => f.id === p
 </template>
 
 <style module="classes">
+.btn {
+  background-color: var(--c-snow);
+}
+
 .icon {
   color: var(--c-black);
 }

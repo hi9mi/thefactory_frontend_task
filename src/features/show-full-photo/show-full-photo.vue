@@ -11,16 +11,24 @@ const props = defineProps<{
   url: string
   description?: string
 }>()
+
 const emit = defineEmits<{
   (e: 'hideFullPhoto'): void
 }>()
 
+const FULL_PHOTO_CONTAINER_ID = 'full-photo'
+
 const { trapRef } = useFocusTrap()
 
+const fullPhotoContainer = document.createElement('div')
+fullPhotoContainer.id = FULL_PHOTO_CONTAINER_ID
+document.body.appendChild(fullPhotoContainer)
 onMounted(() => {
   document.addEventListener('keydown', handleHideFullPhoto)
 })
 onBeforeUnmount(() => {
+  (fullPhotoContainer && document.body.removeChild(fullPhotoContainer))
+
   document.removeEventListener('keydown', handleHideFullPhoto)
 })
 
@@ -41,36 +49,37 @@ watch(() => props.isShow, (isShowFullPhoto) => {
 </script>
 
 <template>
-  <div
-    v-if="isShow"
-    ref="trapRef"
-    :class="classes.wrapper"
-  >
+  <Teleport :to="`#${FULL_PHOTO_CONTAINER_ID}`">
     <div
-      :class="classes.overlay"
-      role="button"
-      tabindex="0"
-      @keydown="handleOverlayKeyDown"
-      @click="handleHideFullPhoto"
-    />
-    <img
-      :src="url"
-      :alt="description"
-      :class="classes.photo"
+      v-if="isShow"
+      ref="trapRef"
+      :class="classes.wrapper"
     >
-    <TfActionButton
-      type="button"
-      :class="classes.closeBtn"
-      @click="handleHideFullPhoto"
-    >
-      <VueInlineSvg
-        :src="xMarkIcon"
-        aria-label="Закрыть"
-        width="24"
-        height="24"
+      <div
+        :class="classes.overlay"
+        role="button"
+        tabindex="0"
+        @keydown="handleOverlayKeyDown"
+        @click="handleHideFullPhoto"
       />
-    </TfActionButton>
-  </div>
+      <img
+        :src="url"
+        :alt="description"
+        :class="classes.photo"
+      >
+      <TfActionButton
+        :class="classes.closeBtn"
+        @click="handleHideFullPhoto"
+      >
+        <VueInlineSvg
+          :src="xMarkIcon"
+          width="25"
+          height="25"
+          aria-label="Закрыть"
+        />
+      </TfActionButton>
+    </div>
+  </Teleport>
 </template>
 
 <style module="classes">
@@ -80,10 +89,11 @@ watch(() => props.isShow, (isShowFullPhoto) => {
   height: 100%;
   top: 0;
   left: 0;
-  padding: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 100;
+  padding: 60px;
 }
 
 .overlay {
@@ -92,24 +102,44 @@ watch(() => props.isShow, (isShowFullPhoto) => {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 10;
+  z-index: 101;
   background-color: rgb(0 0 0 / 50%);
   cursor: pointer;
 }
 
+.photoWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 102;
+  height: min-content;
+  max-height: 100%;
+  width: 100%;
+
+}
+
 .photo {
-  width: auto;
-  height: 100%;
+  position: relative;
+  z-index: 102;
+  width: min-content;
+  max-width: 1200px;
+  max-height: 100%;
   object-fit: contain;
-  object-position: center;
-  z-index: 100;
+  margin: 0 auto;
 }
 
 .closeBtn {
-  position: absolute;
+  position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 100;
+  z-index: 102;
   color: var(--c-white);
+}
+
+@media screen and (width <= 678px) {
+  .wrapper {
+    padding: 20px;
+  }
 }
 </style>

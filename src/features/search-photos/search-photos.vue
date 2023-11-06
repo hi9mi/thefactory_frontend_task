@@ -95,7 +95,7 @@ watch(searchQuery, (value) => {
   position: absolute;
   left: 0;
   top: 0;
-  z-index: -1;
+  z-index: 1;
   filter: brightness(50%);
   width: 100%;
   height: 100%;
@@ -108,12 +108,14 @@ watch(searchQuery, (value) => {
   justify-content: center;
   align-items: center;
   height: 100%;
+  position: relative;
+  z-index: 2;
 }
 
 .form {
   max-width: 860px;
   width: 100%;
-  background-color: var(--c-white);
+  background-color: var(--c-primary-bg);
   padding-left: 20px;
   padding-right: 50px;
   position: relative;
@@ -126,6 +128,8 @@ watch(searchQuery, (value) => {
   font-size: 24px;
   font-weight: 300;
   width: 100%;
+  background-color: transparent;
+  color: var(--font-color);
 }
 
 .input[type="search"]::-webkit-search-decoration,
@@ -134,7 +138,7 @@ watch(searchQuery, (value) => {
 .input[type="search"]::-webkit-search-results-decoration { display: none; }
 
 .input::placeholder {
-  color: var(--c-black);
+  color: var(--font-color);
 }
 
 .iconButton {
@@ -146,7 +150,7 @@ watch(searchQuery, (value) => {
   background-color: transparent;
   border: none;
   outline: none;
-  color: var(--c-black);
+  color: var(--font-color);
   cursor: pointer;
 }
 
@@ -154,6 +158,12 @@ watch(searchQuery, (value) => {
   .wrapper {
     height: 230px;
     border: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .wrapper {
+    border-bottom-color: var(--c-light-slate-grey);
   }
 }
 </style>

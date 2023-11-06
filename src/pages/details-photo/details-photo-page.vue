@@ -41,7 +41,7 @@ function downloadPhoto() {
         role="presentation"
       >
       <div :class="classes.backdrop" />
-      <div class="container">
+      <div class="container" :class="classes.container">
         <div :class="classes.photoHeader">
           <div :class="classes.userDetails">
             <img
@@ -63,6 +63,7 @@ function downloadPhoto() {
             <TfButton
               bg-color="yellow"
               type="button"
+              :class="classes.downloadBtn"
               @click="downloadPhoto"
             >
               <VueInlineSvg
@@ -110,6 +111,11 @@ function downloadPhoto() {
 </template>
 
 <style module="classes">
+.container {
+  position: relative;
+  z-index: 3;
+}
+
 .wrapper {
   position: relative;
   margin: 100px 0;
@@ -119,7 +125,7 @@ function downloadPhoto() {
   position: absolute;
   top: -15%;
   left: 0;
-  z-index: -2;
+  z-index: 1;
   object-position: center center;
   object-fit: cover;
   width: 100%;
@@ -132,7 +138,7 @@ function downloadPhoto() {
   position: absolute;
   top: -15%;
   left: 0;
-  z-index: -1;
+  z-index: 2;
   width: 100%;
   height: 100%;
 }
@@ -179,6 +185,10 @@ function downloadPhoto() {
   gap: 20px;
 }
 
+.downloadBtn {
+  color: var(--c-squid-ink)
+}
+
 .actionText {
   font-size: 20px;
   line-height: 0;
@@ -215,7 +225,7 @@ function downloadPhoto() {
 
   .userName {
     font-size: 18px;
-    color: var(--c-black);
+    color: var(--font-color);
   }
 
   .userNickname {

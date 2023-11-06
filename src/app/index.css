@@ -1,3 +1,5 @@
+@import url("https://unpkg.com/open-props/easings.min.css");
+
 :root {
   --c-white: #fff;
   --c-black: #000;
@@ -9,11 +11,19 @@
   --c-fruit-salad: #40C057;
   --c-candy-apple: #FF0800;
   --c-light-slate-grey: #868e96;
+  --c-eerie-black: #1a1a1a;
+  --c-snow: #f9f9f9;
+  --c-shark: #242424;
+  --c-squid-ink: #213547;
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --box-shadow-sm: 0 0 4px 0 rgb(0 0 0 / 25%);
   --box-shadow-md: 0 0 4px 2px rgb(0 0 0 / 20%);
   --box-shadow-lg: 3px 4px 10px -2px rgb(34 60 80 / 30%);
+  --font-color: var(--c-squid-ink);
+  --c-main-bg: var(--c-white);
+  --c-primary-bg: var(--c-snow);
+  --c-secondary-bg: var(--c-sunshine);
 }
 
 *,
@@ -41,6 +51,8 @@ body,
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-size-adjust: 100%;
+  background-color: var(--c-main-bg);
+  color: var(--font-color);
 }
 
 img,
@@ -86,4 +98,35 @@ h6 {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+html:is(.light) {
+  --box-shadow-sm: 0 0 4px 0 rgb(0 0 0 / 25%);
+  --box-shadow-md: 0 0 4px 2px rgb(0 0 0 / 20%);
+  --box-shadow-lg: 3px 4px 10px -2px rgb(34 60 80 / 30%);
+  --font-color: var(--c-squid-ink);
+  --c-main-bg: var(--c-white);
+  --c-primary-bg: var(--c-snow);
+  --c-secondary-bg: var(--c-sunshine);
+
+}
+
+html:is(.dark) {
+  --font-color: var(--c-white);
+  --c-main-bg: var(--c-shark);
+  --c-primary-bg: var(--c-eerie-black);
+  --box-shadow-sm: 0 0 4px 0 rgb(255 255 255 / 25%);
+  --box-shadow-md: 0 0 4px 2px rgb(255 255 255 / 20%);
+  --box-shadow-lg: 3px 4px 10px -2px rgb(255 255 255 / 30%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --font-color: var(--c-white);
+    --c-main-bg: var(--c-shark);
+    --c-primary-bg: var(--c-eerie-black);
+    --box-shadow-sm: 0 0 4px 0 rgb(255 255 255 / 25%);
+    --box-shadow-md: 0 0 4px 2px rgb(255 255 255 / 20%);
+    --box-shadow-lg: 3px 4px 10px -2px rgb(255 255 255 / 30%);
+  }
 }

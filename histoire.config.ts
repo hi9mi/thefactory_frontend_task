@@ -8,11 +8,11 @@ export default defineConfig({
   theme: {
     title: 'The factory',
     logo: {
-      light: '/img/logo.png',
-      dark: '/img/logo.png',
+      light: './public/img/logo.png',
+      dark: './public/img/logo.png',
     },
-    logoHref: '/',
-    favicon: '/favicon.ico',
+    logoHref: 'https://thefactory-frontend-task.vercel.app/',
+    favicon: './public/favicon.ico',
   },
   viteIgnorePlugins: ['vite-plugin-pwa:dev-sw', 'vite-plugin-pwa:build', 'vite-plugin-pwa:info', 'vite-plugin-pwa', 'html-plugin'],
   vite: {

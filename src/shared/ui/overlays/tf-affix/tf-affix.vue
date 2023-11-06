@@ -72,7 +72,7 @@ onBeforeUnmount(() => {
   bottom: 20px;
   right: 20px;
   z-index: 100;
-  background-color: var(--c-white);
+  background-color: var(--c-primary-bg);
   border: none;
   outline: none;
   box-shadow: var(--box-shadow-md);
@@ -82,7 +82,7 @@ onBeforeUnmount(() => {
   align-items: center;
   width: 50px;
   height: 50px;
-  color: var(--c-black);
+  color: var(--font-color);
   cursor: pointer;
 }
 </style>

@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import { routes } from '@tf-app/routing'
 import heartIcon from '@tf-app/shared/assets/icons/heart.svg'
 import searchIcon from '@tf-app/shared/assets/icons/search.svg'
+import { TfThemeSwitcher } from '@tf-app/shared/ui/buttons/tf-theme-switcher'
 
 const route = useRoute()
 </script>
@@ -15,45 +16,65 @@ const route = useRoute()
       <img
         src="/img/logo.png"
         alt="logo"
+        :class="classes.logo"
       >
-      <nav :class="classes.links">
-        <RouterLink
-          v-if="route.path !== routes.gallery.path"
-          :to="routes.gallery.path"
-          :class="classes.link"
-        >
-          <VueInlineSvg
-            :src="searchIcon"
-            fill="none"
-            width="23"
-            height="23"
-            aria-label="Поиск"
-          />
-          <span :class="classes.linkText">Поиск</span>
-        </RouterLink>
-        <RouterLink
-          :to="routes.favorites.path"
-          :class="classes.link"
-        >
-          <VueInlineSvg
-            :src="heartIcon"
-            fill="none"
-            width="23"
-            height="21"
-            aria-label="Избранное"
-          />
-          <span :class="classes.linkText">Избранное</span>
-        </RouterLink>
-      </nav>
+
+      <div :class="classes.navWrapper">
+        <nav :class="classes.links">
+          <RouterLink
+            v-if="route.path !== routes.gallery.path"
+            :to="routes.gallery.path"
+            :class="classes.link"
+          >
+            <VueInlineSvg
+              :src="searchIcon"
+              fill="none"
+              width="23"
+              height="23"
+              aria-label="Поиск"
+            />
+            <span :class="classes.linkText">Поиск</span>
+          </RouterLink>
+          <RouterLink
+            :to="routes.favorites.path"
+            :class="classes.link"
+          >
+            <VueInlineSvg
+              :src="heartIcon"
+              fill="none"
+              width="23"
+              height="21"
+              aria-label="Избранное"
+            />
+            <span :class="classes.linkText">Избранное</span>
+          </RouterLink>
+        </nav>
+        <TfThemeSwitcher />
+      </div>
     </div>
   </header>
 </template>
 
 <style module="classes">
 .header {
-  background-color: var(--c-black);
+  background-color: var(--c-eerie-black);
   height: 148px;
   display: flex;
+  align-items: center;
+}
+
+.logo {
+  max-width: 185px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.navWrapper {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
   align-items: center;
 }
 

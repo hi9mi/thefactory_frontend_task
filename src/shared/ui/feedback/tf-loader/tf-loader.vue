@@ -30,6 +30,7 @@ import loaderIcon from '@tf-app/shared/assets/icons/loader.svg'
 }
 
 .spinner {
+  color: var(--font-color);
   animation: spin 1s linear infinite;
 }
 

@@ -1,31 +1,22 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-
-import { BUTTON_BG_COLORS } from './config'
-
-const props = defineProps<{
+defineProps<{
   bgColor: 'white' | 'yellow'
   disabled?: boolean
 }>()
-
-const style = computed(() => ({
-  '--background-color': BUTTON_BG_COLORS[props.bgColor],
-}))
 </script>
 
 <template>
-  <button :class="classes.btn" :style="style" :disabled="disabled">
+  <button :class="[classes.btn, classes[bgColor]]" :disabled="disabled">
     <slot />
   </button>
 </template>
 
 <style module='classes'>
 .btn {
-  background-color: var(--background-color);
   border: none;
   border-radius: var(--border-radius-md);
   outline: none;
-  color: var(--c-black);
+  color: var(--font-color);
   padding: 13px 11px;
   display: flex;
   align-items: center;
@@ -34,8 +25,17 @@ const style = computed(() => ({
   box-shadow: var(--box-shadow-sm);
 }
 
+.yellow {
+  background-color: var(--c-secondary-bg);
+  color: var(--c-squid-ink);
+}
+
+.white {
+  background-color: var(--c-primary-bg);
+}
+
 .btn:hover {
-  filter: brightness(0.8);
+  filter: brightness(0.95);
 }
 
 .btn:focus {
@@ -43,7 +43,7 @@ const style = computed(() => ({
 }
 
 .btn:focus-visible {
-  outline: 3px dashed var(--background-color);
+  outline: 3px dashed var(--font-color);
   outline-offset: 2px;
 }
 
@@ -55,5 +55,16 @@ const style = computed(() => ({
   background-color: var(--c-weathered-stone);
   cursor: default;
   pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn:hover {
+    filter: brightness(0.99);
+  }
+
+  .btn:disabled {
+    background-color: var(--c-light-slate-grey);
+  }
+
 }
 </style>

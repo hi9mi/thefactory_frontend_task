@@ -17,6 +17,7 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  color: var(--font-color);
 }
 
 .actionBtn:focus {

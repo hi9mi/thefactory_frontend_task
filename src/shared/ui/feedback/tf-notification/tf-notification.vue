@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, inject, onBeforeUnmount, onMounted } from 'vue'
+import { inject, onBeforeUnmount, onMounted } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
 
 import xMarkIcon from '@tf-app/shared/assets/icons/x-mark.svg'
 
-import { NOTIFICATION_COLORS, NOTIFICATIONS_CONTEXT_SYMBOL } from './config'
+import { NOTIFICATIONS_CONTEXT_SYMBOL } from './config'
 import type { NotificationOptions } from './libs'
 import { emitter } from './libs'
 
@@ -15,10 +15,6 @@ const emit = defineEmits<{
   (e: 'click', notification: NotificationOptions): void
 }>()
 const context = inject(NOTIFICATIONS_CONTEXT_SYMBOL)
-
-const styleVariables = computed(() => ({
-  '--notification-color': NOTIFICATION_COLORS[props.notification.type],
-}))
 
 let autoHideTimeoutId: ReturnType<typeof setTimeout>
 function hideAfterTimeout() {
@@ -48,8 +44,7 @@ onBeforeUnmount(() => {
 <template>
   <li
     :key="notification.id"
-    :class="classes.notification"
-    :style="styleVariables"
+    :class="[classes.notification, classes[notification.type]]"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
     @click="emit('click', notification)"
@@ -81,7 +76,7 @@ onBeforeUnmount(() => {
 .notification {
   position: relative;
   padding: 10px 22px;
-  background-color: var(--c-white);
+  background-color: var(--c-primary-bg);
   box-shadow: var(--box-shadow-lg);
   border-radius: var(--border-radius-sm);
   min-width: 220px;
@@ -92,7 +87,6 @@ onBeforeUnmount(() => {
 }
 
 .notification::before {
-  background-color: var(--notification-color);
   left: 6px;
   top: 50%;
   transform: translateY(-50%);
@@ -104,10 +98,18 @@ onBeforeUnmount(() => {
   border-radius: var(--border-radius-sm);
 }
 
+.success::before {
+  background-color: var(--c-fruit-salad);
+}
+
+.error::before {
+  background-color: var(--c-sunset-orange);
+}
+
 .title {
   font-size: 14px;
   font-weight: 500;
-  color: var(--c-black);
+  color: var(--font-color);
   margin-bottom: 3px;
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -134,5 +136,6 @@ onBeforeUnmount(() => {
   font-size: 14px;
   font-weight: 400;
   cursor: pointer;
+  color: var(--font-color);
 }
 </style>

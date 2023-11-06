@@ -6,9 +6,4 @@ export interface NotificationsContext {
   shouldNotHideOnHover?: boolean
 }
 
-export const NOTIFICATION_COLORS = {
-  error: '#fa5252',
-  success: '#40c057',
-} as const
-
 export const NOTIFICATIONS_CONTEXT_SYMBOL = Symbol('notifications-context') as InjectionKey<NotificationsContext>

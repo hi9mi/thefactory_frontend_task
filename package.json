@@ -17,6 +17,7 @@
     "story:preview": "histoire preview"
   },
   "dependencies": {
+    "@vueuse/core": "^10.5.0",
     "focus-trap": "^7.5.4",
     "mitt": "^3.0.1",
     "pinia": "^2.1.6",

@@ -119,6 +119,7 @@ watch(searchQuery, (value) => {
   padding-left: 20px;
   padding-right: 50px;
   position: relative;
+  border-radius: var(--border-radius-sm);
 }
 
 .input {
@@ -161,9 +162,7 @@ watch(searchQuery, (value) => {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .wrapper {
-    border-bottom-color: var(--c-light-slate-grey);
-  }
+:global(html:is(.dark)) .wrapper {
+  border-bottom-color: var(--c-light-slate-grey);
 }
 </style>

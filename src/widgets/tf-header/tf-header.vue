@@ -61,6 +61,8 @@ const route = useRoute()
   height: 148px;
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: 100;
 }
 
 .logo {

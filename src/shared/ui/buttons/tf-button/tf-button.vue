@@ -57,14 +57,11 @@ defineProps<{
   pointer-events: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  .btn:hover {
-    filter: brightness(0.99);
-  }
+:global(html:is(.dark)) .btn:hover {
+  filter: brightness(0.99);
+}
 
-  .btn:disabled {
-    background-color: var(--c-light-slate-grey);
-  }
-
+:global(html:is(.dark)) .btn:disabled {
+  background-color: var(--c-light-slate-grey);
 }
 </style>

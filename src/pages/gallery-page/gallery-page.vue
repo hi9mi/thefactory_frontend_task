@@ -92,7 +92,7 @@ watch(() => route.query.p, () => {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: auto;
-  grid-gap: 20px;
+  grid-gap: 40px;
   margin-top: 100px;
   margin-bottom: 40px;
 }

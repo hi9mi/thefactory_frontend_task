@@ -20,14 +20,14 @@ const toggleDark = useToggle(isDarkTheme)
     title="Toggles light & dark theme"
     aria-live="polite"
     type="button"
-    class="themeSwitcherButton"
+    :class="classes.themeSwitcherButton"
     @click="toggleDark()"
   >
-    <VueInlineSvg :src="sunAndMoonIcon" class="sunAndMoon" />
+    <VueInlineSvg :src="sunAndMoonIcon" :class="classes.sunAndMoon" />
   </button>
 </template>
 
-<style>
+<style module="classes">
 .themeSwitcherButton {
   --size: 2rem;
   --icon-fill: #ffce6a;
@@ -61,44 +61,44 @@ const toggleDark = useToggle(isDarkTheme)
   stroke-linecap: round;
 }
 
-.sunAndMoon > :is(.moon, .sun, .sunBeams) {
+.sunAndMoon > :is(:global(.moon), :global(.sun), :global(.sunBeams)) {
   transform-origin: center center;
 }
 
-.sunAndMoon > :is(.moon, .sun) {
+.sunAndMoon > :is(:global(.moon), :global(.sun)) {
   fill: var(--icon-fill);
 }
 
-.sunAndMoon > .sunBeams {
+.sunAndMoon > :global(.sunBeams) {
   stroke: var(--icon-fill);
   stroke-width: 2px;
 }
 
-.sunAndMoon .sunBeams {
+.sunAndMoon :global(.sunBeams) {
   transition:
     transform 0.5s var(--ease-elastic-4),
     opacity 0.5s var(--ease-3) !important;
 }
 
-html:is(.dark) .sunAndMoon > .sunBeams {
+:global(html:is(.dark)) .sunAndMoon > :global(.sunBeams) {
   transform: rotateZ(-25deg);
   transition-duration: 0.15s;
   opacity: 0;
 }
 
-.themeSwitcherButton:is(:hover, :focus-visible) .sunAndMoon > :is(.moon, .sun) {
+.themeSwitcherButton:is(:hover, :focus-visible) .sunAndMoon > :is(:global(.moon), :global(.sun)) {
   fill: var(--icon-fill-hover);
 }
 
-.themeSwitcherButton:is(:hover, :focus-visible) .sunAndMoon > .sunBeams {
+.themeSwitcherButton:is(:hover, :focus-visible) .sunAndMoon > :global(.sunBeams) {
   stroke: var(--icon-fill-hover);
 }
 
-.sunAndMoon > .sun {
+.sunAndMoon > :global(.sun) {
   transition: transform 0.5s var(--ease-elastic-3) !important;
 }
 
-.sunAndMoon .moon > circle {
+.sunAndMoon :global(.moon) > circle {
   transition: transform 0.25s var(--ease-out-5) !important;
 
   @supports (cx: 1) {
@@ -106,18 +106,18 @@ html:is(.dark) .sunAndMoon > .sunBeams {
   }
 }
 
-html:is(.dark) .themeSwitcherButton {
+:global(html:is(.dark)) .themeSwitcherButton {
   --icon-fill: #e29800;
   --icon-fill-hover: #c28200;
 }
 
-html:is(.dark) .sunAndMoon > .sun {
+:global(html:is(.dark)) .sunAndMoon > :global(.sun) {
   transform: scale(1.75);
   transition-timing-function: var(--ease-3);
   transition-duration: 0.25s;
 }
 
-html:is(.dark) .sunAndMoon > .moon > circle {
+:global(html:is(.dark)) .sunAndMoon > :global(.moon) > circle {
   transform: translateX(-7px);
 
   @supports (cx: 1) {
@@ -126,7 +126,7 @@ html:is(.dark) .sunAndMoon > .moon > circle {
   }
 }
 
-html:is(.dark) .sunAndMoon .moon > circle {
+:global(html:is(.dark)) .sunAndMoon :global(.moon) > circle {
   transition-delay: 0.25s;
   transition-duration: 0.5s;
 }

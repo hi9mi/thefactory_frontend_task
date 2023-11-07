@@ -51,7 +51,7 @@ const { favoritePhotos } = storeToRefs(favoritePhotosStore)
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: auto;
-  grid-gap: 20px;
+  grid-gap: 40px;
   margin: 100px 0;
 }
 

@@ -44,7 +44,7 @@ function handleOverlayKeyDown(event: KeyboardEvent) {
 }
 
 watch(() => props.isShow, (isShowFullPhoto) => {
-  isShowFullPhoto ? (document.body.style.overflow = 'hidden') : (document.body.style.overflow = 'initial')
+  document.body.classList.toggle('hidden', isShowFullPhoto)
 })
 </script>
 

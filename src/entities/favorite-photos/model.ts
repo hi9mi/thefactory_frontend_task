@@ -1,13 +1,12 @@
-import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-import { getItemFromLS, setItemToLS } from '@tf-app/shared/libs'
+import { usePersistLS } from '@tf-app/shared/libs'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
 const LS_KEY = 'favorites'
 
 export const useFavoritePhotosStore = defineStore('favoritePhotos', () => {
-  const favoritePhotos = ref(getItemFromLS<Photo[]>(LS_KEY, []))
+  const favoritePhotos = usePersistLS<Photo[]>([], LS_KEY, true)
 
   function toggleFavoritePhoto(photo: Photo) {
     const favPhotoIndex = favoritePhotos.value.findIndex(favPhoto => favPhoto.id === photo.id)
@@ -19,8 +18,6 @@ export const useFavoritePhotosStore = defineStore('favoritePhotos', () => {
       favoritePhotos.value.push(photo)
       notify({ title: 'Успех!', message: 'Фото добавлено в избранное', type: 'success' })
     }
-
-    setItemToLS(LS_KEY, favoritePhotos.value)
   }
 
   return { favoritePhotos, toggleFavoritePhoto }

@@ -4,11 +4,11 @@ import VueInlineSvg from 'vue-inline-svg'
 import { storeToRefs } from 'pinia'
 
 import { useDetailsPhotoStore } from '@tf-app/entities/details-photo'
+import { DownloadPhoto } from '@tf-app/features/download-photo'
 import { ShowFullPhoto } from '@tf-app/features/show-full-photo'
 import { ToggleFavoritePhoto } from '@tf-app/features/toggle-favorite-photo'
-import downloadIcon from '@tf-app/shared/assets/icons/download.svg'
 import maximazeIcon from '@tf-app/shared/assets/icons/maximaze.svg'
-import { TfActionButton, TfButton, TfLoader } from '@tf-app/shared/ui'
+import { TfActionButton, TfLoader } from '@tf-app/shared/ui'
 
 const detailsPhotoStore = useDetailsPhotoStore()
 const { detailsPhoto, isLoadingDetailsPhoto } = storeToRefs(detailsPhotoStore)
@@ -21,11 +21,6 @@ function handleShowFullPhoto() {
 
 function handleHideFullPhoto() {
   isShowFullPhoto.value = false
-}
-
-function downloadPhoto() {
-  if (detailsPhoto.value)
-    globalThis.open(detailsPhoto.value.links.download, '_blank')
 }
 </script>
 
@@ -60,20 +55,11 @@ function downloadPhoto() {
           </div>
           <div :class="classes.photoActions">
             <ToggleFavoritePhoto :photo="detailsPhoto" />
-            <TfButton
-              bg-color="yellow"
-              type="button"
-              :class="classes.downloadBtn"
-              @click="downloadPhoto"
-            >
-              <VueInlineSvg
-                :src="downloadIcon"
-                width="23"
-                height="21"
-                aria-label="Скачать фото"
-              />
-              <span :class="classes.actionText">Скачать</span>
-            </TfButton>
+            <DownloadPhoto
+              :src="detailsPhoto.urls.full"
+              :with-text="true"
+              :name="detailsPhoto.id"
+            />
           </div>
         </div>
         <div :class="classes.photoWrapper">
@@ -185,15 +171,6 @@ function downloadPhoto() {
   gap: 20px;
 }
 
-.downloadBtn {
-  color: var(--c-squid-ink)
-}
-
-.actionText {
-  font-size: 20px;
-  line-height: 0;
-}
-
 .photoWrapper {
   position: relative;
   width: 100%;
@@ -231,10 +208,6 @@ function downloadPhoto() {
   .userNickname {
     font-size: 14px;
     color: var(--c-silver);
-  }
-
-  .actionText {
-    display: none;
   }
 
   .photoWrapper {

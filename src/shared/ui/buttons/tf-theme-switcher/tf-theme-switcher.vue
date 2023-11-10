@@ -29,7 +29,7 @@ const toggleDark = useToggle(isDarkTheme)
 
 <style module="classes">
 .themeSwitcherButton {
-  --size: 2rem;
+  --size: 23px;
   --icon-fill: #ffce6a;
   --icon-fill-hover: #ffd47c;
 
@@ -47,7 +47,7 @@ const toggleDark = useToggle(isDarkTheme)
   outline: transparent solid 2px;
 
   @media (hover: none) {
-    --size: 48px;
+    --size: 23px;
   }
 }
 

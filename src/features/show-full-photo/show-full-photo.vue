@@ -107,18 +107,6 @@ watch(() => props.isShow, (isShowFullPhoto) => {
   cursor: pointer;
 }
 
-.photoWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 102;
-  height: min-content;
-  max-height: 100%;
-  width: 100%;
-
-}
-
 .photo {
   position: relative;
   z-index: 102;
@@ -140,6 +128,10 @@ watch(() => props.isShow, (isShowFullPhoto) => {
 @media screen and (width <= 678px) {
   .wrapper {
     padding: 20px;
+  }
+
+  .photo {
+    width: 100%;
   }
 }
 </style>

@@ -8,14 +8,12 @@ import { SearchPhotos } from '@tf-app/features/search-photos'
 import { TfLoader } from '@tf-app/shared/ui'
 import { TfPhotoCard } from '@tf-app/widgets/tf-photo-card'
 
-const TfAffix = defineAsyncComponent(async () => {
-  const module = await import('@tf-app/shared/ui/overlays/tf-affix')
-  return module.TfAffix
-})
-const TfPagination = defineAsyncComponent(async () => {
-  const module = await import('@tf-app/shared/ui/navigation/tf-pagination')
-  return module.TfPagination
-})
+const TfAffix = defineAsyncComponent(() =>
+  import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
+)
+const TfPagination = defineAsyncComponent(() =>
+  import('@tf-app/shared/ui/navigation/tf-pagination/tf-pagination.vue'),
+)
 
 const router = useRouter()
 const route = useRoute()

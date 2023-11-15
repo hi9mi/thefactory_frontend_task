@@ -2,14 +2,15 @@ import type { IHTMLTag } from 'vite-plugin-html-config'
 
 export const APP_INFO = {
   name: 'The Factory Gallery',
-  shortDescription: 'With The Factory Photo Gallery',
+  shortDescription: 'Easily search amazing photos',
   description:
     'With The Factory Photo Gallery, you can easily search for amazing photos and add them to your favorites.',
   keywords:
     'the factory, photo gallery, photos, photo collections, the factory chrome, the factory online, the factory for mac, the factory app, the factory for windows, the factory google chrome, the factory chrome app, get the factory, the factory web, the factory android, the factory app for chrome, the factory mobile app, the factory web app',
   app: {
-    background: '#ffffff',
+    background: '#242424',
     lightThemeColor: '#ffffff',
+    darkThemeColor: '#242424',
   },
 } as const
 
@@ -103,7 +104,7 @@ export const META_TAGS: IHTMLTag[] = [
   },
   {
     name: 'supported-color-schemes',
-    content: 'light',
+    content: 'light dark',
   },
   {
     name: 'mask-icon',

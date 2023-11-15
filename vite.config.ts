@@ -21,6 +21,7 @@ export default defineConfig(({ mode }) => {
         metas: META_TAGS,
       }),
       VitePWA({
+        useCredentials: true,
         mode: pwaMode,
         base: '/',
         manifest: {
@@ -56,42 +57,10 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
-        registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'img/logo.png', 'img/bg.jpg', 'img/bg-mobile.jpg'],
+        registerType: 'prompt',
         workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
           cleanupOutdatedCaches: true,
           maximumFileSizeToCacheInBytes: 4194304,
-          runtimeCaching: [
-            {
-              urlPattern: /^https:\/\/images\.unsplash\.com\/.*/i,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'api-photos-cache',
-                cacheableResponse: {
-                  statuses: [200],
-                },
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 1800,
-                },
-              },
-            },
-            {
-              urlPattern: /^https:\/\/api\.unsplash\.com\/.*/i,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'api-cache',
-                cacheableResponse: {
-                  statuses: [200],
-                },
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 3600,
-                },
-              },
-            },
-          ],
           navigateFallbackDenylist: [
             /robots.txt/,
           ],
@@ -114,8 +83,9 @@ export default defineConfig(({ mode }) => {
       target: 'es2021',
       minify: true,
       assetsDir: 'app',
-
+      emptyOutDir: true,
       rollupOptions: {
+        maxParallelFileOps: 2,
         output: {
           assetFileNames: 'assets/[name].[hash].[ext]',
 

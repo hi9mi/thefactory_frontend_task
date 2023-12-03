@@ -26,7 +26,8 @@ function hideAfterTimeout() {
 }
 
 function handleMouseEnter() {
-  clearTimeout(autoHideTimeoutId)
+  if (context?.shouldNotHideOnHover)
+    clearTimeout(autoHideTimeoutId)
 }
 
 function handleMouseLeave() {

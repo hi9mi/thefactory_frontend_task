@@ -1,11 +1,11 @@
+import './index.css'
+
 import { createApp as createVueApp } from 'vue'
 
 import { routesMap } from '@tf-app/pages'
 
 import { initWith } from './init-with'
 import TfApp from './tf-app.vue'
-
-import './index.css'
 
 interface Params {
   baseUrl: string

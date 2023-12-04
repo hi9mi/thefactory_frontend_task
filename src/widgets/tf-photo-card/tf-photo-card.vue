@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { DownloadPhoto } from '@tf-app/features/download-photo'
 import { ToggleFavoritePhoto } from '@tf-app/features/toggle-favorite-photo'
+import TfLazyImage from '@tf-app/shared/ui/data-display/tf-lazy-image.vue'
 
 defineProps<{ photo: Photo }>()
 </script>
 
 <template>
   <article :class="classes.photoCard">
-    <img
-      :src="photo.urls.regular"
+    <TfLazyImage
+      :original-src="`${photo.urls.raw}&w=640&h=640&dpr=2&q=80`"
       :alt="photo.alt_description"
-      :srcset="`${photo.urls.small} 320w, ${photo.urls.regular} 440w, ${photo.urls.full} 1920w`"
-      sizes="(max-width: 600px) 320px, 440px"
+      :placeholder-src="photo.urls.thumb"
+      :src-set="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
+      sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
       :class="classes.photo"
-    >
+    />
     <RouterLink :to="`/${photo.id}`" :class="classes.photoLink" :title="photo.alt_description" />
     <div :class="classes.overlay" />
     <div :class="classes.actions">
@@ -69,8 +71,6 @@ defineProps<{ photo: Photo }>()
 .photo {
   height: 440px;
   width: 100%;
-  object-fit: cover;
-  object-position: center;
   border-radius: var(--border-radius-sm);
 }
 

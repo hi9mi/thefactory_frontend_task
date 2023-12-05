@@ -81,6 +81,16 @@ defineProps<{ photo: Photo }>()
   z-index: 3;
 }
 
+@media (hover: none) {
+  .photoLink:hover + .overlay, .photoCard:has(.actions:hover) > .overlay  {
+    display: none;
+  }
+
+  .actions:hover, .photoLink:hover + .overlay + .actions   {
+    display: none;
+  }
+}
+
 @media screen and (width <= 376px) {
   .photo {
     height: 320px;

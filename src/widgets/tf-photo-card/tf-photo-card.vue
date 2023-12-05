@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { DownloadPhoto } from '@tf-app/features/download-photo'
 import { ToggleFavoritePhoto } from '@tf-app/features/toggle-favorite-photo'
-import TfLazyImage from '@tf-app/shared/ui/data-display/tf-lazy-image.vue'
+import { TfLazyImage } from '@tf-app/shared/ui'
 
 defineProps<{ photo: Photo }>()
 </script>
@@ -12,7 +12,7 @@ defineProps<{ photo: Photo }>()
       :original-src="`${photo.urls.raw}&w=640&h=640&dpr=2&q=80`"
       :alt="photo.alt_description"
       :placeholder-src="photo.urls.thumb"
-      :src-set="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
+      :srcset="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
       sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
       :class="classes.photo"
     />

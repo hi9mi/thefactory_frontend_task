@@ -3,6 +3,8 @@ import { defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
+import { usePagination } from '@tf-app/shared/libs'
+import { TfPagination } from '@tf-app/shared/ui'
 import { TfPhotoCard } from '@tf-app/widgets/tf-photo-card'
 
 const TfAffix = defineAsyncComponent(() =>
@@ -11,6 +13,7 @@ const TfAffix = defineAsyncComponent(() =>
 
 const favoritePhotosStore = useFavoritePhotosStore()
 const { favoritePhotos } = storeToRefs(favoritePhotosStore)
+const { data: paginatedFavoritePhotos, currentPage, onNextPage, onPreviousPage, totalPages } = usePagination(favoritePhotos)
 </script>
 
 <template>
@@ -18,22 +21,29 @@ const { favoritePhotos } = storeToRefs(favoritePhotosStore)
     <h1 :class="classes.title">
       Избранное
     </h1>
-    <div
-      v-if="favoritePhotos.length > 0"
+    <section
+      v-if="paginatedFavoritePhotos.length > 0"
       :class="classes.gallery"
     >
       <TfPhotoCard
-        v-for="favPhoto of favoritePhotos"
+        v-for="favPhoto of paginatedFavoritePhotos"
         :key="favPhoto.id"
         :photo="favPhoto"
       />
-    </div>
+    </section>
     <p
       v-else
       :class="classes.favoritesEmpty"
     >
       В избранном пусто...
     </p>
+    <TfPagination
+      v-if="totalPages > 0"
+      :total-pages="totalPages"
+      :page="currentPage"
+      @next-page="onNextPage"
+      @prev-page="onPreviousPage"
+    />
     <TfAffix />
   </div>
 </template>

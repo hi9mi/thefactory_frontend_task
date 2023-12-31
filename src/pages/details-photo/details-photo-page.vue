@@ -29,9 +29,9 @@ function handleHideFullPhoto() {
     <template v-if="!isLoadingDetailsPhoto && detailsPhoto">
       <img
         :class="classes.photoBg"
-        :src="detailsPhoto?.urls.full"
-        :srcset="`${detailsPhoto?.urls.small} 560w, ${detailsPhoto?.urls.regular} 1100w, ${detailsPhoto?.urls.full} 1920w`"
-        sizes="(max-width: 600px) 560px, 1100px"
+        :src="`${detailsPhoto.urls.raw}&w=640&h=640&dpr=2&q=80`"
+        :srcset="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${detailsPhoto.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${detailsPhoto.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
+        sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
         alt=""
         role="presentation"
       >
@@ -41,15 +41,15 @@ function handleHideFullPhoto() {
           <div :class="classes.userDetails">
             <img
               :class="classes.userProfileImg"
-              :src="detailsPhoto?.user.profile_image.medium"
-              :alt="detailsPhoto?.user.name"
+              :src="detailsPhoto.user.profile_image.medium"
+              :alt="detailsPhoto.user.name"
             >
             <div :class="classes.userBio">
               <p :class="classes.userName">
-                {{ detailsPhoto?.user.name }}
+                {{ detailsPhoto.user.name }}
               </p>
               <p :class="classes.userNickname">
-                @{{ detailsPhoto?.user.username }}
+                @{{ detailsPhoto.user.username }}
               </p>
             </div>
           </div>
@@ -64,10 +64,10 @@ function handleHideFullPhoto() {
         </div>
         <div :class="classes.photoWrapper">
           <img
-            :src="detailsPhoto?.urls.full"
-            :alt="detailsPhoto?.alt_description"
-            :srcset="`${detailsPhoto?.urls.small} 560w, ${detailsPhoto?.urls.regular} 1100w, ${detailsPhoto?.urls.full} 1920w`"
-            sizes="(max-width: 600px) 560px, 1100px"
+            :src="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80`"
+            :alt="detailsPhoto.alt_description"
+            :srcset="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${detailsPhoto.urls.raw}&w=740&h=740&dpr=1&q=80 740w`"
+            sizes="(max-width: 560px) 320px, 740px"
             :class="classes.photo"
           >
           <TfActionButton
@@ -90,7 +90,7 @@ function handleHideFullPhoto() {
   <ShowFullPhoto
     v-if="detailsPhoto"
     :is-show="isShowFullPhoto"
-    :url="detailsPhoto.urls.full"
+    :photo="detailsPhoto"
     :description="detailsPhoto.alt_description"
     @hide-full-photo="handleHideFullPhoto"
   />

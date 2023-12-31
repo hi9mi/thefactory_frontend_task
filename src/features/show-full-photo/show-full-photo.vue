@@ -8,7 +8,7 @@ import { TfActionButton } from '@tf-app/shared/ui'
 
 const props = defineProps<{
   isShow: boolean
-  url: string
+  photo: Photo
   description?: string
 }>()
 
@@ -63,7 +63,9 @@ watch(() => props.isShow, (isShowFullPhoto) => {
         @click="handleHideFullPhoto"
       />
       <img
-        :src="url"
+        :src="`${photo.urls.raw}&w=640&h=640&dpr=2&q=80`"
+        :srcset="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
+        sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
         :alt="description"
         :class="classes.photo"
       >

@@ -42,3 +42,8 @@ npm run lint:fix
 ```bash
 npm run build
 ```
+
+
+## TODO
+- Add tests
+- When the page reloads, the display of the full photo is not closed

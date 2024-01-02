@@ -40,14 +40,6 @@ watch(searchQuery, (value) => {
 
 <template>
   <div :class="classes.wrapper">
-    <img
-      src="/img/bg.jpg"
-      sizes="(max-width: 480px) 384w, 1920w"
-      srcset="/img/bg-mobile.jpg 384w, /img/bg.jpg 1920w"
-      alt=""
-      role="presentation"
-      :class="classes.bg"
-    >
     <div class="container" :class="classes.searchContainer">
       <form
         :class="classes.form"
@@ -87,8 +79,11 @@ watch(searchQuery, (value) => {
 <style module="classes">
 .wrapper {
   height: 250px;
-  position: relative;
   border-bottom: 16px solid var(--c-weathered-stone);
+  background-image: url('/img/bg-mobile.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .bg {
@@ -155,7 +150,7 @@ watch(searchQuery, (value) => {
   cursor: pointer;
 }
 
-@media screen and (width <= 376px) {
+@media screen and (width <= 796px) {
   .wrapper {
     height: 230px;
     border: none;
@@ -164,5 +159,11 @@ watch(searchQuery, (value) => {
 
 :global(html:is(.dark)) .wrapper {
   border-bottom-color: var(--c-light-slate-grey);
+}
+
+@media screen and (width >= 796px) {
+  .wrapper {
+    background-image: url('/img/bg.jpg');
+  }
 }
 </style>

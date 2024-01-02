@@ -64,10 +64,10 @@ function handleHideFullPhoto() {
         </div>
         <div :class="classes.photoWrapper">
           <img
-            :src="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80`"
+            :src="`${detailsPhoto.urls.raw}&w=740&h=740&dpr=1&q=80 740w`"
             :alt="detailsPhoto.alt_description"
-            :srcset="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${detailsPhoto.urls.raw}&w=740&h=740&dpr=1&q=80 740w`"
-            sizes="(max-width: 560px) 320px, 740px"
+            :srcset="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${detailsPhoto.urls.raw}&w=740&h=740&dpr=1&q=80 740w, ${detailsPhoto.urls.raw}&w=1440&h=1440&dpr=1&q=80 1440w`"
+            sizes="(max-width: 560px) 320px, (max-width: 960px) 740px, 1440px"
             :class="classes.photo"
           >
           <TfActionButton

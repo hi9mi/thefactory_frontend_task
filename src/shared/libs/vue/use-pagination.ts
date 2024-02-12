@@ -1,8 +1,15 @@
 import type { MaybeRef } from 'vue'
 import { computed, ref, toRef } from 'vue'
 
-export function usePagination<T>(data: MaybeRef<T[]>, limit = 9) {
-  const currentPage = ref(1)
+interface Options {
+  limit?: number
+  currentPage?: MaybeRef<number>
+}
+
+export function usePagination<T>(data: MaybeRef<T[]>, options: Options = {}) {
+  const { limit = 9, currentPage: page = 1 } = options
+
+  const currentPage = ref(page)
   const totalPages = computed(() => Math.ceil(toRef(data).value.length / limit))
   const slicedData = computed(() => toRef(data).value.slice((currentPage.value - 1) * limit, (currentPage.value - 1) * limit + limit))
 

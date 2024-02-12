@@ -1,14 +1,19 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useRouteQuery } from '@vueuse/router'
 import { defineStore } from 'pinia'
 
 import * as api from '@tf-app/shared/api'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
 export const useGalleryStore = defineStore('gallery', () => {
+  const route = useRoute()
+
   const randomPhotos = ref<Photo[]>([])
   const isLoadingRandomPhotos = ref(false)
   const photos = ref<{ results: Photo[]; total: number; total_pages: number } | null>(null)
   const isLoadingPhotos = ref(false)
+  const currentPage = useRouteQuery('p', '1', { mode: 'push', transform: Number })
 
   async function getRandomPhotos() {
     isLoadingRandomPhotos.value = true
@@ -32,7 +37,16 @@ export const useGalleryStore = defineStore('gallery', () => {
     isLoadingPhotos.value = false
   }
 
+  function changeCurrentPage(newPage: number) {
+    currentPage.value = newPage
+  }
+
   const isLoadingGallery = computed(() => isLoadingPhotos.value || isLoadingRandomPhotos.value)
 
-  return { randomPhotos, photos, isLoadingGallery, getRandomPhotos, getPhotos }
+  watch(currentPage, (page) => {
+    const searchQuery = route.query.q as string
+    getPhotos(searchQuery, page)
+  })
+
+  return { randomPhotos, photos, isLoadingGallery, currentPage, getRandomPhotos, getPhotos, changeCurrentPage }
 })

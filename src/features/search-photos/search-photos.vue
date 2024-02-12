@@ -1,30 +1,27 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { watch } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouteQuery } from '@vueuse/router'
 import { storeToRefs } from 'pinia'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
-import { routes } from '@tf-app/routing'
 import searchIcon from '@tf-app/shared/assets/icons/search.svg'
 import { debounce } from '@tf-app/shared/libs'
 
-const router = useRouter()
-const route = useRoute()
 const galleryStore = useGalleryStore()
-const { photos } = storeToRefs(galleryStore)
-const searchQuery = ref(route.query.q?.toString() ?? '')
+const { photos, currentPage } = storeToRefs(galleryStore)
+const searchQuery = useRouteQuery<string>('q', '', { mode: 'push' })
 
 function searchPhotosByQuery(searchQuery: string) {
   galleryStore.getPhotos(searchQuery, 1)
 }
 
-const [debouncedSearchPhotosByQuery, teardown] = debounce(searchPhotosByQuery, 500)
+const [debouncedSearchPhotosByQuery, teardown] = debounce(searchPhotosByQuery, 650)
 
 function onChangeSearch(event: Event) {
   const target = event.target as HTMLInputElement
   searchQuery.value = target.value
-  router.push({ replace: true, path: routes.gallery.path, query: { q: target.value, p: 1 } })
+  currentPage.value = 1
 
   if (target.value.trim().length > 0)
     debouncedSearchPhotosByQuery(target.value)

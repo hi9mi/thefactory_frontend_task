@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { defineAsyncComponent, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
@@ -15,26 +14,8 @@ const TfPagination = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/navigation/tf-pagination/tf-pagination.vue'),
 )
 
-const router = useRouter()
-const route = useRoute()
 const galleryStore = useGalleryStore()
-const { randomPhotos, isLoadingGallery, photos } = storeToRefs(galleryStore)
-const page = ref(Number(route.query.p) || 1)
-
-function handleNextPage(newPage: number) {
-  page.value = newPage
-  router.push({ replace: true, path: route.path, query: { ...route.query, p: newPage } })
-  galleryStore.getPhotos(route.query.q as string, newPage)
-}
-function handlePrevPage(newPage: number) {
-  page.value = newPage
-  router.push({ replace: true, path: route.path, query: { ...route.query, p: newPage } })
-  galleryStore.getPhotos(route.query.q as string, newPage)
-}
-
-watch(() => route.query.p, () => {
-  page.value = Number(route.query.p)
-})
+const { randomPhotos, isLoadingGallery, photos, currentPage } = storeToRefs(galleryStore)
 </script>
 
 <template>
@@ -71,10 +52,10 @@ watch(() => route.query.p, () => {
     <TfPagination
       v-if="photos?.total"
       :total-pages="photos.total_pages"
-      :page="page"
+      :page="currentPage"
       :disabled="isLoadingGallery"
-      @next-page="handleNextPage"
-      @prev-page="handlePrevPage"
+      @next-page="galleryStore.changeCurrentPage"
+      @prev-page="galleryStore.changeCurrentPage"
     />
 
     <TfAffix />

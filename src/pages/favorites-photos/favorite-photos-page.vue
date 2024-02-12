@@ -12,8 +12,8 @@ const TfAffix = defineAsyncComponent(() =>
 )
 
 const favoritePhotosStore = useFavoritePhotosStore()
-const { favoritePhotos } = storeToRefs(favoritePhotosStore)
-const { data: paginatedFavoritePhotos, currentPage, onNextPage, onPreviousPage, totalPages } = usePagination(favoritePhotos)
+const { favoritePhotos, currentPage } = storeToRefs(favoritePhotosStore)
+const { data: paginatedFavoritePhotos, onNextPage, onPreviousPage, totalPages } = usePagination(favoritePhotos, { currentPage })
 </script>
 
 <template>

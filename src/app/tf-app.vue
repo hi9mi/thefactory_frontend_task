@@ -46,39 +46,10 @@ watch(needRefresh, () => {
 
 <template>
   <RouterView name="TfHeader" />
-  <RouterView v-slot="{ Component, route }">
-    <Transition name="page">
-      <div :key="route.path">
-        <component :is="Component" />
-      </div>
-    </Transition>
-  </RouterView>
+  <RouterView />
   <TfNotifications
     :auto-hide-in-ms="5000"
     :should-not-hide-on-hover="true"
     :has-remove-button="true"
   />
 </template>
-
-<style scoped>
-/* stylelint-disable selector-class-pattern */
-.page-leave-active {
-  transition: 0.2s ease;
-}
-
-.page-enter-active {
-  transition: 0.2s ease;
-  transition-delay: 0.2s;
-}
-
-.page-enter-from {
-  opacity: 0;
-  transform: translateX(50px);
-}
-
-.page-leave-to {
-  opacity: 0;
-  transform: translateX(-50px);
-}
-/* stylelint-enable selector-class-pattern */
-</style>

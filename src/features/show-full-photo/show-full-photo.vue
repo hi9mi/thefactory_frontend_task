@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, watch } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
+import { useRoute, useRouter } from 'vue-router'
 
+import { routes } from '@tf-app/routing'
 import xMarkIcon from '@tf-app/shared/assets/icons/x-mark.svg'
 import { useFocusTrap } from '@tf-app/shared/libs'
 import { TfActionButton } from '@tf-app/shared/ui'
 
-const props = defineProps<{
-  isShow: boolean
+defineProps<{
   photo: Photo
   description?: string
 }>()
@@ -19,39 +20,53 @@ const emit = defineEmits<{
 const FULL_PHOTO_CONTAINER_ID = 'full-photo'
 
 const { trapRef } = useFocusTrap()
+const router = useRouter()
+const route = useRoute()
 
 const fullPhotoContainer = document.createElement('div')
 fullPhotoContainer.id = FULL_PHOTO_CONTAINER_ID
 document.body.appendChild(fullPhotoContainer)
+
 onMounted(() => {
-  document.addEventListener('keydown', handleHideFullPhoto)
+  document.addEventListener('keydown', handleEscapeKey)
 })
+
 onBeforeUnmount(() => {
   (fullPhotoContainer && document.body.removeChild(fullPhotoContainer))
 
-  document.removeEventListener('keydown', handleHideFullPhoto)
+  document.removeEventListener('keydown', handleEscapeKey)
 })
 
-function handleHideFullPhoto(event: MouseEvent | KeyboardEvent) {
-  if (event instanceof KeyboardEvent)
-    event.key === 'Escape' && emit('hideFullPhoto')
-  else
-    emit('hideFullPhoto')
+function handleEscapeKey(event: KeyboardEvent) {
+  if (event.key === 'Escape')
+    hideFullPhoto()
 }
 
 function handleOverlayKeyDown(event: KeyboardEvent) {
-  event.key === ' ' && emit('hideFullPhoto')
+  if (event.key === ' ')
+    hideFullPhoto()
 }
 
-watch(() => props.isShow, (isShowFullPhoto) => {
-  document.body.classList.toggle('hidden', isShowFullPhoto)
+function hideFullPhoto() {
+  emit('hideFullPhoto')
+  router.push({
+    name: routes.photoPage.main.name,
+    params: {
+      id: route.params.id,
+    },
+  })
+}
+
+watch(() => route.name, (routeName) => {
+  document.body.classList.toggle('hidden', routeName === routes.photoPage.fullPhoto.name)
+}, {
+  immediate: true,
 })
 </script>
 
 <template>
   <Teleport :to="`#${FULL_PHOTO_CONTAINER_ID}`">
     <div
-      v-if="isShow"
       ref="trapRef"
       :class="classes.wrapper"
     >
@@ -60,7 +75,7 @@ watch(() => props.isShow, (isShowFullPhoto) => {
         role="button"
         tabindex="0"
         @keydown="handleOverlayKeyDown"
-        @click="handleHideFullPhoto"
+        @click="hideFullPhoto"
       />
       <img
         :src="`${photo.urls.raw}&w=640&h=640&dpr=2&q=80`"
@@ -71,7 +86,7 @@ watch(() => props.isShow, (isShowFullPhoto) => {
       >
       <TfActionButton
         :class="classes.closeBtn"
-        @click="handleHideFullPhoto"
+        @click="hideFullPhoto"
       >
         <VueInlineSvg
           :src="xMarkIcon"

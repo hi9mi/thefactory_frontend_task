@@ -1,26 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
+import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 
 import { useDetailsPhotoStore } from '@tf-app/entities/details-photo'
 import { DownloadPhoto } from '@tf-app/features/download-photo'
-import { ShowFullPhoto } from '@tf-app/features/show-full-photo'
 import { ToggleFavoritePhoto } from '@tf-app/features/toggle-favorite-photo'
+import { routes } from '@tf-app/routing'
 import maximazeIcon from '@tf-app/shared/assets/icons/maximaze.svg'
 import { TfActionButton, TfLoader } from '@tf-app/shared/ui'
 
 const detailsPhotoStore = useDetailsPhotoStore()
 const { detailsPhoto, isLoadingDetailsPhoto } = storeToRefs(detailsPhotoStore)
-
-const isShowFullPhoto = ref(false)
+const router = useRouter()
 
 function handleShowFullPhoto() {
-  isShowFullPhoto.value = true
-}
-
-function handleHideFullPhoto() {
-  isShowFullPhoto.value = false
+  router.push({ name: routes.photoPage.fullPhoto.name })
 }
 </script>
 
@@ -87,13 +82,14 @@ function handleHideFullPhoto() {
     </template>
     <TfLoader v-else-if="isLoadingDetailsPhoto" />
   </div>
-  <ShowFullPhoto
-    v-if="detailsPhoto"
-    :is-show="isShowFullPhoto"
-    :photo="detailsPhoto"
-    :description="detailsPhoto.alt_description"
-    @hide-full-photo="handleHideFullPhoto"
-  />
+  <RouterView v-slot="{ Component }" name="fullPhoto">
+    <component
+      :is="Component"
+      v-if="detailsPhoto"
+      :photo="detailsPhoto"
+      :description="detailsPhoto.alt_description"
+    />
+  </RouterView>
 </template>
 
 <style module="classes">

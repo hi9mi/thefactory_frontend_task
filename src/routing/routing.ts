@@ -7,14 +7,20 @@ export const routes = {
     name: 'gallery',
   },
   photoPage: {
-    path: '/:id',
-    name: 'photo-page',
+    main: {
+      path: '/:id',
+      name: 'photo-page',
+    },
+    fullPhoto: {
+      path: 'full-photo',
+      name: 'fullPhoto',
+    },
   },
   favorites: {
     path: '/favorites',
     name: 'favorites',
   },
-}
+} as const
 
 export function createAppRouter(routesMap: RouteRecordRaw[], baseUrl: string) {
   const router = createRouter({

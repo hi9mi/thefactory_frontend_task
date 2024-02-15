@@ -8,7 +8,7 @@ import { DownloadPhoto } from '@tf-app/features/download-photo'
 import { ToggleFavoritePhoto } from '@tf-app/features/toggle-favorite-photo'
 import { routes } from '@tf-app/routing'
 import maximazeIcon from '@tf-app/shared/assets/icons/maximaze.svg'
-import { TfActionButton, TfLoader } from '@tf-app/shared/ui'
+import { TfActionButton, TfLazyImage, TfLoader } from '@tf-app/shared/ui'
 
 const detailsPhotoStore = useDetailsPhotoStore()
 const { detailsPhoto, isLoadingDetailsPhoto } = storeToRefs(detailsPhotoStore)
@@ -58,13 +58,13 @@ function handleShowFullPhoto() {
           </div>
         </div>
         <div :class="classes.photoWrapper">
-          <img
-            :src="`${detailsPhoto.urls.raw}&w=740&h=740&dpr=1&q=80`"
-            :alt="detailsPhoto.alt_description"
+          <TfLazyImage
+            :original-src="`${detailsPhoto.urls.raw}&w=740&h=740&dpr=1&q=80`"
+            placeholder-src="/img/placeholder.jpg"
             :srcset="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${detailsPhoto.urls.raw}&w=740&h=740&dpr=1&q=80 740w, ${detailsPhoto.urls.raw}&w=1440&h=1440&dpr=1&q=80 1440w`"
             sizes="(max-width: 560px) 320px, (max-width: 960px) 740px, 1440px"
             :class="classes.photo"
-          >
+          />
           <TfActionButton
             type="button"
             :class="classes.previewBtn"
@@ -179,6 +179,7 @@ function handleShowFullPhoto() {
   object-fit: cover;
   object-position: center;
   border-radius: var(--border-radius-md);
+  filter: blur(0);
 }
 
 .previewBtn {

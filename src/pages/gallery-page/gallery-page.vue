@@ -15,14 +15,14 @@ const TfPagination = defineAsyncComponent(() =>
 )
 
 const galleryStore = useGalleryStore()
-const { randomPhotos, isLoadingGallery, photos, currentPage } = storeToRefs(galleryStore)
+const { randomPhotos, isLoadingRandomPhotos, photos, currentPage } = storeToRefs(galleryStore)
 </script>
 
 <template>
   <SearchPhotos />
   <div class="container" :class="classes.galleryContainer">
     <section
-      v-if="!isLoadingGallery"
+      v-if="!isLoadingRandomPhotos"
       :class="classes.gallery"
     >
       <template v-if="photos">
@@ -53,7 +53,6 @@ const { randomPhotos, isLoadingGallery, photos, currentPage } = storeToRefs(gall
       v-if="photos?.total"
       :total-pages="photos.total_pages"
       :page="currentPage"
-      :disabled="isLoadingGallery"
       @next-page="galleryStore.changeCurrentPage"
       @prev-page="galleryStore.changeCurrentPage"
     />

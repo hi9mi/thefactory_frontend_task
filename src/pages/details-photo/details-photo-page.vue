@@ -24,7 +24,7 @@ function handleShowFullPhoto() {
     <template v-if="!isLoadingDetailsPhoto && detailsPhoto">
       <img
         :class="classes.photoBg"
-        :src="`${detailsPhoto.urls.raw}&w=640&h=640&dpr=2&q=80`"
+        :src="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80`"
         :srcset="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${detailsPhoto.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${detailsPhoto.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
         sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
         alt=""
@@ -60,7 +60,7 @@ function handleShowFullPhoto() {
         <div :class="classes.photoWrapper">
           <TfLazyImage
             :original-src="`${detailsPhoto.urls.raw}&w=740&h=740&dpr=1&q=80`"
-            placeholder-src="/img/placeholder.jpg"
+            :placeholder-src="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80`"
             :srcset="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${detailsPhoto.urls.raw}&w=740&h=740&dpr=1&q=80 740w, ${detailsPhoto.urls.raw}&w=1440&h=1440&dpr=1&q=80 1440w`"
             sizes="(max-width: 560px) 320px, (max-width: 960px) 740px, 1440px"
             :class="classes.photo"
@@ -179,7 +179,6 @@ function handleShowFullPhoto() {
   object-fit: cover;
   object-position: center;
   border-radius: var(--border-radius-md);
-  filter: blur(0);
 }
 
 .previewBtn {

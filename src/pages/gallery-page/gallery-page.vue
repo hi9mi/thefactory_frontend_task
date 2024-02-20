@@ -25,6 +25,7 @@ const { randomPhotos, isLoadingRandomPhotos, photos, currentPage } = storeToRefs
       v-if="!isLoadingRandomPhotos"
       :class="classes.gallery"
     >
+      <!-- TODO: rewrite conditions -->
       <template v-if="photos">
         <template v-if="photos.total > 0">
           <TfPhotoCard

@@ -4,11 +4,13 @@ import { storeToRefs } from 'pinia'
 
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
 import { usePagination } from '@tf-app/shared/libs'
-import { TfPagination } from '@tf-app/shared/ui'
 import { TfPhotoCard } from '@tf-app/widgets/tf-photo-card'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
+)
+const TfPagination = defineAsyncComponent(() =>
+  import('@tf-app/shared/ui/navigation/tf-pagination/tf-pagination.vue'),
 )
 
 const favoritePhotosStore = useFavoritePhotosStore()

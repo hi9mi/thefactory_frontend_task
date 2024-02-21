@@ -33,10 +33,16 @@ const shouldShowEmptyText = computed(() => {
 
   return photos.value.total < 1 && searchQuery.trim().length > 1
 })
+
+function onChangeSearch(value: string) {
+  currentPage.value = 1
+  if (value.trim().length < 1)
+    photos.value = null
+}
 </script>
 
 <template>
-  <SearchPhotos />
+  <SearchPhotos @change="onChangeSearch" />
   <div class="container" :class="classes.galleryContainer">
     <section
       v-if="!isLoadingRandomPhotos"

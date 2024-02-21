@@ -2,36 +2,35 @@
 import { watch } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
 import { useRouteQuery } from '@vueuse/router'
-import { storeToRefs } from 'pinia'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
 import searchIcon from '@tf-app/shared/assets/icons/search.svg'
 import { debounce } from '@tf-app/shared/libs'
 
+const emit = defineEmits<{
+  change: [value: string]
+}>()
+
 const galleryStore = useGalleryStore()
-const { photos, currentPage } = storeToRefs(galleryStore)
 const searchQuery = useRouteQuery<string>('q', '', { mode: 'push' })
 
 function searchPhotosByQuery(searchQuery: string) {
   galleryStore.getPhotos(searchQuery, 1)
 }
 
-const [debouncedSearchPhotosByQuery, teardown] = debounce(searchPhotosByQuery, 650)
+const [debouncedSearch, teardownDebouncedSearch] = debounce(searchPhotosByQuery, 300)
 
 function onChangeSearch(event: Event) {
   const target = event.target as HTMLInputElement
   searchQuery.value = target.value
-  currentPage.value = 1
-
-  if (target.value.trim().length > 0)
-    debouncedSearchPhotosByQuery(target.value)
+  emit('change', target.value)
 }
 
 watch(searchQuery, (value) => {
-  if (value.trim().length === 0) {
-    teardown()
-    photos.value = null
-  }
+  if (value.trim().length > 0)
+    debouncedSearch(value)
+  else
+    teardownDebouncedSearch()
 })
 </script>
 

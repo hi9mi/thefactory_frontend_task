@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
+import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
@@ -16,6 +17,22 @@ const TfPagination = defineAsyncComponent(() =>
 
 const galleryStore = useGalleryStore()
 const { randomPhotos, isLoadingRandomPhotos, photos, currentPage } = storeToRefs(galleryStore)
+const route = useRoute()
+
+const shouldShowPhotos = computed(() => {
+  if (!photos.value)
+    return false
+
+  return photos.value.total > 0
+})
+
+const shouldShowEmptyText = computed(() => {
+  const searchQuery = route.query.q as string
+  if (!searchQuery || !photos.value)
+    return false
+
+  return photos.value.total < 1 && searchQuery.trim().length > 1
+})
 </script>
 
 <template>
@@ -25,22 +42,19 @@ const { randomPhotos, isLoadingRandomPhotos, photos, currentPage } = storeToRefs
       v-if="!isLoadingRandomPhotos"
       :class="classes.gallery"
     >
-      <!-- TODO: rewrite conditions -->
-      <template v-if="photos">
-        <template v-if="photos.total > 0">
-          <TfPhotoCard
-            v-for="photo of photos.results"
-            :key="photo.id"
-            :photo="photo"
-          />
-        </template>
-        <p
-          v-else
-          :class="classes.galleryEmpty"
-        >
-          По вашему запросу не найдено фотографий
-        </p>
+      <template v-if="shouldShowPhotos">
+        <TfPhotoCard
+          v-for="photo of photos!.results"
+          :key="photo.id"
+          :photo="photo"
+        />
       </template>
+      <p
+        v-else-if="shouldShowEmptyText"
+        :class="classes.galleryEmpty"
+      >
+        По вашему запросу не найдено фотографий
+      </p>
       <template v-else>
         <TfPhotoCard
           v-for="photo of randomPhotos"
@@ -51,8 +65,8 @@ const { randomPhotos, isLoadingRandomPhotos, photos, currentPage } = storeToRefs
     </section>
     <TfLoader v-else />
     <TfPagination
-      v-if="photos?.total"
-      :total-pages="photos.total_pages"
+      v-if="shouldShowPhotos"
+      :total-pages="photos!.total_pages"
       :page="currentPage"
       @next-page="galleryStore.changeCurrentPage"
       @prev-page="galleryStore.changeCurrentPage"

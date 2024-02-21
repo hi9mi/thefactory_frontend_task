@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, watch } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
-import { useRoute, useRouter } from 'vue-router'
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 
 import { routes } from '@tf-app/routing'
 import xMarkIcon from '@tf-app/shared/assets/icons/x-mark.svg'
@@ -26,6 +26,7 @@ const route = useRoute()
 const fullPhotoContainer = document.createElement('div')
 fullPhotoContainer.id = FULL_PHOTO_CONTAINER_ID
 document.body.appendChild(fullPhotoContainer)
+document.body.classList.add('hidden')
 
 onMounted(() => {
   document.addEventListener('keydown', handleEscapeKey)
@@ -57,10 +58,8 @@ function hideFullPhoto() {
   })
 }
 
-watch(() => route.name, (routeName) => {
-  document.body.classList.toggle('hidden', routeName === routes.photoPage.fullPhoto.name)
-}, {
-  immediate: true,
+onBeforeRouteLeave(() => {
+  document.body.classList.remove('hidden')
 })
 </script>
 

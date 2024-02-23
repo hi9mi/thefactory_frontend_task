@@ -54,6 +54,11 @@ defineProps<{ photo: Photo }>()
   transition: opacity .1s ease-in-out,visibility .1s ease-in-out;
 }
 
+.photoLink:focus::before {
+  outline: 3px dashed var(--font-color);
+  outline-offset: 2px;
+}
+
 .actions:hover, .photoLink:hover + .overlay + .actions   {
   display: flex;
   gap: 20px;

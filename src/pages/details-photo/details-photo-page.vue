@@ -75,6 +75,7 @@ function handleShowFullPhoto() {
               aria-label="Открыть на весь экран фото"
               width="24"
               height="24"
+              fill="currentColor"
             />
           </TfActionButton>
         </div>
@@ -185,6 +186,8 @@ function handleShowFullPhoto() {
   position: absolute;
   bottom: 30px;
   right: 40px;
+  color: #fff;
+  mix-blend-mode: exclusion;
 }
 
 @media screen and (width <= 560px) {

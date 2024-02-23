@@ -33,7 +33,7 @@ export const META_TAGS: IHTMLTag[] = [
   },
   {
     name: 'image',
-    content: `/banner.png`,
+    content: '/banner.png',
   },
   // Open Graph tags
   {
@@ -46,7 +46,7 @@ export const META_TAGS: IHTMLTag[] = [
   },
   {
     name: 'og:image',
-    content: `/banner.png`,
+    content: 'banner.png',
   },
   // Twitter tags
   {
@@ -63,7 +63,7 @@ export const META_TAGS: IHTMLTag[] = [
   },
   {
     name: 'twitter:image',
-    content: `/banner.png`,
+    content: 'banner.png',
   },
   // Add to homescreen for Chrome on Android. Fallback for PWA (handled by nuxt)
   {
@@ -97,6 +97,11 @@ export const META_TAGS: IHTMLTag[] = [
     content: 'black-translucent',
   },
   // PWA
+  {
+    name: 'theme-color',
+    content: APP_INFO.app.darkThemeColor,
+    media: '(prefers-color-scheme: dark)',
+  },
   {
     name: 'theme-color',
     content: APP_INFO.app.lightThemeColor,

@@ -94,6 +94,12 @@ const route = useRoute()
   text-decoration: none;
 }
 
+.link:focus-visible {
+  outline: 3px dashed var(--c-white);
+  outline-offset: 4px;
+  border-radius: var(--border-radius-md);
+}
+
 .linkText {
   font-size: 18px;
 }

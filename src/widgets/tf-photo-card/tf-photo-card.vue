@@ -54,7 +54,7 @@ defineProps<{ photo: Photo }>()
   transition: opacity .1s ease-in-out,visibility .1s ease-in-out;
 }
 
-.photoLink:focus::before {
+.photoLink:focus-visible::before {
   outline: 3px dashed var(--font-color);
   outline-offset: 2px;
 }

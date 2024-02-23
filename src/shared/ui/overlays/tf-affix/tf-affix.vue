@@ -85,4 +85,9 @@ onBeforeUnmount(() => {
   color: var(--font-color);
   cursor: pointer;
 }
+
+.affix:focus-visible {
+  outline: 3px dashed var(--font-color);
+  outline-offset: 4px;
+}
 </style>

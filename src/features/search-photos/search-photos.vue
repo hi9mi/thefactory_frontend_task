@@ -146,6 +146,12 @@ watch(searchQuery, (value) => {
   cursor: pointer;
 }
 
+.iconButton:focus-visible {
+  outline: 3px dashed var(--font-color);
+  outline-offset: 4px;
+  border-radius: var(--border-radius-sm);
+}
+
 @media screen and (width <= 796px) {
   .wrapper {
     height: 230px;

@@ -52,7 +52,8 @@ const toggleDark = useToggle(isDarkTheme)
 }
 
 .themeSwitcherButton:focus-visible {
-  outline-color: var(--icon-fill);
+  outline: 3px dashed var(--icon-fill);
+  outline-offset: 4px;
 }
 
 .themeSwitcherButton > svg {

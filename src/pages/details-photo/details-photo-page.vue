@@ -190,6 +190,10 @@ function handleShowFullPhoto() {
   mix-blend-mode: exclusion;
 }
 
+.previewBtn:focus-visible {
+  outline: 3px dashed var(--c-white);
+}
+
 @media screen and (width <= 560px) {
   .photoBg {
     display: none;

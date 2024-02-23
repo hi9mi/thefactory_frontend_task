@@ -25,7 +25,7 @@
 }
 
 .actionBtn:focus-visible {
-  outline: 3px dashed var(--c-black);
+  outline: 3px dashed var(--font-color);
   outline-offset: 2px;
 }
 

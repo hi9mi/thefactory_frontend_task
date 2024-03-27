@@ -1,37 +1,9 @@
 <script setup lang="ts">
-import { watch } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
-import { useRouteQuery } from '@vueuse/router'
 
-import { useGalleryStore } from '@tf-app/entities/gallery'
 import searchIcon from '@tf-app/shared/assets/icons/search.svg'
-import { debounce } from '@tf-app/shared/libs'
 
-const emit = defineEmits<{
-  change: [value: string]
-}>()
-
-const galleryStore = useGalleryStore()
-const searchQuery = useRouteQuery<string>('q', '', { mode: 'push' })
-
-function searchPhotosByQuery(searchQuery: string) {
-  galleryStore.getPhotos(searchQuery, 1)
-}
-
-const [debouncedSearch, teardownDebouncedSearch] = debounce(searchPhotosByQuery, 300)
-
-function onChangeSearch(event: Event) {
-  const target = event.target as HTMLInputElement
-  searchQuery.value = target.value
-  emit('change', target.value)
-}
-
-watch(searchQuery, (value) => {
-  if (value.trim().length > 0)
-    debouncedSearch(value)
-  else
-    teardownDebouncedSearch()
-})
+const searchQuery = defineModel<string>('searchQuery')
 </script>
 
 <template>
@@ -44,15 +16,14 @@ watch(searchQuery, (value) => {
       >
         <input
           id="search-photos"
+          v-model="searchQuery"
           type="search"
           inputmode="text"
           name="search-photos"
           placeholder="Поиск"
           :class="classes.input"
           spellcheck="true"
-          :value="searchQuery"
           aria-label="Поиск фотографий"
-          @input="onChangeSearch"
         >
         <button
           :class="classes.iconButton"

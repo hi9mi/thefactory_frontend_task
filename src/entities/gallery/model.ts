@@ -1,47 +1,74 @@
-import { ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, ref, watch } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
 import { defineStore } from 'pinia'
 
+import type { Photo, Photos } from '@tf-app/shared/api'
 import * as api from '@tf-app/shared/api'
+import { debounce } from '@tf-app/shared/libs'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
 export const useGalleryStore = defineStore('gallery', () => {
-  const route = useRoute()
-
   const randomPhotos = ref<Photo[]>([])
-  const isLoadingRandomPhotos = ref(false)
-  const photos = ref<{ results: Photo[]; total: number; total_pages: number } | null>(null)
-  const currentPage = useRouteQuery('p', '1', { mode: 'push', transform: Number })
+  const isLoadingPhotos = ref(false)
+  const photos = ref<Photos | null>(null)
+  const searchQuery = useRouteQuery<string>('search', '', { mode: 'replace' })
+  const page = useRouteQuery('page', '1', { mode: 'push', transform: Number })
 
-  async function getRandomPhotos() {
-    isLoadingRandomPhotos.value = true
+  const hasPhotos = computed(() => (photos.value?.total ?? 0) > 0)
+  const hasNoResults = computed(() => !hasPhotos.value && searchQuery.value.trim().length > 1)
+
+  async function fetchRandomPhotos() {
+    isLoadingPhotos.value = true
     try {
       randomPhotos.value = await api.getRandomPhotos()
     }
     catch (error) {
       notify({ title: 'Ошибка при загрузке фотографий', message: 'Что-то пошло не так, попробуйте позже', type: 'error' })
     }
-    isLoadingRandomPhotos.value = false
+    isLoadingPhotos.value = false
   }
 
-  async function getPhotos(query: string, page: number) {
+  function changeSearchQuery(newSearchQuery: string) {
+    searchQuery.value = newSearchQuery
+    changeCurrentPage(1)
+  }
+
+  function changeCurrentPage(newPage: number) {
+    page.value = newPage
+  }
+
+  async function fetchPhotos() {
     try {
-      photos.value = await api.getSearchPhotos(query, page)
+      photos.value = await api.getSearchPhotos(searchQuery.value, page.value)
     }
     catch (error) {
       notify({ title: 'Ошибка при загрузке фотографий', message: 'Что-то пошло не так, попробуйте позже', type: 'error' })
     }
   }
 
-  function changeCurrentPage(newPage: number) {
-    currentPage.value = newPage
+  const [debouncedFetchPhotos, teardownDebouncedFetchPhotos] = debounce(fetchPhotos, 500)
+
+  watch(() => [searchQuery.value, page.value], () => {
+    if (searchQuery.value.trim().length > 0) {
+      debouncedFetchPhotos()
+    }
+    else {
+      teardownDebouncedFetchPhotos()
+      photos.value = null
+    }
+  }, { immediate: true })
+
+  return {
+    randomPhotos,
+    isLoadingPhotos,
+    photos,
+    searchQuery,
+    page,
+    hasPhotos,
+    hasNoResults,
+    fetchRandomPhotos,
+    changeSearchQuery,
+    changeCurrentPage,
+    fetchPhotos,
   }
-
-  watch(currentPage, (page) => {
-    const searchQuery = route.query.q as string
-    getPhotos(searchQuery, page)
-  })
-
-  return { randomPhotos, photos, isLoadingRandomPhotos, currentPage, getRandomPhotos, getPhotos, changeCurrentPage }
 })

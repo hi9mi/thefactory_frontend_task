@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from 'vue'
-import { useRoute } from 'vue-router'
-import { storeToRefs } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
 import { SearchPhotos } from '@tf-app/features/search-photos'
@@ -16,54 +14,34 @@ const TfPagination = defineAsyncComponent(() =>
 )
 
 const galleryStore = useGalleryStore()
-const { randomPhotos, isLoadingRandomPhotos, photos, currentPage } = storeToRefs(galleryStore)
-const route = useRoute()
 
-const shouldShowPhotos = computed(() => {
-  if (!photos.value)
-    return false
-
-  return photos.value.total > 0
-})
-
-const shouldShowEmptyText = computed(() => {
-  const searchQuery = route.query.q as string
-  if (!searchQuery || !photos.value)
-    return false
-
-  return photos.value.total < 1 && searchQuery.trim().length > 1
-})
-
-function onChangeSearch(value: string) {
-  currentPage.value = 1
-  if (value.trim().length < 1)
-    photos.value = null
-}
+if (!galleryStore.randomPhotos.length)
+  galleryStore.fetchRandomPhotos()
 </script>
 
 <template>
-  <SearchPhotos @change="onChangeSearch" />
+  <SearchPhotos :search-query="galleryStore.searchQuery" @update:search-query="galleryStore.changeSearchQuery" />
   <div class="container" :class="classes.galleryContainer">
     <section
-      v-if="!isLoadingRandomPhotos"
+      v-if="!galleryStore.isLoadingPhotos"
       :class="classes.gallery"
     >
-      <template v-if="shouldShowPhotos">
+      <template v-if="galleryStore.hasPhotos">
         <TfPhotoCard
-          v-for="photo of photos!.results"
+          v-for="photo of galleryStore.photos!.results"
           :key="photo.id"
           :photo="photo"
         />
       </template>
       <p
-        v-else-if="shouldShowEmptyText"
+        v-else-if="galleryStore.hasNoResults"
         :class="classes.galleryEmpty"
       >
         По вашему запросу не найдено фотографий
       </p>
       <template v-else>
         <TfPhotoCard
-          v-for="photo of randomPhotos"
+          v-for="photo of galleryStore.randomPhotos"
           :key="photo.id"
           :photo="photo"
         />
@@ -71,9 +49,9 @@ function onChangeSearch(value: string) {
     </section>
     <TfLoader v-else />
     <TfPagination
-      v-if="shouldShowPhotos"
-      :total-pages="photos!.total_pages"
-      :page="currentPage"
+      v-if="galleryStore.hasPhotos"
+      :total-pages="galleryStore.photos!.total_pages"
+      :page="galleryStore.page"
       @next-page="galleryStore.changeCurrentPage"
       @prev-page="galleryStore.changeCurrentPage"
     />
@@ -125,6 +103,5 @@ function onChangeSearch(value: string) {
   .galleryEmpty {
     grid-column: 1;
   }
-
 }
 </style>

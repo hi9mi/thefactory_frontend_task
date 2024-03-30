@@ -5,7 +5,7 @@ import { logEvent } from 'histoire/client'
 
 import downloadIcon from '@tf-app/shared/assets/icons/download.svg'
 
-import { TfActionButton } from './index'
+import TfActionButton from './tf-action-button.vue'
 
 const state = reactive({
   disabled: false,

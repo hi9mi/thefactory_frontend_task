@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { TfButton } from '@tf-app/shared/ui'
+import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
 
 const props = defineProps<{
   page: number

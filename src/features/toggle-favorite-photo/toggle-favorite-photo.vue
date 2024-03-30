@@ -6,10 +6,11 @@ import { storeToRefs } from 'pinia'
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
 import type { Photo } from '@tf-app/shared/api'
 import heartIcon from '@tf-app/shared/assets/icons/heart.svg'
-import { TfButton } from '@tf-app/shared/ui'
+import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
 
 const props = defineProps<{
   photo: Photo
+  // should accept only id as props instead of Photo
 }>()
 const favoritePhotosStore = useFavoritePhotosStore()
 const { favoritePhotos } = storeToRefs(favoritePhotosStore)

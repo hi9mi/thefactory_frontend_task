@@ -2,7 +2,7 @@
 import { reactive } from 'vue'
 import { logEvent } from 'histoire/client'
 
-import { TfButton } from './index'
+import TfButton from './tf-button.vue'
 
 const state = reactive<{
   disabled: boolean

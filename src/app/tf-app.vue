@@ -3,7 +3,8 @@ import { watch } from 'vue'
 import { pwaInfo } from 'virtual:pwa-info'
 import { useRegisterSW } from 'virtual:pwa-register/vue'
 
-import { notify, TfNotifications } from '@tf-app/shared/ui'
+import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
+import TfNotifications from '@tf-app/shared/ui/feedback/tf-notification/tf-notifications.vue'
 
 // eslint-disable-next-line no-console
 console.log(pwaInfo)

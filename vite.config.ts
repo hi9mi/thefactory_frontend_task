@@ -85,13 +85,13 @@ export default defineConfig(({ mode }) => {
       assetsDir: 'app',
       emptyOutDir: true,
       rollupOptions: {
-        maxParallelFileOps: 2,
         output: {
-          assetFileNames: 'assets/[name].[hash].[ext]',
-
-          manualChunks(chunkPath: string) {
-            if (chunkPath.includes('node_modules/'))
-              return 'vendors'
+          manualChunks: {
+            ethers: ['mitt', 'nprogress', 'vue-inline-svg', 'focus-trap'],
+            router: ['vue-router'],
+            pinia: ['pinia'],
+            vue: ['vue'],
+            vueuse: ['@vueuse/core', '@vueuse/router'],
           },
         },
       },

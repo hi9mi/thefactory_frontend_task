@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { logEvent } from 'histoire/client'
 
-import { notify, TfNotifications } from './index'
+import { notify } from './libs'
+import TfNotifications from './tf-notifications.vue'
 
 const notificationsContainer = document.createElement('div')
 notificationsContainer.id = 'notifications'

@@ -7,7 +7,7 @@ import { routes } from '@tf-app/routing'
 import type { Photo } from '@tf-app/shared/api'
 import xMarkIcon from '@tf-app/shared/assets/icons/x-mark.svg'
 import { useFocusTrap } from '@tf-app/shared/libs'
-import { TfActionButton } from '@tf-app/shared/ui'
+import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 
 defineProps<{
   photo: Photo

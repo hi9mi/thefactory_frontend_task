@@ -2,7 +2,7 @@
 import { reactive } from 'vue'
 import { logEvent } from 'histoire/client'
 
-import { TfPagination } from './index'
+import TfPagination from './tf-pagination.vue'
 
 const state = reactive({
   page: 1,

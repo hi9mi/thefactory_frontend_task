@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { TfThemeSwitcher } from './index'
+import TfThemeSwitcher from './tf-theme-switcher.vue'
 </script>
 
 <template>

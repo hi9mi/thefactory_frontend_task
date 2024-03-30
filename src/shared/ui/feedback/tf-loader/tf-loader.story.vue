@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { TfLoader } from './index'
+import TfLoader from './tf-loader.vue'
 </script>
 
 <template>

@@ -3,13 +3,16 @@ import { ref } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
 import { useRoute, useRouter } from 'vue-router'
 
-import { DownloadPhoto } from '@tf-app/features/download-photo'
-import { ToggleFavoritePhoto } from '@tf-app/features/toggle-favorite-photo'
+import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
+import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import { routes } from '@tf-app/routing'
 import type { Photo } from '@tf-app/shared/api'
 import * as api from '@tf-app/shared/api'
 import maximazeIcon from '@tf-app/shared/assets/icons/maximaze.svg'
-import { notify, TfActionButton, TfLazyImage, TfLoader } from '@tf-app/shared/ui'
+import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
+import TfLazyImage from '@tf-app/shared/ui/data-display/tf-lazy-image/tf-lazy-image.vue'
+import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
+import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
 const router = useRouter()
 const route = useRoute()

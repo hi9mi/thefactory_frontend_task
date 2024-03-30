@@ -2,9 +2,9 @@
 import { defineAsyncComponent } from 'vue'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
-import { SearchPhotos } from '@tf-app/features/search-photos'
-import { TfLoader } from '@tf-app/shared/ui'
-import { TfPhotoCard } from '@tf-app/widgets/tf-photo-card'
+import SearchPhotos from '@tf-app/features/search-photos/search-photos.vue'
+import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
+import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),

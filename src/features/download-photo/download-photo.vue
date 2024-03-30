@@ -2,7 +2,8 @@
 import VueInlineSvg from 'vue-inline-svg'
 
 import icon from '@tf-app/shared/assets/icons/download.svg'
-import { notify, TfButton } from '@tf-app/shared/ui'
+import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
+import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
 const props = defineProps<{
   src: string

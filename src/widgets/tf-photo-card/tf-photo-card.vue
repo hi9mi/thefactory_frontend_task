@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { DownloadPhoto } from '@tf-app/features/download-photo'
-import { ToggleFavoritePhoto } from '@tf-app/features/toggle-favorite-photo'
+import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
+import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import type { Photo } from '@tf-app/shared/api'
-import { TfLazyImage } from '@tf-app/shared/ui'
+import TfLazyImage from '@tf-app/shared/ui/data-display/tf-lazy-image/tf-lazy-image.vue'
 
 defineProps<{ photo: Photo }>()
 </script>

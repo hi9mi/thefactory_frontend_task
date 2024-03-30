@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
 import { usePagination } from '@tf-app/shared/libs'
-import { TfPhotoCard } from '@tf-app/widgets/tf-photo-card'
+import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),

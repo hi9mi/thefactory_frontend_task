@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router'
 import { routes } from '@tf-app/routing'
 import heartIcon from '@tf-app/shared/assets/icons/heart.svg'
 import searchIcon from '@tf-app/shared/assets/icons/search.svg'
-import { TfThemeSwitcher } from '@tf-app/shared/ui/buttons/tf-theme-switcher'
+import TfThemeSwitcher from '@tf-app/shared/ui/buttons/tf-theme-switcher/tf-theme-switcher.vue'
 
 const route = useRoute()
 </script>

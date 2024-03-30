@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { TfAffix } from './index'
+import TfAffix from './tf-affix.vue'
 
 const affixContainer = document.createElement('div')
 affixContainer.id = 'affix'

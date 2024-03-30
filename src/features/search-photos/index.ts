@@ -1,5 +1,5 @@
-import SearchPhotos from './search-photos.vue'
+// import SearchPhotos from './search-photos.vue'
 
-export {
-  SearchPhotos,
-}
+// export {
+//   SearchPhotos,
+// }

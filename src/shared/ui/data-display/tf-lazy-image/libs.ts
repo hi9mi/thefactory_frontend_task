@@ -1,43 +1,48 @@
 import { type ObjectDirective, ref } from 'vue'
 
+interface LazyImageOptions {
+  originalSrc: string
+  placeholderSrc: string
+  srcset?: string
+  sizes?: string
+}
+
 export function useLazyImage() {
   const loading = ref(false)
-  let observer: IntersectionObserver
 
-  function loadImage(imgElement: HTMLImageElement) {
-    imgElement.src = imgElement.dataset.placeholderSrc!
+  function load(imgElement: HTMLImageElement, { placeholderSrc, originalSrc, srcset, sizes }: LazyImageOptions) {
+    loading.value = true
+    imgElement.src = placeholderSrc
+    const tempImage = new Image()
+    tempImage.src = originalSrc
+    if (srcset)
+      tempImage.srcset = srcset
+    if (sizes)
+      tempImage.sizes = sizes
 
-    const img = new Image()
-    img.src = imgElement.dataset.originalSrc!
-    img.srcset = imgElement.dataset.srcset!
-    img.sizes = imgElement.dataset.sizes!
+    tempImage.onload = () => {
+      imgElement.src = tempImage.src
+      imgElement.srcset = tempImage.srcset
+      imgElement.sizes = tempImage.sizes
 
-    img.decode().then(() => {
-      imgElement.srcset = imgElement.dataset.srcset!
-      imgElement.sizes = imgElement.dataset.sizes!
-      imgElement.src = imgElement.dataset.originalSrc!
       loading.value = false
-    })
+    }
   }
 
-  const vLazy: ObjectDirective<HTMLImageElement, void> = {
-    mounted(el) {
-      observer = new IntersectionObserver((entries) => {
+  const vLazy: ObjectDirective<HTMLImageElement, LazyImageOptions> = {
+    mounted(element, { value }) {
+      const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (entry && entry.isIntersecting) {
-            loading.value = true
-            loadImage(el)
+          if (entry.isIntersecting) {
+            load(element, value)
             observer.disconnect()
           }
         })
       }, {
-        rootMargin: '50px 0px 0px 0px',
+        rootMargin: '100px 0px 100px 0px',
       })
 
-      observer.observe(el)
-    },
-    beforeUnmount(el) {
-      observer.unobserve(el)
+      observer.observe(element)
     },
   }
 

@@ -1,31 +1,46 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
-import { useRouter } from 'vue-router'
-import { storeToRefs } from 'pinia'
+import { useRoute, useRouter } from 'vue-router'
 
-import { useDetailsPhotoStore } from '@tf-app/entities/details-photo'
 import { DownloadPhoto } from '@tf-app/features/download-photo'
 import { ToggleFavoritePhoto } from '@tf-app/features/toggle-favorite-photo'
 import { routes } from '@tf-app/routing'
+import type { Photo } from '@tf-app/shared/api'
+import * as api from '@tf-app/shared/api'
 import maximazeIcon from '@tf-app/shared/assets/icons/maximaze.svg'
-import { TfActionButton, TfLazyImage, TfLoader } from '@tf-app/shared/ui'
+import { notify, TfActionButton, TfLazyImage, TfLoader } from '@tf-app/shared/ui'
 
-const detailsPhotoStore = useDetailsPhotoStore()
-const { detailsPhoto, isLoadingDetailsPhoto } = storeToRefs(detailsPhotoStore)
 const router = useRouter()
+const route = useRoute()
+const photo = ref<Photo | null>(null)
+const isLoadingDetailsPhoto = ref(false)
 
 function handleShowFullPhoto() {
   router.push({ name: routes.photoPage.fullPhoto.name })
 }
+
+async function getDetailsPhoto(id: string) {
+  isLoadingDetailsPhoto.value = true
+  try {
+    photo.value = await api.getDetailsPhoto(id)
+  }
+  catch (error) {
+    notify({ title: 'Ошибка при загрузке фотографии', message: 'Что-то пошло не так, попробуйте позже', type: 'error' })
+  }
+  isLoadingDetailsPhoto.value = false
+}
+
+getDetailsPhoto(route.params.id.toString())
 </script>
 
 <template>
   <div :class="classes.wrapper">
-    <template v-if="!isLoadingDetailsPhoto && detailsPhoto">
+    <template v-if="!isLoadingDetailsPhoto && photo">
       <img
         :class="classes.photoBg"
-        :src="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80`"
-        :srcset="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${detailsPhoto.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${detailsPhoto.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
+        :src="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80`"
+        :srcset="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
         sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
         alt=""
         role="presentation"
@@ -36,32 +51,32 @@ function handleShowFullPhoto() {
           <div :class="classes.userDetails">
             <img
               :class="classes.userProfileImg"
-              :src="detailsPhoto.user.profile_image.medium"
-              :alt="detailsPhoto.user.name"
+              :src="photo.user.profile_image.medium"
+              :alt="photo.user.name"
             >
             <div :class="classes.userBio">
               <p :class="classes.userName">
-                {{ detailsPhoto.user.name }}
+                {{ photo.user.name }}
               </p>
               <p :class="classes.userNickname">
-                @{{ detailsPhoto.user.username }}
+                @{{ photo.user.username }}
               </p>
             </div>
           </div>
           <div :class="classes.photoActions">
-            <ToggleFavoritePhoto :photo="detailsPhoto" />
+            <ToggleFavoritePhoto :photo="photo" />
             <DownloadPhoto
-              :src="detailsPhoto.urls.full"
+              :src="photo.urls.full"
               :with-text="true"
-              :name="detailsPhoto.id"
+              :name="photo.id"
             />
           </div>
         </div>
         <div :class="classes.photoWrapper">
           <TfLazyImage
-            :original-src="`${detailsPhoto.urls.raw}&w=740&h=740&dpr=1&q=80`"
-            :placeholder-src="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80`"
-            :srcset="`${detailsPhoto.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${detailsPhoto.urls.raw}&w=740&h=740&dpr=1&q=80 740w, ${detailsPhoto.urls.raw}&w=1440&h=1440&dpr=1&q=80 1440w`"
+            :original-src="`${photo.urls.raw}&w=740&h=740&dpr=1&q=80`"
+            :placeholder-src="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80`"
+            :srcset="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=740&h=740&dpr=1&q=80 740w, ${photo.urls.raw}&w=1440&h=1440&dpr=1&q=80 1440w`"
             sizes="(max-width: 560px) 320px, (max-width: 960px) 740px, 1440px"
             :class="classes.photo"
           />
@@ -86,9 +101,9 @@ function handleShowFullPhoto() {
   <RouterView v-slot="{ Component }" name="fullPhoto">
     <component
       :is="Component"
-      v-if="detailsPhoto"
-      :photo="detailsPhoto"
-      :description="detailsPhoto.alt_description"
+      v-if="photo"
+      :photo="photo"
+      :description="photo.alt_description"
     />
   </RouterView>
 </template>
@@ -194,7 +209,7 @@ function handleShowFullPhoto() {
   outline: 3px dashed var(--c-white);
 }
 
-@media screen and (width <= 560px) {
+@media screen and (width <=560px) {
   .photoBg {
     display: none;
   }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { DownloadPhoto } from '@tf-app/features/download-photo'
 import { ToggleFavoritePhoto } from '@tf-app/features/toggle-favorite-photo'
+import type { Photo } from '@tf-app/shared/api'
 import { TfLazyImage } from '@tf-app/shared/ui'
 
 defineProps<{ photo: Photo }>()

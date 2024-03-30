@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 export const routes = {
   gallery: {
+    // TODO: add search route
     path: '/',
     name: 'gallery',
   },

@@ -1,6 +1,7 @@
 import { useRouteQuery } from '@vueuse/router'
 import { defineStore } from 'pinia'
 
+import type { Photo } from '@tf-app/shared/api'
 import { usePersistLS } from '@tf-app/shared/libs'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
@@ -8,7 +9,7 @@ const LS_KEY = 'favorites'
 
 export const useFavoritePhotosStore = defineStore('favoritePhotos', () => {
   const favoritePhotos = usePersistLS<Photo[]>([], LS_KEY, true)
-  const currentPage = useRouteQuery('p', '1', { mode: 'push', transform: Number })
+  const currentPage = useRouteQuery('page', '1', { mode: 'push', transform: Number })
 
   function toggleFavoritePhoto(photo: Photo) {
     const favPhotoIndex = favoritePhotos.value.findIndex(favPhoto => favPhoto.id === photo.id)

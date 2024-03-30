@@ -4,6 +4,7 @@ import VueInlineSvg from 'vue-inline-svg'
 import { storeToRefs } from 'pinia'
 
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
+import type { Photo } from '@tf-app/shared/api'
 import heartIcon from '@tf-app/shared/assets/icons/heart.svg'
 import { TfButton } from '@tf-app/shared/ui'
 

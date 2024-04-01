@@ -1,9 +1,23 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
+import { useRoute } from 'vue-router'
 
 import searchIcon from '@tf-app/shared/assets/icons/search.svg'
 
-const searchQuery = defineModel<string>('searchQuery')
+const emit = defineEmits<{
+  submit: [string]
+}>()
+const route = useRoute()
+const searchTerm = ref(route.query.q as string ?? '')
+
+function onSubmit() {
+  emit('submit', searchTerm.value)
+}
+
+watch(() => route.query.q, (newValue) => {
+  searchTerm.value = newValue as string
+})
 </script>
 
 <template>
@@ -12,11 +26,11 @@ const searchQuery = defineModel<string>('searchQuery')
       <form
         :class="classes.form"
         role="search"
-        @submit.prevent
+        @submit.prevent="onSubmit"
       >
         <input
           id="search-photos"
-          v-model="searchQuery"
+          v-model="searchTerm"
           type="search"
           inputmode="text"
           name="search-photos"

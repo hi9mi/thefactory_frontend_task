@@ -1,36 +1,36 @@
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
 import { defineStore } from 'pinia'
 
 import type { Photo, Photos } from '@tf-app/shared/api'
 import * as api from '@tf-app/shared/api'
-import { debounce } from '@tf-app/shared/libs'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
 export const useGalleryStore = defineStore('gallery', () => {
   const randomPhotos = ref<Photo[]>([])
   const isLoadingPhotos = ref(false)
+  const isLoadingRandomPhotos = ref(false)
   const photos = ref<Photos | null>(null)
-  const searchQuery = useRouteQuery<string>('search', '', { mode: 'replace' })
-  const page = useRouteQuery('page', '1', { mode: 'push', transform: Number })
+  const searchTerm = useRouteQuery<string>('q', '', { mode: 'push' })
+  const page = useRouteQuery('p', '1', { mode: 'push', transform: Number })
 
+  const isSearchEmpty = computed(() => searchTerm.value.trim().length === 0)
   const hasPhotos = computed(() => (photos.value?.total ?? 0) > 0)
-  const hasNoResults = computed(() => !hasPhotos.value && searchQuery.value.trim().length > 1)
+  const hasNoResults = computed(() => !isLoadingPhotos.value && !hasPhotos.value && !isSearchEmpty.value)
 
   async function fetchRandomPhotos() {
-    isLoadingPhotos.value = true
+    isLoadingRandomPhotos.value = true
     try {
       randomPhotos.value = await api.getRandomPhotos()
     }
     catch (error) {
       notify({ title: 'Ошибка при загрузке фотографий', message: 'Что-то пошло не так, попробуйте позже', type: 'error' })
     }
-    isLoadingPhotos.value = false
+    isLoadingRandomPhotos.value = false
   }
 
-  function changeSearchQuery(newSearchQuery: string) {
-    searchQuery.value = newSearchQuery
-    changeCurrentPage(1)
+  function changeSearchTerm(newSearchTerm: string) {
+    searchTerm.value = newSearchTerm
   }
 
   function changeCurrentPage(newPage: number) {
@@ -38,36 +38,32 @@ export const useGalleryStore = defineStore('gallery', () => {
   }
 
   async function fetchPhotos() {
+    if (searchTerm.value.trim().length === 0) {
+      photos.value = null
+      return
+    }
+    isLoadingPhotos.value = true
     try {
-      photos.value = await api.getSearchPhotos(searchQuery.value, page.value)
+      photos.value = await api.getSearchPhotos(searchTerm.value, page.value)
     }
     catch (error) {
       notify({ title: 'Ошибка при загрузке фотографий', message: 'Что-то пошло не так, попробуйте позже', type: 'error' })
     }
+    isLoadingPhotos.value = false
   }
-
-  const [debouncedFetchPhotos, teardownDebouncedFetchPhotos] = debounce(fetchPhotos, 500)
-
-  watch(() => [searchQuery.value, page.value], () => {
-    if (searchQuery.value.trim().length > 0) {
-      debouncedFetchPhotos()
-    }
-    else {
-      teardownDebouncedFetchPhotos()
-      photos.value = null
-    }
-  }, { immediate: true })
 
   return {
     randomPhotos,
     isLoadingPhotos,
+    isLoadingRandomPhotos,
     photos,
-    searchQuery,
+    searchTerm,
     page,
     hasPhotos,
     hasNoResults,
+    isSearchEmpty,
     fetchRandomPhotos,
-    changeSearchQuery,
+    changeSearchTerm,
     changeCurrentPage,
     fetchPhotos,
   }

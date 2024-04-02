@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watch } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
 
 import chevronLeftIcon from '@tf-app/shared/assets/icons/chevron-left.svg'
@@ -20,6 +21,10 @@ const { activePage, range, hasNextPage, hasPrevPage, next, prev, setPage, DOTS }
   page: props.page,
   total: props.totalPages,
   onChange: page => emit('changePage', page),
+})
+
+watch(() => props.page, (newPage) => {
+  activePage.value = newPage
 })
 </script>
 

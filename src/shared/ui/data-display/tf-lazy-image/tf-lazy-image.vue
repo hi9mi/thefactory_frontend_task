@@ -3,7 +3,7 @@ import { computed, useCssModule } from 'vue'
 
 import { useLazyImage } from './libs'
 
-defineProps<{ originalSrc: string, placeholderSrc: string, srcset: string, sizes: string }>()
+defineProps<{ originalSrc: string, placeholderSrc: string, srcset?: string, sizes?: string, alt?: string }>()
 
 const { vLazy, loading } = useLazyImage()
 const classes = useCssModule('classes')
@@ -13,7 +13,7 @@ const imageClasses = computed(() => loading.value ? [classes.image, classes.load
 
 <template>
   <img
-    v-lazy="{ originalSrc, placeholderSrc, srcset, sizes }"
+    v-lazy="{ originalSrc, placeholderSrc, srcset, sizes, alt }"
     :class="imageClasses"
   >
 </template>

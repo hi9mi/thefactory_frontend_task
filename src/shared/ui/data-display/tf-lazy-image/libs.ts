@@ -5,12 +5,13 @@ interface LazyImageOptions {
   placeholderSrc: string
   srcset?: string
   sizes?: string
+  alt?: string
 }
 
 export function useLazyImage() {
   const loading = ref(false)
 
-  function load(imgElement: HTMLImageElement, { placeholderSrc, originalSrc, srcset, sizes }: LazyImageOptions) {
+  function load(imgElement: HTMLImageElement, { placeholderSrc, originalSrc, srcset, sizes, alt }: LazyImageOptions) {
     loading.value = true
     imgElement.src = placeholderSrc
     const tempImage = new Image()
@@ -24,6 +25,8 @@ export function useLazyImage() {
       imgElement.src = tempImage.src
       imgElement.srcset = tempImage.srcset
       imgElement.sizes = tempImage.sizes
+      if (alt)
+        imgElement.alt = alt
 
       loading.value = false
     }

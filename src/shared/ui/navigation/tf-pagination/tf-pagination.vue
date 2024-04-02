@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { watch } from 'vue'
 import VueInlineSvg from 'vue-inline-svg'
 
 import chevronLeftIcon from '@tf-app/shared/assets/icons/chevron-left.svg'
@@ -9,22 +8,23 @@ import { usePagination } from './libs'
 import TfPaginationEdge from './tf-pagination-edge.vue'
 import TfPaginationItem from './tf-pagination-item.vue'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   page: number
   totalPages: number
   disabled?: boolean
-}>()
+  siblings?: number
+  boundaries?: number
+}>(), {
+  siblings: 1,
+  boundaries: 1,
+})
 const emit = defineEmits<{
   changePage: [number]
 }>()
-const { activePage, range, hasNextPage, hasPrevPage, next, prev, setPage, DOTS } = usePagination({
-  page: props.page,
-  total: props.totalPages,
-  onChange: page => emit('changePage', page),
-})
 
-watch(() => props.page, (newPage) => {
-  activePage.value = newPage
+const { activePage, range, hasNextPage, hasPrevPage, next, prev, setPage, DOTS } = usePagination({
+  props,
+  onChange: page => emit('changePage', page),
 })
 </script>
 

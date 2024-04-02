@@ -1,33 +1,39 @@
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 
 interface PaginationOptions {
-  page: number
-  total: number
-  siblings?: number
-  boundaries?: number
-  onChange?: (page: number) => void
+  props: {
+    page: number
+    totalPages: number
+    siblings: number
+    boundaries: number
+  }
+  onChange: (page: number) => void
 }
 
 export function usePagination({
-  page,
-  total,
-  siblings = 1,
-  boundaries = 1,
+  props,
   onChange,
 }: PaginationOptions) {
   const DOTS = -1
-  const _total = Math.max(Math.trunc(total), 0)
+  const _total = computed(() => Math.max(Math.trunc(props.totalPages), 0))
 
-  const activePage = ref(page)
+  const activePage = computed({
+    get() {
+      return props.page
+    },
+    set(newPage) {
+      onChange(newPage)
+    },
+  })
   const hasPrevPage = computed(() => activePage.value > 1)
-  const hasNextPage = computed(() => activePage.value < _total)
+  const hasNextPage = computed(() => activePage.value < _total.value)
 
   function setPage(newPage: number) {
     if (!hasPrevPage.value)
       activePage.value = 1
 
     if (!hasNextPage.value)
-      activePage.value = _total
+      activePage.value = _total.value
 
     activePage.value = newPage
   }
@@ -35,34 +41,29 @@ export function usePagination({
   const next = () => setPage(activePage.value + 1)
   const prev = () => setPage(activePage.value - 1)
   const first = () => setPage(1)
-  const last = () => setPage(_total)
+  const last = () => setPage(_total.value)
 
   const paginationRange = computed(() => {
-    const totalPageNumbers = siblings * 2 + 3 + boundaries * 2
-    if (totalPageNumbers >= _total)
-      return range(1, _total)
+    const totalPageNumbers = props.siblings * 2 + 3 + props.boundaries * 2
+    if (totalPageNumbers >= _total.value)
+      return range(1, _total.value)
 
-    const leftSiblingIndex = Math.max(activePage.value - siblings, boundaries)
-    const rightSiblingIndex = Math.min(activePage.value + siblings, _total - boundaries)
+    const leftSiblingIndex = Math.max(activePage.value - props.siblings, props.boundaries)
+    const rightSiblingIndex = Math.min(activePage.value + props.siblings, _total.value - props.boundaries)
 
-    const shouldShowLeftDots = leftSiblingIndex > boundaries + 2
-    const shouldShowRightDots = rightSiblingIndex < _total - (boundaries + 1)
+    const shouldShowLeftDots = leftSiblingIndex > props.boundaries + 2
+    const shouldShowRightDots = rightSiblingIndex < _total.value - (props.boundaries + 1)
 
     if (!shouldShowLeftDots && shouldShowRightDots) {
-      const leftItemCount = siblings * 2 + boundaries + 2
-      return range(1, leftItemCount).concat([DOTS], range(_total - (boundaries - 1), _total))
+      const leftItemCount = props.siblings * 2 + props.boundaries + 2
+      return range(1, leftItemCount).concat([DOTS], range(_total.value - (props.boundaries - 1), _total.value))
     }
     if (shouldShowLeftDots && !shouldShowRightDots) {
-      const rightItemCount = boundaries + 1 + 2 * siblings
-      return range(1, boundaries).concat([DOTS], range(_total - rightItemCount, _total))
+      const rightItemCount = props.boundaries + 1 + 2 * props.siblings
+      return range(1, props.boundaries).concat([DOTS], range(_total.value - rightItemCount, _total.value))
     }
 
-    return range(1, boundaries).concat([DOTS], range(leftSiblingIndex, rightSiblingIndex), [DOTS], range(_total - boundaries + 1, _total))
-  })
-
-  watch(activePage, (_page) => {
-    if (onChange)
-      onChange(_page)
+    return range(1, props.boundaries).concat([DOTS], range(leftSiblingIndex, rightSiblingIndex), [DOTS], range(_total.value - props.boundaries + 1, _total.value))
   })
 
   return {

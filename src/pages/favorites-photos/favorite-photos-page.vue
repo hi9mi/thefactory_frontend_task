@@ -19,7 +19,7 @@ const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationD
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" :class="classes.container">
     <h1 :class="classes.title">
       Избранное
     </h1>
@@ -57,12 +57,16 @@ const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationD
   margin: 100px 0;
 }
 
+.container {
+  padding-bottom: 40px;
+}
+
 .gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: auto;
   grid-gap: 40px;
-  margin: 100px 0;
+  margin: 100px 0 40px;
 }
 
 .favoritesEmpty {

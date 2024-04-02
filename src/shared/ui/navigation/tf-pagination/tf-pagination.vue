@@ -62,6 +62,7 @@ const { activePage, range, hasNextPage, hasPrevPage, next, prev, setPage, DOTS }
 .wrapper {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   flex-wrap: wrap;
 }

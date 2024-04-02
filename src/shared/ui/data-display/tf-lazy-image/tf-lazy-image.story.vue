@@ -16,8 +16,8 @@ const state = reactive<{
 
 async function loadRandomPhoto() {
   state.loading = true
-  const randomPhotosURL = new URL('photos/random', import.meta.env.VITE_UNSPLASH_API_URL)
-  randomPhotosURL.searchParams.set('client_id', import.meta.env.VITE_UNSPLASH_CLIENT_ID)
+  const randomPhotosURL = new URL('photos/random', 'https://api.unsplash.com')
+  randomPhotosURL.searchParams.set('client_id', '_KrzP7Yj9ObontNacjoQht00agosJQygX9l-ctvlLbE')
 
   const response = await fetch(randomPhotosURL)
   state.photo = await response.json()

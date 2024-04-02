@@ -68,7 +68,7 @@ defineProps<{ photo: Photo }>()
 
 .photoCard > .photoLink {
   color: var(--c-black);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 16px;
   text-decoration: none;
   display: inline-block;

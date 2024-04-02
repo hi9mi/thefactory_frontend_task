@@ -10,7 +10,6 @@ import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
 
 const props = defineProps<{
   photo: Photo
-  // should accept only id as props instead of Photo
 }>()
 const favoritePhotosStore = useFavoritePhotosStore()
 const { favoritePhotos } = storeToRefs(favoritePhotosStore)

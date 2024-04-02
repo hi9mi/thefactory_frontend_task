@@ -24,6 +24,8 @@
   --c-main-bg: var(--c-white);
   --c-primary-bg: var(--c-snow);
   --c-secondary-bg: var(--c-sunshine);
+
+  color-scheme: light;
 }
 
 *,
@@ -132,6 +134,7 @@ html:is(.light) {
   --c-primary-bg: var(--c-snow);
   --c-secondary-bg: var(--c-sunshine);
 
+  color-scheme: light;
 }
 
 html:is(.dark) {
@@ -141,6 +144,8 @@ html:is(.dark) {
   --box-shadow-sm: 0 0 4px 0 rgb(255 255 255 / 25%);
   --box-shadow-md: 0 0 4px 2px rgb(255 255 255 / 20%);
   --box-shadow-lg: 3px 4px 10px -2px rgb(255 255 255 / 30%);
+
+  color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -151,5 +156,7 @@ html:is(.dark) {
     --box-shadow-sm: 0 0 4px 0 rgb(255 255 255 / 25%);
     --box-shadow-md: 0 0 4px 2px rgb(255 255 255 / 20%);
     --box-shadow-lg: 3px 4px 10px -2px rgb(255 255 255 / 30%);
+
+    color-scheme: dark;
   }
 }

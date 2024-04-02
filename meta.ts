@@ -11,6 +11,7 @@ export const APP_INFO = {
     background: '#242424',
     lightThemeColor: '#ffffff',
     darkThemeColor: '#242424',
+    primaryColor: '#fff200',
   },
 } as const
 
@@ -73,11 +74,11 @@ export const META_TAGS: IHTMLTag[] = [
   // Windows phone tile icon
   {
     name: 'msapplication-TileImage',
-    content: `/favicon-32x32.png`,
+    content: '/favicon-32x32.png',
   },
   {
     name: 'msapplication-TileColor',
-    content: APP_INFO.app.background,
+    content: APP_INFO.app.primaryColor,
   },
   {
     name: 'msapplication-tap-highlight',
@@ -99,13 +100,11 @@ export const META_TAGS: IHTMLTag[] = [
   // PWA
   {
     name: 'theme-color',
-    content: APP_INFO.app.darkThemeColor,
-    media: '(prefers-color-scheme: dark)',
+    content: APP_INFO.app.primaryColor,
   },
   {
-    name: 'theme-color',
-    content: APP_INFO.app.lightThemeColor,
-    media: '(prefers-color-scheme: light)',
+    name: 'color-scheme',
+    content: 'light dark',
   },
   {
     name: 'supported-color-schemes',
@@ -113,7 +112,7 @@ export const META_TAGS: IHTMLTag[] = [
   },
   {
     name: 'mask-icon',
-    content: '/icons/maskable_icon.png',
-    color: APP_INFO.app.background,
+    content: '/maskable_icon.png',
+    color: APP_INFO.app.primaryColor,
   },
 ]

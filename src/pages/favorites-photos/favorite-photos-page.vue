@@ -3,7 +3,7 @@ import { defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
-import { usePagination } from '@tf-app/shared/libs'
+import { usePaginationData } from '@tf-app/shared/libs'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 
 const TfAffix = defineAsyncComponent(() =>
@@ -15,7 +15,7 @@ const TfPagination = defineAsyncComponent(() =>
 
 const favoritePhotosStore = useFavoritePhotosStore()
 const { favoritePhotos, currentPage } = storeToRefs(favoritePhotosStore)
-const { data: paginatedFavoritePhotos, onNextPage, onPreviousPage, totalPages } = usePagination(favoritePhotos, { currentPage })
+const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationData(favoritePhotos, { currentPage })
 </script>
 
 <template>
@@ -43,8 +43,7 @@ const { data: paginatedFavoritePhotos, onNextPage, onPreviousPage, totalPages } 
       v-if="totalPages > 0"
       :total-pages="totalPages"
       :page="currentPage"
-      @next-page="onNextPage"
-      @prev-page="onPreviousPage"
+      @change-page="changePage"
     />
     <TfAffix />
   </div>

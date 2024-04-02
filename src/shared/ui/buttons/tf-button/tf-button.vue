@@ -64,4 +64,9 @@ defineProps<{
 :global(html:is(.dark)) .btn:disabled {
   background-color: var(--c-light-slate-grey);
 }
+
+:global(html:is(.dark)) .btn.yellow:disabled {
+  background-color: var(--c-light-slate-grey);
+  color: var(--font-color);
+}
 </style>

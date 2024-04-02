@@ -8,11 +8,13 @@ export default defineConfig({
   theme: {
     title: 'The factory',
     logo: {
-      light: './public/img/logo.png',
-      dark: './public/img/logo.png',
+      light: './src/shared/assets/logo.png',
+      dark: './src/shared/assets/logo.png',
+      square: './src/shared/assets/logo.png',
     },
     logoHref: 'https://thefactory-frontend-task.vercel.app/',
-    favicon: './public/favicon.ico',
+    favicon: '/favicon.ico',
+    defaultColorScheme: 'light',
   },
   viteIgnorePlugins: ['vite-plugin-pwa:dev-sw', 'vite-plugin-pwa:build', 'vite-plugin-pwa:info', 'vite-plugin-pwa', 'html-plugin'],
   vite: {

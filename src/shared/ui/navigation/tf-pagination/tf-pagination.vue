@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import VueInlineSvg from 'vue-inline-svg'
 
-import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
+import chevronLeftIcon from '@tf-app/shared/assets/icons/chevron-left.svg'
+import chevronRightIcon from '@tf-app/shared/assets/icons/chevron-right.svg'
+
+import { usePagination } from './libs'
+import TfPaginationEdge from './tf-pagination-edge.vue'
+import TfPaginationItem from './tf-pagination-item.vue'
 
 const props = defineProps<{
   page: number
@@ -9,40 +14,42 @@ const props = defineProps<{
   disabled?: boolean
 }>()
 const emit = defineEmits<{
-  (e: 'nextPage', page: number): void
-  (e: 'prevPage', page: number): void
+  changePage: [number]
 }>()
-const hasPrevPage = computed(() => props.page > 1)
-const hasNextPage = computed(() => props.page < props.totalPages)
-
-function prevPage() {
-  if (hasPrevPage.value)
-    emit('prevPage', props.page - 1)
-}
-function nextPage() {
-  if (hasNextPage.value)
-    emit('nextPage', props.page + 1)
-}
+const { activePage, range, hasNextPage, hasPrevPage, next, prev, setPage, DOTS } = usePagination({
+  page: props.page,
+  total: props.totalPages,
+  onChange: page => emit('changePage', page),
+})
 </script>
 
 <template>
   <div :class="classes.wrapper">
-    <TfButton
-      bg-color="white"
+    <TfPaginationEdge
       :disabled="!hasPrevPage || disabled"
-      type="button"
-      @click="prevPage"
+      @action="prev"
     >
-      Предыдущая страница
-    </TfButton>
-    <TfButton
-      bg-color="white"
+      <VueInlineSvg :src="chevronLeftIcon" width="17" height="17" aria-hidden="true" />
+    </TfPaginationEdge>
+
+    <TfPaginationItem
+      v-for="(pageItem, index) in range"
+      :key="index"
+      :is-dots="pageItem === DOTS"
+      :page="pageItem"
+      :disabled="disabled"
+      :active="activePage === pageItem"
+      @change="setPage"
+    >
+      {{ pageItem }}
+    </TfPaginationItem>
+
+    <TfPaginationEdge
       :disabled="!hasNextPage || disabled"
-      type="button"
-      @click="nextPage"
+      @action="next"
     >
-      Следующая страница
-    </TfButton>
+      <VueInlineSvg :src="chevronRightIcon" width="17" height="17" aria-hidden="true" />
+    </TfPaginationEdge>
   </div>
 </template>
 
@@ -50,7 +57,7 @@ function nextPage() {
 .wrapper {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 

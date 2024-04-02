@@ -65,8 +65,8 @@ watch(() => [galleryStore.page, galleryStore.searchTerm], (
       v-if="galleryStore.hasPhotos"
       :total-pages="galleryStore.photos!.total_pages"
       :page="galleryStore.page"
-      @next-page="galleryStore.changeCurrentPage"
-      @prev-page="galleryStore.changeCurrentPage"
+      :disabled="galleryStore.isLoadingPhotos"
+      @change-page="galleryStore.changeCurrentPage"
     />
 
     <TfAffix />

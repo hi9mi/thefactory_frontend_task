@@ -29,7 +29,7 @@ loadRandomPhoto()
 
 <template>
   <Story>
-    <Variant title="TfPagination">
+    <Variant title="TfLazyImage">
       <TfLoader v-if="state.loading || !state.photo" />
       <TfLazyImage
         v-else

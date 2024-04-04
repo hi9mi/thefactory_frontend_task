@@ -3,8 +3,8 @@ import { defineAsyncComponent, watch } from 'vue'
 
 import { useGalleryStore } from '@tf-app/entities/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
-import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
+import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
@@ -37,10 +37,12 @@ watch(() => [galleryStore.page, galleryStore.searchTerm], (
   <SearchPhotosForm @submit="onSubmitSearchForm" />
   <div class="container" :class="classes.galleryContainer">
     <section
-      v-if="!galleryStore.isLoadingPhotos"
       :class="classes.gallery"
     >
-      <template v-if="galleryStore.hasPhotos">
+      <template v-if="galleryStore.isLoadingPhotos">
+        <TfPhotoCardSkeleton v-for="i of 9" :key="i" />
+      </template>
+      <template v-else-if="galleryStore.hasPhotos">
         <TfPhotoCard
           v-for="photo of galleryStore.photos!.results"
           :key="photo.id"
@@ -60,7 +62,6 @@ watch(() => [galleryStore.page, galleryStore.searchTerm], (
         Для того чтобы найти фотографий, введите запрос
       </p>
     </section>
-    <TfLoader v-else />
     <TfPagination
       v-if="galleryStore.hasPhotos"
       :total-pages="galleryStore.photos!.total_pages"

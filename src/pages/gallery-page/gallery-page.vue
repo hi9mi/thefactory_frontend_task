@@ -5,8 +5,8 @@ import { useRouter } from 'vue-router'
 import { useGalleryStore } from '@tf-app/entities/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import { routes } from '@tf-app/routing'
-import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
+import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
@@ -27,16 +27,19 @@ function onSubmitSearchForm(searchTerm: string) {
   <SearchPhotosForm @submit="onSubmitSearchForm" />
   <div class="container" :class="classes.galleryContainer">
     <section
-      v-if="!galleryStore.isLoadingRandomPhotos"
       :class="classes.gallery"
     >
-      <TfPhotoCard
-        v-for="photo of galleryStore.randomPhotos"
-        :key="photo.id"
-        :photo="photo"
-      />
+      <template v-if="galleryStore.isLoadingRandomPhotos">
+        <TfPhotoCardSkeleton v-for="i of 9" :key="i" />
+      </template>
+      <template v-else>
+        <TfPhotoCard
+          v-for="photo of galleryStore.randomPhotos"
+          :key="photo.id"
+          :photo="photo"
+        />
+      </template>
     </section>
-    <TfLoader v-else />
     <TfAffix />
   </div>
 </template>

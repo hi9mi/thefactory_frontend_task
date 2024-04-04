@@ -9,12 +9,8 @@ const state = reactive({
   totalPages: 10,
 })
 
-function handleNextPage(page: number) {
-  logEvent('nextPage Event', { page })
-  state.page = page
-}
-function handlePrevPage(page: number) {
-  logEvent('prevPage Event', { page })
+function changePage(page: number) {
+  logEvent('changePage', { page })
   state.page = page
 }
 </script>
@@ -25,8 +21,7 @@ function handlePrevPage(page: number) {
       <TfPagination
         :total-pages="state.totalPages"
         :page="state.page"
-        @next-page="handleNextPage"
-        @prev-page="handlePrevPage"
+        @change-page="changePage"
       />
 
       <template #controls>

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import VueInlineSvg from 'vue-inline-svg'
 import { useDark, useToggle } from '@vueuse/core'
 
-import sunAndMoonIcon from '@tf-app/shared/assets/icons/sun-and-moon.svg'
+import SunAndMoonIcon from '~icons/tf-icons/sun-and-moon'
 
 const isDarkTheme = useDark({
   selector: 'html',
@@ -23,7 +22,7 @@ const toggleDark = useToggle(isDarkTheme)
     :class="classes.themeSwitcherButton"
     @click="toggleDark()"
   >
-    <VueInlineSvg :src="sunAndMoonIcon" :class="classes.sunAndMoon" />
+    <SunAndMoonIcon :class="classes.sunAndMoon" />
   </button>
 </template>
 

@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { inject, onBeforeUnmount, onMounted } from 'vue'
-import VueInlineSvg from 'vue-inline-svg'
-
-import xMarkIcon from '@tf-app/shared/assets/icons/x-mark.svg'
 
 import { NOTIFICATIONS_CONTEXT_SYMBOL } from './config'
 import type { NotificationOptions } from './libs'
 import { emitter } from './libs'
+
+import XMarkIcon from '~icons/tf-icons/x-mark'
 
 const props = defineProps<{
   notification: NotificationOptions
@@ -63,8 +62,7 @@ onBeforeUnmount(() => {
       type="button"
       @click="emitter.emit('remove', notification.id)"
     >
-      <VueInlineSvg
-        :src="xMarkIcon"
+      <XMarkIcon
         width="16"
         height="16"
         aria-label="Скрыть уведомление"

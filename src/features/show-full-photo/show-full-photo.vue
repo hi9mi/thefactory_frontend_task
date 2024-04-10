@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue'
-import VueInlineSvg from 'vue-inline-svg'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 
 import { routes } from '@tf-app/routing'
 import type { Photo } from '@tf-app/shared/api'
-import xMarkIcon from '@tf-app/shared/assets/icons/x-mark.svg'
 import { useFocusTrap } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
+
+import XMarkIcon from '~icons/tf-icons/x-mark'
 
 defineProps<{
   photo: Photo
@@ -88,8 +88,7 @@ onBeforeRouteLeave(() => {
         :class="classes.closeBtn"
         @click="hideFullPhoto"
       >
-        <VueInlineSvg
-          :src="xMarkIcon"
+        <XMarkIcon
           width="25"
           height="25"
           aria-label="Закрыть"

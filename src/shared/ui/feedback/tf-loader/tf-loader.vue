@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import VueInlineSvg from 'vue-inline-svg'
-
-import loaderIcon from '@tf-app/shared/assets/icons/loader.svg'
+import LoaderIcon from '~icons/tf-icons/loader'
 </script>
 
 <template>
@@ -9,8 +7,7 @@ import loaderIcon from '@tf-app/shared/assets/icons/loader.svg'
     role="status"
     :class="classes.loader"
   >
-    <VueInlineSvg
-      :src="loaderIcon"
+    <LoaderIcon
       width="22"
       height="22"
       aria-hidden="true"

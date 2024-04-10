@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import VueInlineSvg from 'vue-inline-svg'
 import { useRoute } from 'vue-router'
 
 import { routes } from '@tf-app/routing'
-import heartIcon from '@tf-app/shared/assets/icons/heart.svg'
-import searchIcon from '@tf-app/shared/assets/icons/search.svg'
 import TfThemeSwitcher from '@tf-app/shared/ui/buttons/tf-theme-switcher/tf-theme-switcher.vue'
+
+import HeartIcon from '~icons/tf-icons/heart'
+import SearchIcon from '~icons/tf-icons/search'
 
 const route = useRoute()
 </script>
@@ -26,8 +26,7 @@ const route = useRoute()
             :to="routes.gallery.path"
             :class="classes.link"
           >
-            <VueInlineSvg
-              :src="searchIcon"
+            <SearchIcon
               fill="none"
               width="23"
               height="23"
@@ -39,8 +38,7 @@ const route = useRoute()
             :to="routes.favorites.path"
             :class="classes.link"
           >
-            <VueInlineSvg
-              :src="heartIcon"
+            <HeartIcon
               fill="none"
               width="23"
               height="21"

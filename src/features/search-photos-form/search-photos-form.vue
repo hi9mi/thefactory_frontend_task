@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import VueInlineSvg from 'vue-inline-svg'
 import { useRoute } from 'vue-router'
 
-import searchIcon from '@tf-app/shared/assets/icons/search.svg'
+import SearchIcon from '~icons/tf-icons/search'
 
 const emit = defineEmits<{
   submit: [string]
@@ -43,8 +42,7 @@ watch(() => route.query.q, (newValue) => {
           :class="classes.iconButton"
           type="submit"
         >
-          <VueInlineSvg
-            :src="searchIcon"
+          <SearchIcon
             fill="none"
             width="23"
             height="23"

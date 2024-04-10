@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import VueInlineSvg from 'vue-inline-svg'
-
-import dotsIcon from '@tf-app/shared/assets/icons/dots.svg'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
+
+import DotsIcon from '~icons/tf-icons/dots'
 
 const props = defineProps<{
   isDots?: boolean
@@ -20,7 +19,7 @@ function onClick() {
 
 <template>
   <div v-if="isDots" :class="classes.dots">
-    <VueInlineSvg :src="dotsIcon" width="17" height="17" aria-hidden="true" />
+    <DotsIcon width="17" height="17" aria-hidden="true" />
   </div>
   <TfButton
     v-else

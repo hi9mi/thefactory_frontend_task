@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import VueInlineSvg from 'vue-inline-svg'
 import { storeToRefs } from 'pinia'
 
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
 import type { Photo } from '@tf-app/shared/api'
-import heartIcon from '@tf-app/shared/assets/icons/heart.svg'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
+
+import HeartIcon from '~icons/tf-icons/heart'
 
 const props = defineProps<{
   photo: Photo
@@ -24,8 +24,7 @@ const isFavoritePhoto = computed(() => favoritePhotos.value.some(f => f.id === p
     type="button"
     @click="favoritePhotosStore.toggleFavoritePhoto(photo)"
   >
-    <VueInlineSvg
-      :src="heartIcon"
+    <HeartIcon
       fill="none"
       width="23"
       height="21"

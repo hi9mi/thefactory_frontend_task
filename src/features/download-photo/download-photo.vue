@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import VueInlineSvg from 'vue-inline-svg'
-
-import icon from '@tf-app/shared/assets/icons/download.svg'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
+
+import DownloadIcon from '~icons/tf-icons/download'
 
 const props = defineProps<{
   src: string
@@ -46,8 +45,7 @@ async function downloadPhoto() {
     :class="classes.btn"
     @click="downloadPhoto"
   >
-    <VueInlineSvg
-      :src="icon"
+    <DownloadIcon
       width="23"
       height="21"
       aria-label="Скачать фото"

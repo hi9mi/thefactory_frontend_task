@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import VueInlineSvg from 'vue-inline-svg'
-
-import chevronLeftIcon from '@tf-app/shared/assets/icons/chevron-left.svg'
-import chevronRightIcon from '@tf-app/shared/assets/icons/chevron-right.svg'
-
 import { usePagination } from './libs'
 import TfPaginationEdge from './tf-pagination-edge.vue'
 import TfPaginationItem from './tf-pagination-item.vue'
+
+import ChevronLeftIcon from '~icons/tf-icons/chevron-left'
+import ChevronRightIcon from '~icons/tf-icons/chevron-right'
 
 const props = withDefaults(defineProps<{
   page: number
@@ -34,7 +32,7 @@ const { activePage, range, hasNextPage, hasPrevPage, next, prev, setPage, DOTS }
       :disabled="!hasPrevPage || disabled"
       @action="prev"
     >
-      <VueInlineSvg :src="chevronLeftIcon" width="17" height="17" aria-hidden="true" />
+      <ChevronLeftIcon width="17" height="17" aria-hidden="true" />
     </TfPaginationEdge>
 
     <TfPaginationItem
@@ -53,7 +51,7 @@ const { activePage, range, hasNextPage, hasPrevPage, next, prev, setPage, DOTS }
       :disabled="!hasNextPage || disabled"
       @action="next"
     >
-      <VueInlineSvg :src="chevronRightIcon" width="17" height="17" aria-hidden="true" />
+      <ChevronRightIcon width="17" height="17" aria-hidden="true" />
     </TfPaginationEdge>
   </div>
 </template>

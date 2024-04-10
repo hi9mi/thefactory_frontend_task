@@ -1,6 +1,8 @@
 import path from 'node:path'
 
 import vue from '@vitejs/plugin-vue'
+import { FileSystemIconLoader } from 'unplugin-icons/loaders'
+import Icons from 'unplugin-icons/vite'
 import { defineConfig, loadEnv } from 'vite'
 import HtmlConfig from 'vite-plugin-html-config'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -70,6 +72,12 @@ export default defineConfig(({ mode }) => {
           type: 'module',
           navigateFallback: 'index.html',
           suppressWarnings: true,
+        },
+      }),
+      Icons({
+        compiler: 'vue3',
+        customCollections: {
+          'tf-icons': FileSystemIconLoader('./src/shared/assets/icons'),
         },
       }),
     ],

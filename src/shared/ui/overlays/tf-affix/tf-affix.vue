@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
-import VueInlineSvg from 'vue-inline-svg'
 
-import arrowTopIcon from '@tf-app/shared/assets/icons/arrow-top.svg'
+import ArrowTopIcon from '~icons/tf-icons/arrow-top'
 
 const isShowAffix = ref(false)
 
@@ -39,8 +38,7 @@ onBeforeUnmount(() => {
         :class="classes.affix"
         @click="scrollToTop"
       >
-        <VueInlineSvg
-          :src="arrowTopIcon"
+        <ArrowTopIcon
           fill="none"
           width="18"
           height="18"

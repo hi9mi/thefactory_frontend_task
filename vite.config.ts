@@ -95,7 +95,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            ethers: ['mitt', 'nprogress', 'vue-inline-svg', 'focus-trap'],
+            ethers: ['mitt', 'nprogress', 'focus-trap'],
             router: ['vue-router'],
             pinia: ['pinia'],
             vue: ['vue'],

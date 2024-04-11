@@ -24,6 +24,7 @@
   "dependencies": {
     "@vueuse/core": "^10.9.0",
     "@vueuse/router": "^10.9.0",
+    "blurhash": "^2.0.5",
     "focus-trap": "^7.5.4",
     "mitt": "^3.0.1",
     "nprogress": "^0.2.0",

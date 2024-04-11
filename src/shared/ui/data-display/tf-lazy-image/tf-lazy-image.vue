@@ -23,6 +23,7 @@ const imageClasses = computed(() => loading.value ? [classes.image, classes.load
   object-fit: cover;
   object-position: center;
   width: 100%;
+  height: auto;
   transition: filter 0.3s linear;
   filter: blur(0);
 }

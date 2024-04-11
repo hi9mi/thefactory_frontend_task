@@ -2,17 +2,19 @@
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import type { Photo } from '@tf-app/shared/api'
-import TfLazyImage from '@tf-app/shared/ui/data-display/tf-lazy-image/tf-lazy-image.vue'
+import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 
 defineProps<{ photo: Photo }>()
 </script>
 
 <template>
   <article :class="classes.photoCard">
-    <TfLazyImage
-      :original-src="`${photo.urls.raw}&w=640&h=640&dpr=2&q=80`"
+    <TfBlurhashImage
+      :blurhash="photo.blur_hash"
+      :blurhash-width="440"
+      :blurhash-height="440"
+      :src="`${photo.urls.raw}&w=640&h=640&dpr=2&q=80`"
       :alt="photo.alt_description"
-      :placeholder-src="photo.urls.thumb"
       :srcset="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
       sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
       :class="classes.photo"
@@ -33,6 +35,8 @@ defineProps<{ photo: Photo }>()
   flex-direction: column;
   border-radius: var(--border-radius-sm);
   z-index: 1;
+  height: 440px;
+  width: 100%;
 }
 
 .overlay {
@@ -75,9 +79,8 @@ defineProps<{ photo: Photo }>()
 }
 
 .photo {
-  height: 440px;
-  width: 100%;
   border-radius: var(--border-radius-sm);
+  height: 100%;
 }
 
 .photoCard > .photoLink::before {
@@ -98,7 +101,7 @@ defineProps<{ photo: Photo }>()
 }
 
 @media screen and (width <= 376px) {
-  .photo {
+  .photoCard {
     height: 320px;
   }
 }

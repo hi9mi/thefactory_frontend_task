@@ -1,6 +1,7 @@
 export interface Photo {
   alt_description: string
   id: string
+  blur_hash: string
   links: {
     download: string
     download_location: string

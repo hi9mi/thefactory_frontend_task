@@ -8,7 +8,7 @@ import { routes } from '@tf-app/routing'
 import type { Photo } from '@tf-app/shared/api'
 import * as api from '@tf-app/shared/api'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
-import TfLazyImage from '@tf-app/shared/ui/data-display/tf-lazy-image/tf-lazy-image.vue'
+import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
@@ -76,9 +76,11 @@ getDetailsPhoto(route.params.id.toString())
           </div>
         </div>
         <div :class="classes.photoWrapper">
-          <TfLazyImage
-            :original-src="`${photo.urls.raw}&w=740&h=740&dpr=1&q=80`"
-            :placeholder-src="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80`"
+          <TfBlurhashImage
+            :blurhash-width="740"
+            :blurhash-height="740"
+            :blurhash="photo.blur_hash"
+            :src="`${photo.urls.raw}&w=740&h=740&dpr=1&q=80`"
             :srcset="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=740&h=740&dpr=1&q=80 740w, ${photo.urls.raw}&w=1440&h=1440&dpr=1&q=80 1440w`"
             sizes="(max-width: 560px) 320px, (max-width: 960px) 740px, 1440px"
             :class="classes.photo"

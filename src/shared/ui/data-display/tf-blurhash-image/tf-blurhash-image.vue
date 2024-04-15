@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, useCssModule } from 'vue'
-import { decode } from 'blurhash'
+import { computed, onBeforeUnmount, onMounted, ref, useCssModule } from 'vue'
 
 defineOptions({
   inheritAttrs: false,
@@ -17,21 +16,30 @@ const props = withDefaults(defineProps<{
   blurhashWidth: 128,
   blurhashHeight: 128,
 })
+const worker = new Worker(new URL('./encode.worker.ts', import.meta.url), { type: 'module' })
+
 const loading = ref(true)
 const canvasElement = ref<HTMLCanvasElement>()
 const $classes = useCssModule('classes')
 const imageClasses = computed(() => loading.value ? [$classes.image, $classes.loading] : [$classes.image])
 
+onMounted(() => {
+  worker.postMessage({ payload: { blurhash: props.blurhash, width: props.blurhashWidth, height: props.blurhashHeight } })
+  worker.addEventListener('message', createBlurhashImage)
+})
+
+onBeforeUnmount(() => {
+  worker.removeEventListener('message', createBlurhashImage)
+})
+
 function onLoadImage() {
   loading.value = false
 }
 
-onMounted(() => {
-  const pixels = decode(props.blurhash, props.blurhashWidth, props.blurhashHeight)
-
+function createBlurhashImage(event: MessageEvent<{ payload: { pixels: Uint8ClampedArray } }>) {
+  const pixels = event.data.payload.pixels
   if (!canvasElement.value)
     return
-
   const ctx = canvasElement.value.getContext('2d')
   if (!ctx)
     return
@@ -39,7 +47,7 @@ onMounted(() => {
   const imageData = ctx.createImageData(props.blurhashWidth, props.blurhashHeight)
   imageData.data.set(pixels)
   ctx.putImageData(imageData, 0, 0)
-})
+}
 </script>
 
 <template>

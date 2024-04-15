@@ -2,22 +2,11 @@ import antfu from '@antfu/eslint-config'
 import eslintPluginSimpleImportSort from 'eslint-plugin-simple-import-sort'
 
 export default antfu({
-  rules: {
-    'sort-imports': 'off',
-  },
-  ignores: [
-    'node_modules',
-    'dist',
-    'dev-dist',
-    '*.html',
-    '*.md',
-    '.histoire',
-  ],
-}, {
   plugins: {
     eslintPluginSimpleImportSort,
   },
   rules: {
+    'sort-imports': 'off',
     'eslintPluginSimpleImportSort/imports': ['error', {
       groups: [
         ['^\\u0000'],
@@ -28,9 +17,19 @@ export default antfu({
       ],
     }],
     'eslintPluginSimpleImportSort/exports': 'error',
-  },
-}, {
-  rules: {
     'node/prefer-global/process': 'off',
+  },
+  ignores: [
+    'node_modules',
+    'dist',
+    'dev-dist',
+    '*.html',
+    '*.md',
+    '.histoire',
+  ],
+}, {
+  files: ['**/*.worker.ts'],
+  rules: {
+    'no-restricted-globals': 'off',
   },
 })

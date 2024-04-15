@@ -59,6 +59,7 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
+        includeAssets: ['img/*.png', 'img/*.jpg'],
         registerType: 'prompt',
         workbox: {
           cleanupOutdatedCaches: true,

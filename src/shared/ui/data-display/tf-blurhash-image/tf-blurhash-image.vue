@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, useCssModule } from 'vue'
 
+import DecodeWorker from './decode.worker.ts?worker'
+
 defineOptions({
   inheritAttrs: false,
 })
@@ -16,7 +18,8 @@ const props = withDefaults(defineProps<{
   blurhashWidth: 128,
   blurhashHeight: 128,
 })
-const worker = new Worker(new URL('./encode.worker.ts', import.meta.url), { type: 'module' })
+
+const worker = new DecodeWorker()
 
 const loading = ref(true)
 const canvasElement = ref<HTMLCanvasElement>()

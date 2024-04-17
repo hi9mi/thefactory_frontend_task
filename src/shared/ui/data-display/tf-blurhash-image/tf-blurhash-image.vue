@@ -1,13 +1,14 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, onBeforeUnmount, onMounted, ref, useCssModule } from 'vue'
 
-import DecodeWorker from './decode.worker.ts?worker'
+import { decodeWorker } from './decode'
 
 defineOptions({
   inheritAttrs: false,
 })
 const props = withDefaults(defineProps<{
-  blurhash: string
+  id: string
+  blurhash: string | null
   src: string
   srcset?: string
   sizes?: string
@@ -18,38 +19,35 @@ const props = withDefaults(defineProps<{
   blurhashWidth: 128,
   blurhashHeight: 128,
 })
-
-const worker = new DecodeWorker()
-
 const loading = ref(true)
 const canvasElement = ref<HTMLCanvasElement>()
 const $classes = useCssModule('classes')
 const imageClasses = computed(() => loading.value ? [$classes.image, $classes.loading] : [$classes.image])
 
 onMounted(() => {
-  worker.postMessage({ payload: { blurhash: props.blurhash, width: props.blurhashWidth, height: props.blurhashHeight } })
-  worker.addEventListener('message', createBlurhashImage)
+  decodeWorker.postMessage({ payload: { blurhash: props.blurhash, width: props.blurhashWidth, height: props.blurhashHeight, id: props.id } })
+  decodeWorker.addEventListener('message', handleBlurhashImage)
 })
 
 onBeforeUnmount(() => {
-  worker.removeEventListener('message', createBlurhashImage)
+  decodeWorker.removeEventListener('message', handleBlurhashImage)
 })
 
 function onLoadImage() {
   loading.value = false
 }
 
-function createBlurhashImage(event: MessageEvent<{ payload: { pixels: Uint8ClampedArray } }>) {
-  const pixels = event.data.payload.pixels
-  if (!canvasElement.value)
+function handleBlurhashImage(event: MessageEvent<{ payload: { bitmap: ImageBitmap, id: string } }>) {
+  const { bitmap, id } = event.data.payload
+  if (id !== props.id)
     return
-  const ctx = canvasElement.value.getContext('2d')
+
+  const ctx = canvasElement.value?.getContext('2d')
   if (!ctx)
     return
 
-  const imageData = ctx.createImageData(props.blurhashWidth, props.blurhashHeight)
-  imageData.data.set(pixels)
-  ctx.putImageData(imageData, 0, 0)
+  ctx.drawImage(bitmap, 0, 0)
+  bitmap.close()
 }
 </script>
 

@@ -10,6 +10,7 @@ defineProps<{ photo: Photo }>()
 <template>
   <article :class="classes.photoCard">
     <TfBlurhashImage
+      :id="photo.id"
       :blurhash="photo.blur_hash"
       :blurhash-width="440"
       :blurhash-height="440"

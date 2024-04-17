@@ -77,6 +77,7 @@ getDetailsPhoto(route.params.id.toString())
         </div>
         <div :class="classes.photoWrapper">
           <TfBlurhashImage
+            :id="photo.id"
             :blurhash-width="740"
             :blurhash-height="740"
             :blurhash="photo.blur_hash"

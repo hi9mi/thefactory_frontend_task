@@ -62,11 +62,12 @@ function convertValueToPx(value: string | number) {
 }
 
 @keyframes skeleton {
-    from {
-      transform: translateX(-100%);
-    }
-    to {
-      transform: translateX(100%);
-    }
+  from {
+    transform: translateX(-100%);
   }
+
+  to {
+    transform: translateX(100%);
+  }
+}
 </style>

@@ -54,6 +54,7 @@ function handleBlurhashImage(event: MessageEvent<{ payload: { bitmap: ImageBitma
 <template>
   <canvas v-if="loading" ref="canvasElement" :class="$classes.blur" />
   <img
+    v-show="!loading"
     :src="src"
     :srcset="srcset"
     :sizes="sizes"
@@ -84,5 +85,6 @@ function handleBlurhashImage(event: MessageEvent<{ payload: { bitmap: ImageBitma
   display: block;
   height: 100%;
   width: 100%;
+  background-color: var(--c-weathered-stone);
 }
 </style>

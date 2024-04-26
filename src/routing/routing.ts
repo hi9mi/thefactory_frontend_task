@@ -29,6 +29,7 @@ export const routes = {
 export function createAppRouter(routesMap: RouteRecordRaw[], baseUrl: string) {
   const router = createRouter({
     history: createWebHistory(baseUrl),
+    scrollBehavior: (_, __, savedPosition) => (savedPosition || { top: 0, left: 0 }),
     routes: routesMap,
   })
 

@@ -11,10 +11,10 @@ export const useGalleryStore = defineStore('gallery', () => {
   const isLoadingPhotos = ref(false)
   const isLoadingRandomPhotos = ref(false)
   const photos = ref<Photos | null>(null)
-  const searchTerm = useRouteQuery<string>('q', '', { mode: 'push' })
+  const searchTerm = useRouteQuery('q', '', { mode: 'push', transform: (value: string) => value.trim() })
   const page = useRouteQuery('p', '1', { mode: 'push', transform: Number })
 
-  const isSearchEmpty = computed(() => searchTerm.value.trim().length === 0)
+  const isSearchEmpty = computed(() => searchTerm.value.length === 0)
   const hasPhotos = computed(() => (photos.value?.total ?? 0) > 0)
   const hasNoResults = computed(() => !isLoadingPhotos.value && !hasPhotos.value && !isSearchEmpty.value)
 
@@ -38,7 +38,7 @@ export const useGalleryStore = defineStore('gallery', () => {
   }
 
   async function fetchPhotos() {
-    if (searchTerm.value.trim().length === 0) {
+    if (searchTerm.value.length === 0) {
       photos.value = null
       return
     }

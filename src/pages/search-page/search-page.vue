@@ -59,7 +59,7 @@ watch(() => [galleryStore.page, galleryStore.searchTerm], (
         v-else-if="galleryStore.isSearchEmpty"
         :class="classes.galleryEmpty"
       >
-        Для того чтобы найти фотографий, введите запрос
+        Для того чтобы найти фотографии, введите запрос
       </p>
     </section>
     <TfPagination

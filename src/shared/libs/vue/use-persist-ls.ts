@@ -1,7 +1,7 @@
 import type { MaybeRef } from 'vue'
 import { ref, toValue, watchEffect } from 'vue'
 
-import { getItemFromLS, setItemToLS } from '../localstorage'
+import { getItemFromLS, setItemToLS } from '../storage/local'
 
 export function usePersistLS<
   T = any,

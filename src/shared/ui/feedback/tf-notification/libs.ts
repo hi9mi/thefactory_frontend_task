@@ -1,6 +1,6 @@
 import mitt from 'mitt'
 
-import { generateNextId } from '@tf-app/shared/libs'
+import { generateId } from '@tf-app/shared/libs'
 
 export type NotificationTypes = 'error' | 'success'
 export interface NotificationOptions {
@@ -19,7 +19,7 @@ interface EventType {
 export const emitter = mitt<EventType>()
 
 export function notify(options: Omit<NotificationOptions, 'id'>) {
-  (options as NotificationOptions).id = generateNextId('notification')
+  (options as NotificationOptions).id = generateId('notification')
   emitter.emit('add', options as NotificationOptions)
 }
 

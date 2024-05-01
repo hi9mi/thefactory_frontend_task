@@ -20,7 +20,8 @@
     "story:dev": "histoire dev",
     "story:build": "histoire build",
     "story:preview": "histoire preview",
-    "upgrade": "npx npm-check-updates -u && npm install"
+    "upgrade": "npx npm-check-updates -u && npm install",
+    "visualize": "npx vite-bundle-visualizer"
   },
   "dependencies": {
     "@vueuse/core": "^10.9.0",

@@ -57,6 +57,9 @@ npm run story:preview
 
 # Upgrade dependencies
 npm run upgrade
+
+# Visualize bundle
+npm run visualize
 ```
 
 ## TODO

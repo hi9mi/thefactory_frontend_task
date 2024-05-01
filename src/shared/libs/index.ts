@@ -1,5 +1,4 @@
 export * from './dom/generate-id'
-export * from './external-integrations/nprogress'
 export * from './rate-limiters/debounce'
 export * from './storage/local'
 export * from './vue/use-focus-trap'

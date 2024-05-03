@@ -50,7 +50,6 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-/* stylelint-disable selector-class-pattern */
 .affix-enter-active,
 .affix-leave-active {
   transition: all 0.5s ease;
@@ -61,7 +60,6 @@ onBeforeUnmount(() => {
   opacity: 0;
   transform: translateX(30px);
 }
-/* stylelint-enable selector-class-pattern */
 </style>
 
 <style module="classes">

@@ -2,10 +2,7 @@ import antfu from '@antfu/eslint-config'
 import eslintPluginSimpleImportSort from 'eslint-plugin-simple-import-sort'
 
 export default antfu({
-  formatter: {
-    markdown: 'prettier',
-    html: true,
-  },
+  vue: true,
   plugins: {
     eslintPluginSimpleImportSort,
   },
@@ -23,11 +20,11 @@ export default antfu({
     'eslintPluginSimpleImportSort/exports': 'error',
     'node/prefer-global/process': 'off',
   },
+  formatters: true,
   ignores: [
     'node_modules',
     'dist',
     'dev-dist',
-    '*.html',
     '.histoire',
   ],
 }, {

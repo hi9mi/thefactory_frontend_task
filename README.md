@@ -2,7 +2,7 @@
 
 ## Description
 
-Implement a simple interface for image search using the Unsplash API.
+Implement a simple interface for image search using the [Unsplash API](https://unsplash.com/documentation).
 
 ## Task Requirements
 
@@ -71,7 +71,7 @@ npm run visualize
 
 ## Project Structure Documentation
 
-This document provides an organized overview of the project's directories and files, detailing the purpose and function of each.
+Overview of the project's directories and files, detailing the purpose and function of each.
 
 ### Source Code (`/src`)
 
@@ -107,8 +107,8 @@ Contains the components and configurations for the different pages of the applic
 
 #### Within each page directory, the structure is as follows:
 
-- **`[any-page]`**: A directory for a specific page.
-  - **`any-page.vue`**: The Vue component for the page.
+- **`[foo-page]`**: A directory for a specific page.
+  - **`foo-page.vue`**: The Vue component for the page.
   - **`index.ts`**: The route configuration file for the page.
 
 #### Route Configuration (`index.ts`)
@@ -118,22 +118,22 @@ Each `index.ts` file within a page directory exports a `RouteRecordRaw` object t
 #### Example of a Page's `index.ts`:
 
 ```typescript
-// Inside `/pages/any-page/index.ts`
+// Inside `/pages/foo-page/index.ts`
 
 import type { RouteRecordRaw } from "vue-router";
 import { routes } from "@tf-app/routing";
 import TfHeader from "@tf-app/widgets/tf-header/tf-header.vue";
 
-const AnyPageRoute: RouteRecordRaw = {
-  path: routes.any.path,
-  name: routes.any.name,
+const FooPageRoute: RouteRecordRaw = {
+  path: routes.foo.path,
+  name: routes.foo.name,
   components: {
-    default: () => import("./any-page.vue"),
+    default: () => import("./foo-page.vue"),
     header: TfHeader,
   },
 };
 
-export default AnyPageRoute;
+export default FooPageRoute;
 ```
 
 #### Central Route Configuration `/pages/index.ts`
@@ -179,25 +179,3 @@ Complex UI blocks composed of entities and features.
 - **Self-sufficient**: Can function independently within the UI.
 - **Non-business logic**: May include interactions like gestures.
 - **Business logic**: Included when necessary for rich interactivity.
-
-### Root Directory Files
-
-Configuration files and static assets for the application setup and deployment.
-
-- **`.editorconfig`**: Standardizes coding styles.
-- **`.env`**: Manages environment variables.
-- **`.npmrc`**: Configures npm settings.
-- **`.stylelintrc.json`**: Lints CSS styles.
-- **`.vscode/`**: Personalizes VS Code editor settings.
-- **`eslint.config.js`**: Lints JavaScript and Vue code.
-- **`histoire.config.ts`**: Sets up component documentation tool.
-- **`index.html`**: Main entry HTML file.
-- **`meta.ts`**: Contains metadata information.
-- **`package-lock.json` & `package.json`**: Manages dependencies.
-- **`public/`**: Houses publicly accessible static files.
-- **`pwa-assets.config.ts`**: Configures PWA assets.
-- **`README.md`**: Provides project overview and instructions.
-- **`tsconfig.json` & `tsconfig.node.json`**: Configures TypeScript.
-- **`typings/`**: Contains TypeScript type definitions.
-- **`vercel.json`**: Configures deployment on Vercel.
-- **`vite.config.ts`**: Configures the Vite build tool.

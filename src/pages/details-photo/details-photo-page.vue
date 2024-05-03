@@ -20,7 +20,7 @@ const photo = ref<Photo | null>(null)
 const isLoadingDetailsPhoto = ref(false)
 
 function handleShowFullPhoto() {
-  router.push({ name: routes.photoPage.fullPhoto.name })
+  router.push({ name: routes.photoPage.children.fullPhoto.name })
 }
 
 async function getDetailsPhoto(id: string) {
@@ -104,7 +104,7 @@ getDetailsPhoto(route.params.id.toString())
     </template>
     <TfLoader v-else-if="isLoadingDetailsPhoto" />
   </div>
-  <RouterView v-slot="{ Component }" name="fullPhoto">
+  <RouterView v-slot="{ Component }" :name="routes.photoPage.children.fullPhoto.name">
     <component
       :is="Component"
       v-if="photo"

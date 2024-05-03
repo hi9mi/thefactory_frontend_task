@@ -35,6 +35,7 @@ const state = reactive({
 .wrapper {
   padding: 20px;
 }
+
 .wrapper > * {
   margin: 10px;
 }

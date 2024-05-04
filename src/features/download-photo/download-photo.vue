@@ -25,7 +25,7 @@ async function downloadPhoto() {
     document.body.appendChild(anchorElement)
     anchorElement.click()
 
-    document.body.removeChild(anchorElement)
+    anchorElement.remove()
     globalThis.URL.revokeObjectURL(href)
   }
   catch (error) {
@@ -56,7 +56,7 @@ async function downloadPhoto() {
 
 <style module="classes">
 .btn {
-  color: var(--c-squid-ink)
+  color: var(--c-squid-ink);
 }
 
 .text {

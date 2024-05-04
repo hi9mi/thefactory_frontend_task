@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import path from 'node:path'
 
 import vue from '@vitejs/plugin-vue'
@@ -16,6 +17,9 @@ export default defineConfig(({ mode }) => {
   const pwaMode = mode === 'production' ? 'production' : 'development'
 
   return {
+    test: {
+      environment: 'happy-dom',
+    },
     plugins: [
       vue({ script: { defineModel: true } }),
       webfontDownload(),

@@ -94,6 +94,10 @@ describe('show full photo feature', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
 
     expect(wrapper.emitted()).toHaveProperty('hideFullPhoto')
+    expect(useRouter().push).toHaveBeenCalledWith({
+      name: routes.photoPage.name,
+      params: { id: useRoute().params.id },
+    })
   })
 
   it('navigates to the photo page on close', () => {
@@ -115,7 +119,19 @@ describe('show full photo feature', () => {
     await wrapper.find('div[data-testid="full-photo-overlay"]').trigger('click')
 
     expect(wrapper.emitted()).toHaveProperty('hideFullPhoto')
+    expect(useRouter().push).toHaveBeenCalledWith({
+      name: routes.photoPage.name,
+      params: { id: useRoute().params.id },
+    })
+  })
 
-    wrapper.unmount()
+  it('closes the full photo on overlay keydown', async () => {
+    await wrapper.find('div[data-testid="full-photo-overlay"]').trigger('keydown', { key: ' ' })
+
+    expect(wrapper.emitted()).toHaveProperty('hideFullPhoto')
+    expect(useRouter().push).toHaveBeenCalledWith({
+      name: routes.photoPage.name,
+      params: { id: useRoute().params.id },
+    })
   })
 })

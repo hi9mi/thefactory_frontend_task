@@ -37,6 +37,9 @@ npm run build
 # Run preview server
 npm run preview
 
+# Run tests
+npm run test
+
 # Setup git hooks
 npm prepare
 
@@ -171,6 +174,7 @@ A collection of common utilities, components, and resources that are reused acro
   - **`/overlays`**: Overlay components like modals and popovers.
   - **story files (`*.story.vue`)**: Nested within each UI category for isolated development and demonstration of components.
 - **`/workers`**: Web Workers for background tasks.
+- **`/__mocks__`**: Mocks for unit tests.
 
 ### Widgets (`/widgets`)
 
@@ -179,3 +183,12 @@ Complex UI blocks composed of entities and features.
 - **Self-sufficient**: Can function independently within the UI.
 - **Non-business logic**: May include interactions like gestures.
 - **Business logic**: Included when necessary for rich interactivity.
+
+## Naming Directories and Files
+
+Kebab-case is used for naming all directories and files in this project. This approach is based on several considerations:
+
+- **Consistency**: A uniform naming convention is provided across the project, simplifying navigation and maintenance.
+- **Case Sensitivity**: To avoid potential bugs and issues with case sensitivity and to ensure better cross-platform compatibility, kebab-case is utilized. Further information can be found [here](https://en.wikipedia.org/wiki/Case_sensitivity) and [here](https://www.hanselman.com/blog/git-is-casesensitive-and-your-filesystem-may-not-be-weird-folder-merging-on-windows).
+- **Clarity**: The use of kebab-case prevents the merging of words, enhancing readability (e.g., `CuteIDKOKReader` becomes `cute-id-kok-reader.ts`).
+- **Uniformity Across File Types**: Kebab-case is applied to all files and folders, resulting in consistent naming regardless of file type (e.g., `get-price.ts`, `price.vue`, `price.test.ts`, and `app/app.vue`).

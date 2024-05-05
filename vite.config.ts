@@ -19,6 +19,11 @@ export default defineConfig(({ mode }) => {
   return {
     test: {
       environment: 'happy-dom',
+      css: {
+        modules: {
+          classNameStrategy: 'non-scoped',
+        },
+      },
     },
     plugins: [
       vue({ script: { defineModel: true } }),

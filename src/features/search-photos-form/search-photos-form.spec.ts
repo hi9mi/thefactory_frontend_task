@@ -9,17 +9,22 @@ vi.mock('vue-router', () => ({
   useRoute: vi.fn(),
 }))
 describe('search photos form feature', () => {
+  let wrapper: ReturnType<typeof mount<typeof SearchPhotosForm>>
   beforeEach(() => {
     // @ts-expect-error mock
     useRoute.mockReturnValue(reactive({ query: { q: 'initial' } }))
+    wrapper = mount(SearchPhotosForm)
   })
 
   afterEach(() => {
     vi.clearAllMocks()
+    wrapper.unmount()
+    // @ts-expect-error cleanup wrapper
+    wrapper = undefined
   })
 
   it('emits the submit event with the search term', async () => {
-    const wrapper = mount(SearchPhotosForm)
+    mount(SearchPhotosForm)
     const input = wrapper.find<HTMLInputElement>('#search-photos')
     const form = wrapper.find<HTMLFormElement>('form')
 
@@ -35,7 +40,7 @@ describe('search photos form feature', () => {
   })
 
   it('change input value when route query changes', async () => {
-    const wrapper = mount(SearchPhotosForm)
+    mount(SearchPhotosForm)
 
     const input = wrapper.find<HTMLInputElement>('#search-photos')
 

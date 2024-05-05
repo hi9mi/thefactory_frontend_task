@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue'
-import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import { routes } from '@tf-app/routing'
 import type { Photo } from '@tf-app/shared/api'
@@ -15,7 +15,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'hideFullPhoto'): void
+  hideFullPhoto: []
 }>()
 
 const FULL_PHOTO_CONTAINER_ID = 'full-photo'
@@ -34,8 +34,10 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  (fullPhotoContainer && document.body.removeChild(fullPhotoContainer))
+  if (fullPhotoContainer)
+    document.body.removeChild(fullPhotoContainer)
 
+  document.body.classList.remove('hidden')
   document.removeEventListener('keydown', handleEscapeKey)
 })
 
@@ -58,10 +60,6 @@ function hideFullPhoto() {
     },
   })
 }
-
-onBeforeRouteLeave(() => {
-  document.body.classList.remove('hidden')
-})
 </script>
 
 <template>
@@ -74,6 +72,7 @@ onBeforeRouteLeave(() => {
         :class="classes.overlay"
         role="button"
         tabindex="0"
+        data-testid="full-photo-overlay"
         @keydown="handleOverlayKeyDown"
         @click="hideFullPhoto"
       />

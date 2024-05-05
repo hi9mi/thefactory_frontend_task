@@ -14,6 +14,7 @@ dist-ssr
 dev-dist
 .histoire
 docs
+coverage
 
 # Editor directories and files
 .vscode/*

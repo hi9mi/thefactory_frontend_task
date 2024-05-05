@@ -26,6 +26,7 @@ export default antfu({
     'dist',
     'dev-dist',
     '.histoire',
+    'coverage',
   ],
 }, {
   files: ['**/*.worker.ts'],

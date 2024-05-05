@@ -14,5 +14,5 @@ export default {
     'comment-empty-line-before': null,
     'no-descending-specificity': null,
   },
-  ignoreFiles: ['node_modules/**/*', 'dist/**/*', 'dev-dist/**/*', '.histoire/**/*'],
+  ignoreFiles: ['node_modules/**/*', 'dist/**/*', 'dev-dist/**/*', '.histoire/**/*', 'coverage/**/*'],
 }

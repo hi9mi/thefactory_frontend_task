@@ -10,6 +10,7 @@ vi.mock('@tf-app/shared/ui/feedback/tf-notification/libs', () => ({
 }))
 
 describe('download photo feature', () => {
+  let wrapper: ReturnType<typeof mount<typeof DownloadPhoto>>
   const mockBlob = new Blob(['test'], { type: 'image/jpeg' })
 
   beforeEach(() => {
@@ -20,22 +21,24 @@ describe('download photo feature', () => {
       createObjectURL: vi.fn(),
       revokeObjectURL: vi.fn(),
     })
-  })
-
-  afterEach(() => {
-    vi.clearAllMocks()
-    vi.unstubAllGlobals()
-  })
-
-  it('calls createObjectURL on button click', async () => {
-    const wrapper = mount(DownloadPhoto, {
+    wrapper = mount(DownloadPhoto, {
       props: {
         src: 'test-src',
         name: 'test-name',
         withText: true,
       },
     })
+  })
 
+  afterEach(() => {
+    vi.clearAllMocks()
+    vi.unstubAllGlobals()
+    wrapper.unmount()
+    // @ts-expect-error cleanup wrapper
+    wrapper = undefined
+  })
+
+  it('calls createObjectURL on button click', async () => {
     await wrapper.findComponent({ name: 'TfButton' }).trigger('click')
 
     await wrapper.vm.$nextTick()
@@ -44,14 +47,6 @@ describe('download photo feature', () => {
   })
 
   it('calls revokeObjectURL element on button click', async () => {
-    const wrapper = mount(DownloadPhoto, {
-      props: {
-        src: 'test-src',
-        name: 'test-name',
-        withText: true,
-      },
-    })
-
     await wrapper.findComponent({ name: 'TfButton' }).trigger('click')
 
     await wrapper.vm.$nextTick()
@@ -59,13 +54,6 @@ describe('download photo feature', () => {
   })
 
   it('create and remove anchor element on button click', async () => {
-    const wrapper = mount(DownloadPhoto, {
-      props: {
-        src: 'test-src',
-        name: 'test-name',
-        withText: true,
-      },
-    })
     const fakeAnchor = document.createElement('a')
     fakeAnchor.href = ''
     fakeAnchor.download = ''
@@ -86,13 +74,6 @@ describe('download photo feature', () => {
   })
 
   it('shows notification if download fails', async () => {
-    const wrapper = mount(DownloadPhoto, {
-      props: {
-        src: 'test-src',
-        name: 'test-name',
-        withText: true,
-      },
-    })
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('fetch failed')))
 
     await wrapper.findComponent({ name: 'TfButton' }).trigger('click')

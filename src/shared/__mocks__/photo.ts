@@ -39,3 +39,8 @@ export const mockFavoritePhoto = {
   ...mockPhoto,
   id: 'favorite',
 }
+
+export const mockPhotos = Array.from({ length: 10 }, (_, index) => ({
+  ...mockPhoto,
+  id: `photo-${index}`,
+}))

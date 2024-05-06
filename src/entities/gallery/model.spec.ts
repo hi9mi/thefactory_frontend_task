@@ -160,4 +160,11 @@ describe('gallery entity', () => {
 
     expect(galleryStore.hasNoResults).toBe(false)
   })
+
+  it('hasNoResult return false while loading photos', () => {
+    const galleryStore = useGalleryStore()
+    galleryStore.isLoadingPhotos = true
+
+    expect(galleryStore.hasNoResults).toBe(false)
+  })
 })

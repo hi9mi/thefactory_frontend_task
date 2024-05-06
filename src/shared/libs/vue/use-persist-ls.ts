@@ -19,7 +19,12 @@ export function usePersistLS<
   }
 
   watchEffect(() => {
-    setItemToLS(key, toValue(data))
+    try {
+      setItemToLS(key, toValue(data))
+    }
+    catch (error) {
+      console.error('Failed to persist data to localStorage:', error)
+    }
   })
 
   return data

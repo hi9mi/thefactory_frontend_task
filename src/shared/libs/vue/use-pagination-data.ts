@@ -14,6 +14,16 @@ export function usePaginationData<T>(data: MaybeRef<T[]>, options: Options = {})
   const slicedData = computed(() => toRef(data).value.slice((currentPage.value - 1) * limit, (currentPage.value - 1) * limit + limit))
 
   function changePage(newPage: number) {
+    if (newPage > totalPages.value) {
+      currentPage.value = totalPages.value
+      return
+    }
+
+    if (newPage < 1) {
+      currentPage.value = 1
+      return
+    }
+
     currentPage.value = newPage
   }
 

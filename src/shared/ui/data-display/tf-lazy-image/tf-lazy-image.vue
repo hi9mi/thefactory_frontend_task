@@ -3,17 +3,55 @@ import { computed, useCssModule } from 'vue'
 
 import { useLazyImage } from './libs'
 
-defineProps<{ originalSrc: string, placeholderSrc: string, srcset?: string, sizes?: string, alt?: string }>()
+withDefaults(defineProps<{
+  originalSrc: string
+  placeholderSrc: string
+  srcset?: string
+  sizes?: string
+  alt?: string
+  intersectionOptions?: IntersectionObserverInit
+}>(), {
+  intersectionOptions: () => ({
+    root: null,
+    rootMargin: '100px 0px 100px 0px',
+    threshold: 0,
+  }),
+})
+const emit = defineEmits<{
+  loaded: [element: HTMLImageElement]
+  intersected: [element: HTMLImageElement]
+  error: [element: HTMLImageElement]
+}>()
 
-const { vLazy, loading } = useLazyImage()
+const { vLazy, state } = useLazyImage()
 const classes = useCssModule('classes')
 
-const imageClasses = computed(() => loading.value ? [classes.image, classes.loading] : [classes.image])
+const imageClasses = computed(() => state.isLoading ? [classes.image, classes.loading] : [classes.image])
+
+function onIntersect(element: HTMLImageElement) {
+  emit('intersected', element)
+}
+function onLoad(element: HTMLImageElement) {
+  emit('loaded', element)
+}
+function onError(element: HTMLImageElement) {
+  emit('error', element)
+}
 </script>
 
 <template>
   <img
-    v-lazy="{ originalSrc, placeholderSrc, srcset, sizes, alt }"
+    v-lazy="{
+      originalSrc,
+      placeholderSrc,
+      srcset,
+      sizes,
+      alt,
+      intersectionOptions,
+      onLoad,
+      onIntersect,
+      onError,
+    }"
     :class="imageClasses"
   >
 </template>

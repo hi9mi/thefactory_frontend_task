@@ -1,4 +1,4 @@
-import { type ObjectDirective, ref } from 'vue'
+import { type ObjectDirective, reactive } from 'vue'
 
 interface LazyImageOptions {
   originalSrc: string
@@ -6,13 +6,29 @@ interface LazyImageOptions {
   srcset?: string
   sizes?: string
   alt?: string
+  intersectionOptions?: IntersectionObserverInit
+  onLoad: (element: HTMLImageElement) => void
+  onError: (element: HTMLImageElement) => void
+  onIntersect: (element: HTMLImageElement) => void
 }
 
 export function useLazyImage() {
-  const loading = ref(false)
+  const state = reactive({
+    isLoading: false,
+    isIntersected: false,
+    isError: false,
+  })
 
-  function load(imgElement: HTMLImageElement, { placeholderSrc, originalSrc, srcset, sizes, alt }: LazyImageOptions) {
-    loading.value = true
+  function load(imgElement: HTMLImageElement, {
+    placeholderSrc,
+    originalSrc,
+    srcset,
+    sizes,
+    alt,
+    onLoad,
+    onError,
+  }: LazyImageOptions) {
+    state.isLoading = true
     imgElement.src = placeholderSrc
     const tempImage = new Image()
     tempImage.src = originalSrc
@@ -28,22 +44,27 @@ export function useLazyImage() {
       if (alt)
         imgElement.alt = alt
 
-      loading.value = false
+      state.isLoading = false
+      onLoad(imgElement)
+    }
+    tempImage.onerror = () => {
+      state.isLoading = false
+      state.isError = true
+      onError(imgElement)
     }
   }
 
   const vLazy: ObjectDirective<HTMLImageElement, LazyImageOptions> = {
     mounted(element, { value }) {
       const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            load(element, value)
-            observer.disconnect()
-          }
-        })
-      }, {
-        rootMargin: '100px 0px 100px 0px',
-      })
+        const entry = entries[0]
+        if (entry.isIntersecting) {
+          load(element, value)
+          observer.disconnect()
+          state.isIntersected = true
+          value.onIntersect(element)
+        }
+      }, value.intersectionOptions)
 
       observer.observe(element)
     },
@@ -51,6 +72,6 @@ export function useLazyImage() {
 
   return {
     vLazy,
-    loading,
+    state,
   }
 }

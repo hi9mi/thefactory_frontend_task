@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
+import { logEvent } from 'histoire/client'
 
 import type { Photo } from '@tf-app/shared/api'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
@@ -36,6 +37,9 @@ loadRandomPhoto()
         :original-src="`${state.photo.urls.raw}&w=640&h=640&dpr=2&q=80`"
         :alt="state.photo.alt_description"
         :placeholder-src="state.photo.urls.thumb"
+        @loaded="logEvent('loaded', $event)"
+        @intersected="logEvent('intersected', $event)"
+        @error="logEvent('error', $event)"
       />
       <template #controls>
         <HstButton @click="loadRandomPhoto">

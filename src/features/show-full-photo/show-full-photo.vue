@@ -23,13 +23,15 @@ const FULL_PHOTO_CONTAINER_ID = 'full-photo'
 const { trapRef } = useFocusTrap()
 const router = useRouter()
 const route = useRoute()
+const scrollTop = window.scrollY
 
 const fullPhotoContainer = document.createElement('div')
 fullPhotoContainer.id = FULL_PHOTO_CONTAINER_ID
 document.body.appendChild(fullPhotoContainer)
-document.body.classList.add('hidden')
 
 onMounted(() => {
+  document.body.style.top = `${-scrollTop}px`
+  document.body.classList.add('lock-scrollbar')
   document.addEventListener('keydown', handleEscapeKey)
 })
 
@@ -37,7 +39,9 @@ onBeforeUnmount(() => {
   if (fullPhotoContainer)
     document.body.removeChild(fullPhotoContainer)
 
-  document.body.classList.remove('hidden')
+  document.body.classList.remove('lock-scrollbar')
+  document.body.style.top = ''
+  window.scrollTo(0, scrollTop)
   document.removeEventListener('keydown', handleEscapeKey)
 })
 

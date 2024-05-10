@@ -78,10 +78,10 @@ describe('show full photo feature', () => {
     })
   })
 
-  it('removes the hidden class on route change', () => {
-    expect(document.body.classList.contains('hidden')).toBe(true)
+  it('removes the lock-scrollbar class on route change', () => {
+    expect(document.body.classList.contains('lock-scrollbar')).toBe(true)
     wrapper.unmount()
-    expect(document.body.classList.contains('hidden')).toBe(false)
+    expect(document.body.classList.contains('lock-scrollbar')).toBe(false)
   })
 
   it('closes the full photo on overlay click', async () => {

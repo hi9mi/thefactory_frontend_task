@@ -101,7 +101,7 @@ watch(tooltipElement, () => {
   left: var(--tooltip-left, 0);
   top: var(--tooltip-top, 0);
   z-index: 1000;
-  max-width: 160px;
+  max-width: 200px;
   width: max-content;
   word-wrap: break-word;
   border-radius: var(--border-radius-md, 8px);

@@ -1,6 +1,8 @@
 /// <reference types="vitest" />
+/// <reference types="histoire" />
 import path from 'node:path'
 
+import { HstVue } from '@histoire/plugin-vue'
 import vue from '@vitejs/plugin-vue'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import Icons from 'unplugin-icons/vite'
@@ -17,6 +19,24 @@ export default defineConfig(({ mode }) => {
   const pwaMode = mode === 'production' ? 'production' : 'development'
 
   return {
+    port: process.env.HISTOIRE ? 6006 : 3000,
+    base: process.env.HISTOIRE_BASE || '/',
+    histoire: {
+      plugins: [HstVue()],
+      setupFile: '/src/histoire.setup.ts',
+      theme: {
+        title: 'The factory',
+        logo: {
+          light: './src/shared/assets/logo.png',
+          dark: './src/shared/assets/logo.png',
+          square: './src/shared/assets/logo.png',
+        },
+        logoHref: 'https://thefactory-frontend-task.vercel.app/',
+        favicon: 'favicon.ico',
+        defaultColorScheme: 'light',
+      },
+      viteIgnorePlugins: ['vite-plugin-pwa:dev-sw', 'vite-plugin-pwa:build', 'vite-plugin-pwa:info', 'vite-plugin-pwa', 'html-plugin'],
+    },
     test: {
       environment: 'happy-dom',
       css: {
@@ -26,7 +46,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
-      vue({ script: { defineModel: true } }),
+      vue(),
       webfontDownload(),
       HtmlConfig({
         metas: META_TAGS,

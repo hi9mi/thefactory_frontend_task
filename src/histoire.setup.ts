@@ -1,4 +1,4 @@
-import './app/index.css'
+import './app/styles/index.css'
 
 import { defineSetupVue3 } from '@histoire/plugin-vue'
 

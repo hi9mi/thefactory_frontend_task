@@ -1,5 +1,3 @@
-import type { IHTMLTag } from 'vite-plugin-html-config'
-
 export const APP_INFO = {
   name: 'The Factory Gallery',
   shortDescription: 'Easily search amazing photos',
@@ -15,7 +13,7 @@ export const APP_INFO = {
   },
 } as const
 
-export const META_TAGS: IHTMLTag[] = [
+export const META_TAGS = [
   {
     name: 'keywords',
     content: APP_INFO.keywords,

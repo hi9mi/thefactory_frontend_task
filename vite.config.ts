@@ -7,7 +7,7 @@ import vue from '@vitejs/plugin-vue'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import Icons from 'unplugin-icons/vite'
 import { defineConfig, loadEnv } from 'vite'
-import HtmlConfig from 'vite-plugin-html-config'
+import { createHtmlPlugin } from 'vite-plugin-html'
 import { VitePWA } from 'vite-plugin-pwa'
 import webfontDownload from 'vite-plugin-webfont-dl'
 
@@ -48,9 +48,17 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       webfontDownload(),
-      HtmlConfig({
-        metas: META_TAGS,
+      createHtmlPlugin({
+        minify: true,
+        entry: '/src/app/main.ts',
+        inject: {
+          data: {
+            title: APP_INFO.name,
+            meta: META_TAGS.map(tag => `<meta name="${tag.name}" content="${tag.content}" />`).join(''),
+          },
+        },
       }),
+
       VitePWA({
         useCredentials: true,
         mode: pwaMode,

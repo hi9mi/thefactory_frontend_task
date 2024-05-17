@@ -21,7 +21,7 @@
 }
 
 .actionBtn:focus {
-  outline: none
+  outline: none;
 }
 
 .actionBtn:focus-visible {

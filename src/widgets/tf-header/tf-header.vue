@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { routes } from '@tf-app/routing'
@@ -8,22 +9,30 @@ import HeartIcon from '~icons/tf-icons/heart'
 import SearchIcon from '~icons/tf-icons/search'
 
 const route = useRoute()
+const showSearchIcon = computed(() => {
+  return route.path !== routes.search.path
+})
 </script>
 
 <template>
   <header :class="classes.header">
     <div class="container" :class="classes.headerWrapper">
-      <img
-        src="/img/logo.png"
-        alt="logo"
-        :class="classes.logo"
+      <RouterLink
+        :to="routes.gallery.path"
+        title="На главную"
       >
+        <img
+          src="/img/logo.png"
+          alt="logo"
+          :class="classes.logo"
+        >
+      </RouterLink>
 
       <div :class="classes.navWrapper">
         <nav :class="classes.links">
           <RouterLink
-            v-if="route.path !== routes.gallery.path"
-            :to="routes.gallery.path"
+            v-if="showSearchIcon"
+            :to="routes.search.path"
             :class="classes.link"
           >
             <SearchIcon

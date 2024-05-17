@@ -104,13 +104,13 @@ watch(tooltipElement, () => {
   max-width: 200px;
   width: max-content;
   word-wrap: break-word;
-  border-radius: var(--border-radius-md, 8px);
-  background-color: var(--c-main-bg, #fff);
+  border-radius: var(--border-radius-medium, 8px);
+  background-color: var(--background-color-main, #fff);
   padding: 4px 8px;
   font-size: 14px;
-  color: var(--font-color, #000);
+  color: var(--text-color-default, #000);
   box-shadow: var(
-    --box-shadow-sm,
+    --shadow-small,
     0 1px 3px 0 rgb(0 0 0 / 10%),
     0 1px 2px 0 rgb(0 0 0 / 6%)
   );

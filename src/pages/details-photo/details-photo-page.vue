@@ -163,7 +163,7 @@ getDetailsPhoto(route.params.id.toString())
 }
 
 .userBio {
-  color: var(--c-white-smoke);
+  color: var(--color-white-smoke);
 }
 
 .userName {
@@ -179,8 +179,8 @@ getDetailsPhoto(route.params.id.toString())
   height: 55px;
   object-fit: cover;
   object-position: center;
-  border: 1px solid var(--c-white);
-  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-white);
+  border-radius: var(--border-radius-medium);
 }
 
 .photoActions {
@@ -200,7 +200,7 @@ getDetailsPhoto(route.params.id.toString())
   height: 100%;
   object-fit: cover;
   object-position: center;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-medium);
 }
 
 .previewBtn {
@@ -212,7 +212,7 @@ getDetailsPhoto(route.params.id.toString())
 }
 
 .previewBtn:focus-visible {
-  outline: 3px dashed var(--c-white);
+  outline: 3px dashed var(--color-white);
 }
 
 @media screen and (width <=560px) {
@@ -226,12 +226,12 @@ getDetailsPhoto(route.params.id.toString())
 
   .userName {
     font-size: 18px;
-    color: var(--font-color);
+    color: var(--text-color-default);
   }
 
   .userNickname {
     font-size: 14px;
-    color: var(--c-silver);
+    color: var(--color-silver);
   }
 
   .photoWrapper {

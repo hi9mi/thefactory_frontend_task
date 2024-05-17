@@ -68,22 +68,22 @@ onBeforeUnmount(() => {
   bottom: 20px;
   right: 20px;
   z-index: 100;
-  background-color: var(--c-primary-bg);
+  background-color: var(--background-color-primary);
   border: none;
   outline: none;
-  box-shadow: var(--box-shadow-md);
-  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-medium);
+  border-radius: var(--border-radius-small);
   display: flex;
   justify-content: center;
   align-items: center;
   width: 50px;
   height: 50px;
-  color: var(--font-color);
+  color: var(--text-color-default);
   cursor: pointer;
 }
 
 .affix:focus-visible {
-  outline: 3px dashed var(--font-color);
+  outline: 3px dashed var(--text-color-default);
   outline-offset: 4px;
 }
 </style>

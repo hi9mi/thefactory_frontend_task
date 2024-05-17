@@ -13,7 +13,7 @@ import LoaderIcon from '~icons/tf-icons/loader'
       aria-hidden="true"
       :class="classes.spinner"
     />
-    <span class="srOnly">Загрузка...</span>
+    <span class="sr-only">Загрузка...</span>
   </div>
 </template>
 
@@ -27,7 +27,7 @@ import LoaderIcon from '~icons/tf-icons/loader'
 }
 
 .spinner {
-  color: var(--font-color);
+  color: var(--text-color-default);
   animation: spin 1s linear infinite;
 }
 

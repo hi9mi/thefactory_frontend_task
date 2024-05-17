@@ -1,0 +1,38 @@
+@layer variables {
+  :root {
+    --color-white: #fff;
+    --color-black: #000;
+    --color-silver: #bdbdbd;
+    --color-white-smoke: #f2f2f2;
+    --color-weathered-stone: #c4c4c4;
+    --color-sunshine: #fff200;
+    --color-sunset-orange: #fa5252;
+    --color-fruit-salad: #40c057;
+    --color-candy-apple: #ff0800;
+    --color-light-slate-grey: #868e96;
+    --color-eerie-black: #1a1a1a;
+    --color-snow: #f9f9f9;
+    --color-shark: #242424;
+    --color-squid-ink: #213547;
+    --border-radius-small: 4px;
+    --border-radius-medium: 8px;
+    --shadow-small: 0 0 4px 0 rgb(0 0 0 / 25%);
+    --shadow-medium: 0 0 4px 2px rgb(0 0 0 / 20%);
+    --shadow-large: 3px 4px 10px -2px rgb(34 60 80 / 30%);
+    --text-color-default: var(--color-squid-ink);
+    --background-color-main: var(--color-white);
+    --background-color-primary: var(--color-snow);
+    --background-color-secondary: var(--color-sunshine);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color-default: var(--color-white);
+    --background-color-main: var(--color-shark);
+    --background-color-primary: var(--color-eerie-black);
+    --shadow-small: 0 0 4px 0 rgb(255 255 255 / 25%);
+    --shadow-medium: 0 0 4px 2px rgb(255 255 255 / 20%);
+    --shadow-large: 3px 4px 10px -2px rgb(255 255 255 / 30%);
+  }
+}

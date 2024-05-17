@@ -11,13 +11,13 @@
 .actionBtn {
   background-color: transparent;
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-medium);
   outline: none;
   padding: 4px;
   display: flex;
   align-items: center;
   cursor: pointer;
-  color: var(--font-color);
+  color: var(--text-color-default);
 }
 
 .actionBtn:focus {
@@ -25,7 +25,7 @@
 }
 
 .actionBtn:focus-visible {
-  outline: 3px dashed var(--font-color);
+  outline: 3px dashed var(--text-color-default);
   outline-offset: 2px;
 }
 

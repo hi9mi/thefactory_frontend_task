@@ -55,7 +55,7 @@ const route = useRoute()
 
 <style module="classes">
 .header {
-  background-color: var(--c-eerie-black);
+  background-color: var(--color-eerie-black);
   height: 148px;
   display: flex;
   align-items: center;
@@ -85,7 +85,7 @@ const route = useRoute()
 }
 
 .link {
-  color: var(--c-white);
+  color: var(--color-white);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -93,9 +93,9 @@ const route = useRoute()
 }
 
 .link:focus-visible {
-  outline: 3px dashed var(--c-white);
+  outline: 3px dashed var(--color-white);
   outline-offset: 4px;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-medium);
 }
 
 .linkText {

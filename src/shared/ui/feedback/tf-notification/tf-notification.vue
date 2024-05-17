@@ -75,14 +75,13 @@ onBeforeUnmount(() => {
 .notification {
   position: relative;
   padding: 10px 22px;
-  background-color: var(--c-primary-bg);
-  box-shadow: var(--box-shadow-lg);
-  border-radius: var(--border-radius-sm);
+  background-color: var(--background-color-primary);
+  box-shadow: var(--shadow-large);
+  border-radius: var(--border-radius-small);
   min-width: 220px;
   max-width: 320px;
   display: flex;
   flex-direction: column;
-
 }
 
 .notification::before {
@@ -90,25 +89,25 @@ onBeforeUnmount(() => {
   top: 50%;
   transform: translateY(-50%);
   position: absolute;
-  content: "";
+  content: '';
   display: block;
   width: 3px;
   height: 80%;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-small);
 }
 
 .success::before {
-  background-color: var(--c-fruit-salad);
+  background-color: var(--color-fruit-salad);
 }
 
 .error::before {
-  background-color: var(--c-sunset-orange);
+  background-color: var(--color-sunset-orange);
 }
 
 .title {
   font-size: 14px;
   font-weight: 500;
-  color: var(--font-color);
+  color: var(--text-color-default);
   margin-bottom: 3px;
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -119,7 +118,7 @@ onBeforeUnmount(() => {
 .message {
   font-size: 14px;
   font-weight: 400;
-  color: var(--c-light-slate-grey);
+  color: var(--color-light-slate-grey);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -135,6 +134,6 @@ onBeforeUnmount(() => {
   font-size: 14px;
   font-weight: 400;
   cursor: pointer;
-  color: var(--font-color);
+  color: var(--text-color-default);
 }
 </style>

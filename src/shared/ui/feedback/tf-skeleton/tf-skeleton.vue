@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<{
   width: '100%',
   maxWidth: '100%',
   height: 'auto',
-  radius: 'var(--border-radius-sm)',
+  radius: 'var(--border-radius-small)',
 })
 const element = computed(() => props.type === 'block' ? 'div' : 'span')
 
@@ -38,7 +38,7 @@ function convertValueToPx(value: string | number) {
 .skeleton {
   position: relative;
   overflow: hidden;
-  background-color: var(--c-weathered-stone);
+  background-color: var(--color-weathered-stone);
 }
 
 .skeleton.inline {
@@ -48,10 +48,15 @@ function convertValueToPx(value: string | number) {
 
 .skeleton::after {
   display: block;
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(90deg, var(--c-weathered-stone), var(--c-white-smoke), var(--c-weathered-stone));
+  background-image: linear-gradient(
+    90deg,
+    var(--color-weathered-stone),
+    var(--color-white-smoke),
+    var(--color-weathered-stone)
+  );
   background-repeat: no-repeat;
   transform: translateX(-100%);
   animation-name: skeleton;

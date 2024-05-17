@@ -85,6 +85,6 @@ function handleBlurhashImage(event: MessageEvent<{ payload: { bitmap: ImageBitma
   display: block;
   height: 100%;
   width: 100%;
-  background-color: var(--c-weathered-stone);
+  background-color: var(--color-weathered-stone);
 }
 </style>

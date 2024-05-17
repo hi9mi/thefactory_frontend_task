@@ -56,7 +56,7 @@ async function downloadPhoto() {
 
 <style module="classes">
 .btn {
-  color: var(--c-squid-ink);
+  color: var(--color-squid-ink);
 }
 
 .text {

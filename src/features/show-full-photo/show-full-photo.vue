@@ -141,7 +141,7 @@ function hideFullPhoto() {
   top: 20px;
   right: 20px;
   z-index: 102;
-  color: var(--c-white);
+  color: var(--color-white);
 }
 
 @media screen and (width <= 678px) {

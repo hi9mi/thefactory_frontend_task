@@ -48,15 +48,15 @@ const tooltipLabel = computed(() => isFavoritePhoto.value ? 'Удалить из
 
 <style module="classes">
 .btn {
-  background-color: var(--c-snow);
+  background-color: var(--color-snow);
 }
 
 .icon {
-  color: var(--c-black);
+  color: var(--color-black);
 }
 
 .favorite {
-  fill: var(--c-candy-apple);
-  color: var(--c-candy-apple);
+  fill: var(--color-candy-apple);
+  color: var(--color-candy-apple);
 }
 </style>

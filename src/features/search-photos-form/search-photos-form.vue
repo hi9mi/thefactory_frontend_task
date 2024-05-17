@@ -58,7 +58,7 @@ watch(() => route.query.q, (newValue) => {
 <style module="classes">
 .wrapper {
   height: 250px;
-  border-bottom: 16px solid var(--c-weathered-stone);
+  border-bottom: 16px solid var(--color-weathered-stone);
   background-image: url('/img/bg-mobile.jpg');
   background-position: center;
   background-repeat: no-repeat;
@@ -89,11 +89,11 @@ watch(() => route.query.q, (newValue) => {
 .form {
   max-width: 860px;
   width: 100%;
-  background-color: var(--c-primary-bg);
+  background-color: var(--background-color-primary);
   padding-left: 20px;
   padding-right: 50px;
   position: relative;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-small);
 }
 
 .input {
@@ -104,7 +104,7 @@ watch(() => route.query.q, (newValue) => {
   font-weight: 300;
   width: 100%;
   background-color: transparent;
-  color: var(--font-color);
+  color: var(--text-color-default);
 }
 
 .input[type='search']::-webkit-search-decoration,
@@ -115,7 +115,7 @@ watch(() => route.query.q, (newValue) => {
 }
 
 .input::placeholder {
-  color: var(--font-color);
+  color: var(--text-color-default);
 }
 
 .iconButton {
@@ -127,14 +127,14 @@ watch(() => route.query.q, (newValue) => {
   background-color: transparent;
   border: none;
   outline: none;
-  color: var(--font-color);
+  color: var(--text-color-default);
   cursor: pointer;
 }
 
 .iconButton:focus-visible {
-  outline: 3px dashed var(--font-color);
+  outline: 3px dashed var(--text-color-default);
   outline-offset: 4px;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-small);
 }
 
 @media screen and (width <= 796px) {
@@ -145,7 +145,7 @@ watch(() => route.query.q, (newValue) => {
 }
 
 :global(html:is(.dark)) .wrapper {
-  border-bottom-color: var(--c-light-slate-grey);
+  border-bottom-color: var(--color-light-slate-grey);
 }
 
 @media screen and (width >= 796px) {

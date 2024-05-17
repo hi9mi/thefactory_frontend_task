@@ -14,24 +14,24 @@ defineProps<{
 <style module='classes'>
 .btn {
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-medium);
   outline: none;
-  color: var(--font-color);
+  color: var(--text-color-default);
   padding: 13px 11px;
   display: flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  box-shadow: var(--box-shadow-sm);
+  box-shadow: var(--shadow-small);
 }
 
 .yellow {
-  background-color: var(--c-secondary-bg);
-  color: var(--c-squid-ink);
+  background-color: var(--background-color-secondary);
+  color: var(--color-squid-ink);
 }
 
 .white {
-  background-color: var(--c-primary-bg);
+  background-color: var(--background-color-primary);
 }
 
 .btn:hover {
@@ -39,11 +39,11 @@ defineProps<{
 }
 
 .btn:focus {
-  outline: none
+  outline: none;
 }
 
 .btn:focus-visible {
-  outline: 3px dashed var(--font-color);
+  outline: 3px dashed var(--text-color-default);
   outline-offset: 2px;
 }
 
@@ -52,7 +52,7 @@ defineProps<{
 }
 
 .btn:disabled {
-  background-color: var(--c-weathered-stone);
+  background-color: var(--color-weathered-stone);
   cursor: default;
   pointer-events: none;
 }
@@ -62,11 +62,11 @@ defineProps<{
 }
 
 :global(html:is(.dark)) .btn:disabled {
-  background-color: var(--c-light-slate-grey);
+  background-color: var(--color-light-slate-grey);
 }
 
 :global(html:is(.dark)) .btn.yellow:disabled {
-  background-color: var(--c-light-slate-grey);
-  color: var(--font-color);
+  background-color: var(--color-light-slate-grey);
+  color: var(--text-color-default);
 }
 </style>

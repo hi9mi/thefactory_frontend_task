@@ -26,5 +26,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <TfSkeleton type="block" :height="height" radius="var(--border-radius-sm)" />
+  <TfSkeleton type="block" :height="height" radius="var(--border-radius-small)" />
 </template>

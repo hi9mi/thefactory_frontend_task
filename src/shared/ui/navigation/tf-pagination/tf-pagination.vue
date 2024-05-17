@@ -68,18 +68,18 @@ const { activePage, range, hasNextPage, hasPrevPage, next, prev, setPage, DOTS }
 .btn {
   background-color: transparent;
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-medium);
   outline: none;
-  color: var(--c-black);
+  color: var(--color-black);
   padding: 13px 11px;
   display: flex;
   align-items: center;
   cursor: pointer;
-  box-shadow: var(--box-shadow-sm);
+  box-shadow: var(--shadow-small);
 }
 
 .btn:disabled {
-  background-color: var(--c-weathered-stone);
+  background-color: var(--color-weathered-stone);
   cursor: default;
   pointer-events: none;
 }

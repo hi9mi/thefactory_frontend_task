@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => {
         favicon: 'favicon.ico',
         defaultColorScheme: 'light',
       },
-      viteIgnorePlugins: ['vite-plugin-pwa:dev-sw', 'vite-plugin-pwa:build', 'vite-plugin-pwa:info', 'vite-plugin-pwa', 'html-plugin'],
+      viteIgnorePlugins: ['vite-plugin-pwa:dev-sw', 'vite-plugin-pwa:build', 'vite-plugin-pwa:info', 'vite-plugin-pwa', 'vite:html'],
     },
     test: {
       environment: 'happy-dom',

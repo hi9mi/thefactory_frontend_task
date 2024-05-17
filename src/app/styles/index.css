@@ -41,7 +41,7 @@ body,
 }
 
 #nprogress .bar {
-  background: var(--c-sunshine);
+  background: var(--background-color-secondary);
   opacity: 0.75;
   position: fixed;
   z-index: 1031;

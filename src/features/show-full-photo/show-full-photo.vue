@@ -41,7 +41,7 @@ onBeforeUnmount(() => {
 
   document.body.classList.remove('lock-scrollbar')
   document.body.style.top = ''
-  window.scrollTo(0, scrollTop)
+  window.scrollTo({ top: scrollTop, left: 0, behavior: 'instant' })
   document.removeEventListener('keydown', handleEscapeKey)
 })
 

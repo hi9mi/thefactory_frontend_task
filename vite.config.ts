@@ -16,10 +16,12 @@ import { APP_INFO, META_TAGS } from './meta'
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
-  const pwaMode = mode === 'production' ? 'production' : 'development'
 
   return {
-    port: process.env.HISTOIRE ? 6006 : 3000,
+    server: {
+      port: process.env.HISTOIRE ? 6006 : 3000,
+      strictPort: true,
+    },
     base: process.env.HISTOIRE_BASE || '/',
     histoire: {
       plugins: [HstVue()],
@@ -58,10 +60,9 @@ export default defineConfig(({ mode }) => {
           },
         },
       }),
-
       VitePWA({
         useCredentials: true,
-        mode: pwaMode,
+        mode: mode as 'production' | 'development',
         base: '/',
         manifest: {
           name: APP_INFO.name,
@@ -106,7 +107,7 @@ export default defineConfig(({ mode }) => {
           ],
         },
         devOptions: {
-          enabled: pwaMode === 'development',
+          enabled: mode === 'development',
           type: 'module',
           navigateFallback: 'index.html',
           suppressWarnings: true,

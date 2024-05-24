@@ -24,23 +24,24 @@ function onSubmitSearchForm(searchTerm: string) {
 </script>
 
 <template>
-  <SearchPhotosForm @submit="onSubmitSearchForm" />
+  <SearchPhotosForm data-testid="search-photos-form" @submit="onSubmitSearchForm" />
   <div class="container" :class="classes.galleryContainer">
     <section
       :class="classes.gallery"
     >
       <template v-if="galleryStore.isLoadingRandomPhotos">
-        <TfPhotoCardSkeleton v-for="i of 9" :key="i" />
+        <TfPhotoCardSkeleton v-for="i of 9" :key="i" data-testid="photo-skeleton" />
       </template>
       <template v-else>
         <TfPhotoCard
           v-for="photo of galleryStore.randomPhotos"
           :key="photo.id"
           :photo="photo"
+          data-testid="photo-card"
         />
       </template>
     </section>
-    <TfAffix />
+    <TfAffix data-testid="affix" />
   </div>
 </template>
 

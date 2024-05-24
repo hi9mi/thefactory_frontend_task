@@ -3,6 +3,10 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 import ArrowTopIcon from '~icons/tf-icons/arrow-top'
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 const isShowAffix = ref(false)
 
 function onScroll() {
@@ -35,6 +39,7 @@ onBeforeUnmount(() => {
     >
       <button
         v-if="isShowAffix"
+        v-bind="$attrs"
         :class="classes.affix"
         @click="scrollToTop"
       >

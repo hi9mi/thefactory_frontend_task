@@ -23,6 +23,7 @@ const tooltipLabel = computed(() => isFavoritePhoto.value ? 'Удалить из
   <TfTooltip :label="tooltipLabel" position="top">
     <template #anchor="{ labelledby, onMouseEnter, onMouseLeave }">
       <TfButton
+        data-testid="toggle-favorite-photo-btn"
         :class="classes.btn"
         bg-color="white"
         type="button"

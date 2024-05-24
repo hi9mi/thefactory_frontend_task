@@ -43,6 +43,7 @@ async function downloadPhoto() {
     bg-color="yellow"
     type="button"
     :class="classes.btn"
+    data-testid="download-photo-btn"
     @click="downloadPhoto"
   >
     <DownloadIcon

@@ -34,18 +34,19 @@ watch(() => [galleryStore.page, galleryStore.searchTerm], (
 </script>
 
 <template>
-  <SearchPhotosForm @submit="onSubmitSearchForm" />
+  <SearchPhotosForm data-testid="search-photos-form" @submit="onSubmitSearchForm" />
   <div class="container" :class="classes.galleryContainer">
     <section
       :class="classes.gallery"
     >
       <template v-if="galleryStore.isLoadingPhotos">
-        <TfPhotoCardSkeleton v-for="i of 9" :key="i" />
+        <TfPhotoCardSkeleton v-for="i of 9" :key="i" data-testid="photo-skeleton" />
       </template>
       <template v-else-if="galleryStore.hasPhotos">
         <TfPhotoCard
           v-for="photo of galleryStore.photos!.results"
           :key="photo.id"
+          data-testid="photo-card"
           :photo="photo"
         />
       </template>

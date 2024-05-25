@@ -53,12 +53,14 @@ watch(() => [galleryStore.page, galleryStore.searchTerm], (
       <p
         v-else-if="galleryStore.hasNoResults"
         :class="classes.galleryEmpty"
+        data-testid="no-results"
       >
         По вашему запросу не найдено фотографий
       </p>
       <p
         v-else-if="galleryStore.isSearchEmpty"
         :class="classes.galleryEmpty"
+        data-testid="search-empty"
       >
         Для того чтобы найти фотографии, введите запрос
       </p>
@@ -68,10 +70,11 @@ watch(() => [galleryStore.page, galleryStore.searchTerm], (
       :total-pages="galleryStore.photos!.total_pages"
       :page="galleryStore.page"
       :disabled="galleryStore.isLoadingPhotos"
+      data-testid="pagination"
       @change-page="galleryStore.changeCurrentPage"
     />
 
-    <TfAffix />
+    <TfAffix data-testid="affix" />
   </div>
 </template>
 

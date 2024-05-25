@@ -45,10 +45,9 @@ export function createAppRouter(routesMap: RouteRecordRaw[], baseUrl: string) {
     history: createWebHistory(baseUrl),
     scrollBehavior(to, from, savedPosition) {
       const isSameRoute = to.path === from.path
-      if (isSameRoute || !shouldPreserveScroll(to, from))
-        return savedPosition || { top: 0, left: 0 }
+      const isPreserveScroll = !isSameRoute && shouldPreserveScroll(to, from)
 
-      return savedPosition || {}
+      return isPreserveScroll ? savedPosition || {} : { top: 0, left: 0 }
     },
 
     routes: routesMap,
@@ -59,9 +58,12 @@ export function createAppRouter(routesMap: RouteRecordRaw[], baseUrl: string) {
 
 type RoutesKeys = keyof typeof routes
 
-function shouldPreserveScroll(to: RouteLocationNormalizedLoaded, from: RouteLocationNormalizedLoaded) {
+function shouldPreserveScroll(
+  to: RouteLocationNormalizedLoaded,
+  from: RouteLocationNormalizedLoaded,
+) {
   const fromRoute = routes[from.name as RoutesKeys]
   const toRoute = routes[to.name as RoutesKeys]
 
-  return toRoute?.preserveScroll ?? fromRoute?.preserveScroll
+  return toRoute?.preserveScroll ?? fromRoute?.preserveScroll ?? false
 }

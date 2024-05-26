@@ -46,19 +46,13 @@ test.describe('Gallery Page', () => {
       const searchForm = page.getByTestId('search-photos-form')
       const searchInput = searchForm.getByPlaceholder('Поиск')
       const photoCards = page.getByTestId('photo-card')
-      const photoSkeletons = page.getByTestId('photo-skeleton')
 
       await searchInput.fill('nature')
       await searchForm.getByRole('search').press('Enter')
 
-      const isLoading = await photoSkeletons.isVisible()
-
       await expect(page).toHaveURL('/search?q=nature&p=1')
 
-      if (isLoading)
-        await expect(photoSkeletons).toHaveCount(9)
-      else
-        await expect(photoCards).toHaveCount(9)
+      await expect(photoCards).toHaveCount(9)
       await expect(searchInput).toHaveValue('nature')
     })
 

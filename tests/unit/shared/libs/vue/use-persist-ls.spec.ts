@@ -1,10 +1,10 @@
 import { nextTick, ref } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { getItemFromLS, setItemToLS } from '../storage/local'
-import { usePersistLS } from './use-persist-ls'
+import { getItemFromLS, setItemToLS } from '@tf-app/shared/libs/storage/local'
+import { usePersistLS } from '@tf-app/shared/libs/vue/use-persist-ls'
 
-vi.mock('../storage/local', () => ({
+vi.mock('@tf-app/shared/libs/storage/local', () => ({
   getItemFromLS: vi.fn(),
   setItemToLS: vi.fn(),
 }))

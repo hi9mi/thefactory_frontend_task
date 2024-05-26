@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { mockPhoto } from '@tf-app/shared/__mocks__/photo'
+import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 
-import TfPhotoCard from './tf-photo-card.vue'
+import { mockPhoto } from '../mocks/photo'
 
 describe('tf-photo-card widget', () => {
   let wrapper: ReturnType<typeof mount<typeof TfPhotoCard>>

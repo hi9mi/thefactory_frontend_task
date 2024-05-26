@@ -4,10 +4,10 @@ import { useRouteQuery } from '@vueuse/router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
-import { mockFavoritePhoto, mockUnFavoritePhoto } from '@tf-app/shared/__mocks__/photo'
+import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
 
-import ToggleFavoritePhoto from './toggle-favorite-photo.vue'
+import { mockFavoritePhoto, mockUnFavoritePhoto } from '../mocks/photo'
 
 import HeartIcon from '~icons/tf-icons/heart'
 

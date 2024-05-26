@@ -1,9 +1,8 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
-
-import DownloadPhoto from './download-photo.vue'
 
 vi.mock('@tf-app/shared/ui/feedback/tf-notification/libs', () => ({
   notify: vi.fn(),

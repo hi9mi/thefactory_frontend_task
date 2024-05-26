@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import SearchPhotosForm from './search-photos-form.vue'
+import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 
 vi.mock('vue-router', () => ({
   useRoute: vi.fn(),

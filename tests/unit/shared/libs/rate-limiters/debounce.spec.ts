@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { debounce } from './debounce'
+import { debounce } from '@tf-app/shared/libs/rate-limiters/debounce'
 
 describe('debounce', () => {
   const mockFn = vi.fn()

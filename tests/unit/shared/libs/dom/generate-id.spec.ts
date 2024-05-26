@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { generateId } from './generate-id'
+import { generateId } from '@tf-app/shared/libs/dom/generate-id'
 
 describe('generateId', () => {
   it('should generate id with prefix "id" and suffix ""', () => {

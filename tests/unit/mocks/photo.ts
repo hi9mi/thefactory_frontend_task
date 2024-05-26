@@ -1,4 +1,4 @@
-import type { Photo } from '../api/gallery'
+import type { Photo } from '../../../src/shared/api/gallery'
 
 export const mockPhoto = {
   id: '0NDeK_z7XT4',

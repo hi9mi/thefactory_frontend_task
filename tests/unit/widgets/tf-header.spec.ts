@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import TfHeader from './tf-header.vue'
+import TfHeader from '@tf-app/widgets/tf-header/tf-header.vue'
 
 import SearchIcon from '~icons/tf-icons/search'
 

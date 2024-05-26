@@ -2,7 +2,7 @@ import type { Options } from 'focus-trap'
 import { createFocusTrap } from 'focus-trap'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { useFocusTrap } from './use-focus-trap'
+import { useFocusTrap } from '@tf-app/shared/libs/vue/use-focus-trap'
 
 vi.mock('focus-trap', () => ({
   createFocusTrap: vi.fn(),

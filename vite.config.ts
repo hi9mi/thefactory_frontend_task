@@ -46,6 +46,10 @@ export default defineConfig(({ mode }) => {
           classNameStrategy: 'non-scoped',
         },
       },
+      alias: {
+        '@tf-app': path.resolve(__dirname, './src'),
+      },
+      include: ['tests/unit/**/*.spec.ts'],
     },
     plugins: [
       vue(),

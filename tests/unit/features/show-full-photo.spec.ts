@@ -2,10 +2,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import ShowFullPhoto from '@tf-app/features/show-full-photo/show-full-photo.vue'
 import { routes } from '@tf-app/routing'
-import { mockPhoto } from '@tf-app/shared/__mocks__/photo'
 
-import ShowFullPhoto from './show-full-photo.vue'
+import { mockPhoto } from '../mocks/photo'
 
 const mockedPush = vi.fn()
 vi.mock('vue-router', () => ({

@@ -3,11 +3,11 @@ import { useRouteQuery } from '@vueuse/router'
 import { createPinia, setActivePinia } from 'pinia'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { mockPhoto } from '@tf-app/shared/__mocks__/photo'
+import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
 import { usePersistLS } from '@tf-app/shared/libs'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
-import { useFavoritePhotosStore } from './model'
+import { mockPhoto } from '../mocks/photo'
 
 vi.mock('@tf-app/shared/ui/feedback/tf-notification/libs', () => ({
   notify: vi.fn(),

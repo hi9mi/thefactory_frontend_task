@@ -31,11 +31,13 @@ const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationD
         v-for="favPhoto of paginatedFavoritePhotos"
         :key="favPhoto.id"
         :photo="favPhoto"
+        data-testid="photo-card"
       />
     </section>
     <p
       v-else
       :class="classes.favoritesEmpty"
+      data-testid="favorites-empty"
     >
       В избранном пусто...
     </p>
@@ -43,9 +45,10 @@ const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationD
       v-if="totalPages > 0"
       :total-pages="totalPages"
       :page="currentPage"
+      data-testid="pagination"
       @change-page="changePage"
     />
-    <TfAffix />
+    <TfAffix data-testid="affix" />
   </div>
 </template>
 

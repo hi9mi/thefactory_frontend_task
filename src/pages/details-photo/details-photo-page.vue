@@ -47,6 +47,7 @@ getDetailsPhoto(route.params.id.toString())
         sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
         alt=""
         role="presentation"
+        data-testid="photo-bg"
       >
       <div :class="classes.backdrop" />
       <div class="container" :class="classes.container">
@@ -58,10 +59,10 @@ getDetailsPhoto(route.params.id.toString())
               :alt="photo.user.name"
             >
             <div :class="classes.userBio">
-              <p :class="classes.userName">
+              <p :class="classes.userName" data-testid="user-name">
                 {{ photo.user.name }}
               </p>
-              <p :class="classes.userNickname">
+              <p :class="classes.userNickname" data-testid="user-nickname">
                 @{{ photo.user.username }}
               </p>
             </div>
@@ -90,6 +91,7 @@ getDetailsPhoto(route.params.id.toString())
           <TfActionButton
             type="button"
             :class="classes.previewBtn"
+            data-testid="preview-btn"
             @click="handleShowFullPhoto"
           >
             <MaximazeIcon
@@ -102,7 +104,7 @@ getDetailsPhoto(route.params.id.toString())
         </div>
       </div>
     </template>
-    <TfLoader v-else-if="isLoadingDetailsPhoto" />
+    <TfLoader v-else-if="isLoadingDetailsPhoto" data-testid="loader" />
   </div>
   <RouterView v-slot="{ Component }" :name="routes.photoPage.children.fullPhoto.name">
     <component
@@ -110,6 +112,7 @@ getDetailsPhoto(route.params.id.toString())
       v-if="photo"
       :photo="photo"
       :description="photo.alt_description"
+      data-testid="full-photo"
     />
   </RouterView>
 </template>

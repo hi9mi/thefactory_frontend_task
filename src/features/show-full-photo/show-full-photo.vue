@@ -9,6 +9,9 @@ import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action
 
 import XMarkIcon from '~icons/tf-icons/x-mark'
 
+defineOptions({
+  inheritAttrs: false,
+})
 defineProps<{
   photo: Photo
   description?: string
@@ -69,6 +72,7 @@ function hideFullPhoto() {
 <template>
   <Teleport :to="`#${FULL_PHOTO_CONTAINER_ID}`">
     <div
+      v-bind="$attrs"
       ref="trapRef"
       :class="classes.wrapper"
     >
@@ -89,6 +93,7 @@ function hideFullPhoto() {
       >
       <TfActionButton
         :class="classes.closeBtn"
+        data-testid="close-preview-btn"
         @click="hideFullPhoto"
       >
         <XMarkIcon

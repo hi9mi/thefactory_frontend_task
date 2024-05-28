@@ -18,6 +18,10 @@ export default defineConfig(({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
 
   return {
+    preview: {
+      port: 3000,
+      strictPort: true,
+    },
     server: {
       port: process.env.HISTOIRE ? 6006 : 3000,
       strictPort: true,

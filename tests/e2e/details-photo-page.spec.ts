@@ -17,7 +17,7 @@ test.describe('Details Photo Page', () => {
           body: photo,
           contentType: 'application/json',
         })
-      }, 500)
+      }, 1000)
     })
 
     await page.goto('/wQRPdaExlS4')

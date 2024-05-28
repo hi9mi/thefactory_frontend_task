@@ -22,7 +22,7 @@
     "story:preview": "histoire preview",
     "upgrade": "npx npm-check-updates -u && npm install",
     "visualize": "npx vite-bundle-visualizer",
-    "test": "vitest",
+    "test:unit": "vitest",
     "test:e2e": "playwright test",
     "coverage": "vitest run --coverage"
   },

@@ -9,7 +9,7 @@ on:
 jobs:
   unit-tests:
     name: Run Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
 
   e2e-tests:
     name: Run E2E Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: unit-tests
 
     steps:
@@ -62,7 +62,7 @@ jobs:
 
   deploy:
     name: Deploy to Vercel
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [e2e-tests, unit-tests]
     if: ${{ needs.unit-tests.result == 'success' && needs.e2e-tests.result == 'success' }}
 

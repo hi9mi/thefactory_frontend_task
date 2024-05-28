@@ -8,7 +8,7 @@ on:
       - src/shared/ui/**
       - histoire.config.ts
       - src/histoire.setup.ts
-      - src/app/index.css
+      - src/app/styles/**
 
   workflow_dispatch:
 

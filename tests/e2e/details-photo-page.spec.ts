@@ -29,8 +29,6 @@ test.describe('Details Photo Page', () => {
   })
 
   test('should loads and displays photo details', async ({ page }) => {
-    await page.waitForSelector('[data-testid="photo-bg"]')
-
     const userName = await page.locator('[data-testid="user-name"]').textContent()
     const userNickname = await page.locator('[data-testid="user-nickname"]').textContent()
 

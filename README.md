@@ -123,20 +123,21 @@ Each `index.ts` file within a page directory exports a `RouteRecordRaw` object t
 ```typescript
 // Inside `/pages/foo-page/index.ts`
 
-import type { RouteRecordRaw } from "vue-router";
-import { routes } from "@tf-app/routing";
-import TfHeader from "@tf-app/widgets/tf-header/tf-header.vue";
+import type { RouteRecordRaw } from 'vue-router'
+
+import { routes } from '@tf-app/routing'
+import TfHeader from '@tf-app/widgets/tf-header/tf-header.vue'
 
 const FooPageRoute: RouteRecordRaw = {
   path: routes.foo.path,
   name: routes.foo.name,
   components: {
-    default: () => import("./foo-page.vue"),
+    default: () => import('./foo-page.vue'),
     header: TfHeader,
   },
-};
+}
 
-export default FooPageRoute;
+export default FooPageRoute
 ```
 
 #### Central Route Configuration `/pages/index.ts`
@@ -146,13 +147,13 @@ The central route configuration file dynamically imports all route configuration
 ```typescript
 // Inside `/pages/index.ts`
 
-import type { RouteRecordRaw } from "vue-router";
+import type { RouteRecordRaw } from 'vue-router'
 
-const routes = import.meta.glob("./**/index.ts", {
-  import: "default",
+const routes = import.meta.glob('./**/index.ts', {
+  import: 'default',
   eager: true,
-});
-export const routesMap = Object.values(routes) as RouteRecordRaw[];
+})
+export const routesMap = Object.values(routes) as RouteRecordRaw[]
 ```
 
 ### Routing (`/routing`)

@@ -7,7 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  test-and-deploy:
+  unit-tests:
+    name: Run Unit Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -18,14 +19,27 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Wait for web service to be healthy
-        run: sleep 30
-
       - name: Install dependencies
         run: npm ci
 
       - name: Run unit tests
         run: npm run test:unit
+
+  e2e-tests:
+    name: Run E2E Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build App for E2E tests
         run: npm run build
@@ -38,6 +52,7 @@ jobs:
           CI: 1
           BASE_URL: http://localhost:3000
         run: npm run test:e2e
+        timeout-minutes: 10
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -46,8 +61,16 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+  deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    needs: [e2e-tests, unit-tests]
+    if: ${{ needs.unit-tests.result == 'success' && needs.e2e-tests.result == 'success' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
       - name: Deploy to Vercel
-        if: ${{ success() }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

@@ -11,13 +11,13 @@ test.describe('Favorites Photos Page', () => {
   const newValue = fs.readFileSync(path.join(fixturesPath, 'unsplash', 'storage-new-value.json'), 'utf8')
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('/search')
+    await page.goto('/search', { waitUntil: 'networkidle' })
 
     await page.evaluate((photos) => {
       localStorage.setItem('favorites', photos)
     }, randomPhotos)
 
-    await page.goto('/favorites')
+    await page.goto('/favorites', { waitUntil: 'networkidle' })
   })
 
   test('should show favorite photos', async ({ page }) => {

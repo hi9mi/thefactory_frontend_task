@@ -19,7 +19,7 @@ test.describe('Search Page', () => {
         })
       })
 
-      await page.goto('/search')
+      await page.goto('/search', { waitUntil: 'networkidle' })
     })
 
     test('should display search empty text', async ({ page }) => {
@@ -160,7 +160,7 @@ test.describe('Search Page', () => {
         })
       })
 
-      await page.goto('/search')
+      await page.goto('/search', { waitUntil: 'networkidle' })
     })
 
     test('should display no results text', async ({ page }) => {

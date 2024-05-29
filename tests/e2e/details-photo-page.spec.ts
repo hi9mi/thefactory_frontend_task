@@ -20,7 +20,7 @@ test.describe('Details Photo Page', () => {
       }, 1000)
     })
 
-    await page.goto('/wQRPdaExlS4')
+    await page.goto('/wQRPdaExlS4', { waitUntil: 'networkidle' })
   })
 
   test('should displays loader initially', async ({ page }) => {

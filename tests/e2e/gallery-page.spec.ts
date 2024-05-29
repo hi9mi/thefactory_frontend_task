@@ -28,7 +28,7 @@ test.describe('Gallery Page', () => {
         })
       })
 
-      await page.goto('/')
+      await page.goto('/', { waitUntil: 'networkidle' })
     })
 
     test('should display random photos or loading skeleton', async ({ page }) => {
@@ -164,7 +164,7 @@ test.describe('Gallery Page', () => {
         })
       })
 
-      await page.goto('/')
+      await page.goto('/', { waitUntil: 'networkidle' })
     })
 
     test('should notify on error when fetching random photos', async ({ page }) => {

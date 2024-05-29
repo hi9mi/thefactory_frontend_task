@@ -52,7 +52,6 @@ jobs:
           CI: 1
           BASE_URL: http://localhost:3000
           DEBUG: pw:browser,pw:api
-          HOME: /root
         run: npm run test:e2e
 
       - uses: actions/upload-artifact@v4

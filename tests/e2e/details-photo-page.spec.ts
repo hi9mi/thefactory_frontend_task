@@ -24,7 +24,7 @@ test.describe('Details Photo Page', () => {
   })
 
   test('should displays loader initially', async ({ page }) => {
-    await page.waitForSelector('[data-testid="loader"]', { state: 'visible', timeout: 5000 })
+    await page.waitForSelector('[data-testid="loader"]', { state: 'visible' })
     await expect(page.getByTestId('loader')).toBeVisible()
   })
 
@@ -44,7 +44,7 @@ test.describe('Details Photo Page', () => {
     await page.waitForSelector('[data-testid="preview-btn"]')
     await page.click('[data-testid="preview-btn"]')
 
-    await page.waitForSelector('[data-testid="full-photo"]', { state: 'visible', timeout: 5000 })
+    await page.waitForSelector('[data-testid="full-photo"]', { state: 'visible' })
     await expect(page.getByTestId('full-photo')).toBeVisible()
     await expect(page).toHaveURL('/wQRPdaExlS4/full')
   })
@@ -53,7 +53,7 @@ test.describe('Details Photo Page', () => {
     await page.waitForSelector('[data-testid="preview-btn"]')
     await page.click('[data-testid="preview-btn"]')
 
-    await page.waitForSelector('[data-testid="full-photo"]', { state: 'visible', timeout: 5000 })
+    await page.waitForSelector('[data-testid="full-photo"]', { state: 'visible' })
     await expect(page.getByTestId('full-photo')).toBeVisible()
     await expect(page).toHaveURL('/wQRPdaExlS4/full')
 

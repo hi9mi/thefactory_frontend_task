@@ -1,14 +1,22 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import type { Photo } from '@tf-app/shared/api'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 
 defineProps<{ photo: Photo }>()
+
+const isActionsVisible = ref(false)
+
+function toggleActions() {
+  isActionsVisible.value = !isActionsVisible.value
+}
 </script>
 
 <template>
-  <article :class="classes.photoCard">
+  <article :class="classes.photoCard" @mouseenter="toggleActions" @mouseleave="toggleActions">
     <TfBlurhashImage
       :id="photo.id"
       :blurhash="photo.blur_hash"
@@ -21,13 +29,30 @@ defineProps<{ photo: Photo }>()
       :class="classes.photo"
     />
     <RouterLink :to="`/${photo.id}`" :class="classes.photoLink" :title="photo.alt_description" />
-    <div :class="classes.overlay" />
-    <div :class="classes.actions">
+    <Transition name="fade">
+      <div v-if="isActionsVisible" :class="classes.overlay" data-testid="photo-actions-overlay" />
+    </Transition>
+    <div v-if="isActionsVisible" :class="classes.actions">
       <ToggleFavoritePhoto :photo="photo" />
       <DownloadPhoto :src="photo.urls.full" :name="photo.id" />
     </div>
   </article>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition:
+    opacity 0.1s ease-in-out,
+    visibility 0.1s ease-in-out;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+  visibility: hidden;
+}
+</style>
 
 <style module="classes">
 .photoCard {
@@ -45,6 +70,12 @@ defineProps<{ photo: Photo }>()
   position: absolute;
   z-index: 2;
   pointer-events: none;
+  background-image: linear-gradient(
+    180deg,
+    rgb(0 0 0 / 57%) 0%,
+    rgb(0 0 0 / 34%) 50%,
+    rgb(0 0 0 / 59%) 100%
+  );
 }
 
 .actions {
@@ -52,59 +83,14 @@ defineProps<{ photo: Photo }>()
   z-index: 4;
   top: 10px;
   left: 10px;
-  display: none;
-}
-
-.photoLink:hover + .overlay,
-.photoCard:has(.actions:hover) > .overlay {
-  background-image: linear-gradient(
-    180deg,
-    #00000057 0,
-    rgb(0 0 0 / 33.8%) 3.5%,
-    rgb(0 0 0 / 32.4%) 7%,
-    rgb(0 0 0 / 30.6%) 10.35%,
-    rgb(0 0 0 / 28.5%) 13.85%,
-    rgb(0 0 0 / 26.2%) 17.35%,
-    rgb(0 0 0 / 23.7%) 20.85%,
-    rgb(0 0 0 / 21.3%) 24.35%,
-    rgb(0 0 0 / 18.8%) 27.85%,
-    rgb(0 0 0 / 16.5%) 31.35%,
-    rgb(0 0 0 / 14.4%) 34.85%,
-    rgb(0 0 0 / 12.6%) 38.35%,
-    rgb(0 0 0 / 11.2%) 41.85%,
-    rgb(0 0 0 / 10.3%) 45.35%,
-    #0000001a 48.85%,
-    rgb(0 0 0 / 10.3%) 52.35%,
-    rgb(0 0 0 / 11.2%) 55.85%,
-    rgb(0 0 0 / 12.6%) 59.35%,
-    rgb(0 0 0 / 14.4%) 62.85%,
-    rgb(0 0 0 / 16.5%) 66.35%,
-    rgb(0 0 0 / 18.8%) 69.85%,
-    rgb(0 0 0 / 21.3%) 73.35%,
-    rgb(0 0 0 / 23.7%) 76.85%,
-    rgb(0 0 0 / 26.2%) 80.35%,
-    rgb(0 0 0 / 28.5%) 83.85%,
-    rgb(0 0 0 / 30.6%) 87.35%,
-    rgb(0 0 0 / 32.4%) 90.85%,
-    rgb(0 0 0 / 33.8%) 94.35%,
-    rgb(0 0 0 / 34.7%) 97.85%,
-    #00000059
-  );
-  transition:
-    opacity 0.1s ease-in-out,
-    visibility 0.1s ease-in-out;
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 
 .photoLink:focus-visible::before {
   outline: 3px dashed var(--text-color-default);
   outline-offset: 2px;
-}
-
-.actions:hover,
-.photoLink:hover + .overlay + .actions {
-  display: flex;
-  gap: 20px;
-  align-items: center;
 }
 
 .photoCard > .photoLink {

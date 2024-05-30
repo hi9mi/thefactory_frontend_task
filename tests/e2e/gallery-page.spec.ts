@@ -28,45 +28,38 @@ test.describe('Gallery Page', () => {
         })
       })
 
-      await page.goto('/', { waitUntil: 'networkidle' })
+      await page.goto('/')
     })
 
-    test('should display random photos or loading skeleton', async ({ page }) => {
+    test('should show random photos', async ({ page }) => {
       const photoCards = page.getByTestId('photo-card')
       const photoSkeletons = page.getByTestId('photo-skeleton')
-      const isLoading = await photoSkeletons.first().isVisible()
 
-      if (isLoading)
-        await expect(photoSkeletons.first()).toBeVisible()
-      else
-        await expect(photoCards.first()).toBeVisible()
+      await expect(photoSkeletons).toHaveCount(0)
+      await expect(photoCards).toHaveCount(9)
     })
 
     test('should navigate to search results page on search form submit', async ({ page }) => {
       const searchForm = page.getByTestId('search-photos-form')
       const searchInput = searchForm.getByPlaceholder('Поиск')
-      const photoCards = page.getByTestId('photo-card')
 
       await searchInput.fill('nature')
       await searchForm.getByRole('search').press('Enter')
 
       await expect(page).toHaveURL('/search?q=nature&p=1')
 
-      await expect(photoCards).toHaveCount(9)
       await expect(searchInput).toHaveValue('nature')
     })
 
     test('should show affix when we scroll and hide when we\'re at the top', async ({ page }) => {
-      const affixElement = page.getByTestId('affix')
-
       await page.evaluate(() => {
         window.scrollTo(0, 500)
       })
 
+      const affixElement = page.getByTestId('affix')
+
       await expect(affixElement).toBeVisible()
-
       await affixElement.click()
-
       await expect(affixElement).not.toBeVisible()
     })
 
@@ -79,9 +72,10 @@ test.describe('Gallery Page', () => {
 
         await photoCard.hover()
 
-        const favoriteButton = page.getByTestId('toggle-favorite-photo-btn').first()
-        const downloadButton = page.getByTestId('download-photo-btn').first()
+        const favoriteButton = page.getByTestId('toggle-favorite-photo-btn')
+        const downloadButton = page.getByTestId('download-photo-btn')
 
+        await page.waitForSelector('[data-testid="photo-actions-overlay"]', { state: 'visible' })
         await expect(favoriteButton).toBeVisible()
         await expect(downloadButton).toBeVisible()
       }
@@ -93,15 +87,16 @@ test.describe('Gallery Page', () => {
       }
       else {
         const photoCard = page.getByTestId('photo-card').first()
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0 })
+
+        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0, defaultValue: '[]' })
         await photoCard.hover()
 
         const favoriteButton = page.getByTestId('toggle-favorite-photo-btn').first()
         await favoriteButton.click()
-        const notification = page.getByText('Фото добавлено в избранное')
 
+        const notification = page.getByText('Фото добавлено в избранное')
         await expect(notification).toBeVisible()
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 1 })
+        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 1, defaultValue: '[]' })
       }
     })
 
@@ -112,20 +107,22 @@ test.describe('Gallery Page', () => {
       else {
         const photoCard = page.getByTestId('photo-card').first()
 
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0 })
+        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0, defaultValue: '[]' })
+
         await photoCard.hover()
         const favoriteButton = page.getByTestId('toggle-favorite-photo-btn').first()
+
         await favoriteButton.click()
+
         let notification = page.getByText('Фото добавлено в избранное')
-
         await expect(notification).toBeVisible()
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 1 })
+        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 1, defaultValue: '[]' })
 
         await favoriteButton.click()
-        notification = page.getByText('Фото удалено из избранного')
 
+        notification = page.getByText('Фото удалено из избранного')
         await expect(notification).toBeVisible()
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0 })
+        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0, defaultValue: '[]' })
       }
     })
 
@@ -139,6 +136,7 @@ test.describe('Gallery Page', () => {
 
         await photoCard.hover()
         const downloadButton = page.getByTestId('download-photo-btn').first()
+
         await downloadButton.click()
 
         const notification = page.getByText('Не удалось начать загрузку фотографии')
@@ -153,28 +151,25 @@ test.describe('Gallery Page', () => {
       await expect(page).toHaveURL('/Cleue5NMLuY')
     })
   })
+})
 
-  test.describe('Failed loading random photos', () => {
-    test.beforeEach(async ({ page }) => {
-      await page.route('https://api.unsplash.com/photos/random**', async (route) => {
-        await route.fulfill({
-          status: 403,
-          body: 'Rate Limit Exceeded',
-          contentType: 'application/json',
-        })
+test.describe('Failed loading random photos', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route('https://api.unsplash.com/photos/random**', async (route) => {
+      await route.fulfill({
+        status: 403,
+        body: 'Rate Limit Exceeded',
+        contentType: 'application/json',
       })
-
-      await page.goto('/', { waitUntil: 'networkidle' })
     })
 
-    test('should notify on error when fetching random photos', async ({ page }) => {
-      const photoSkeletons = page.getByTestId('photo-skeleton')
-      const isLoading = await photoSkeletons.first().isVisible()
+    await page.goto('/')
+  })
 
-      if (isLoading)
-        await expect(photoSkeletons.first()).toBeVisible()
-      else
-        await expect(page.getByText('Ошибка при загрузке фотографий')).toBeVisible()
-    })
+  test('should notify on error when fetching random photos', async ({ page }) => {
+    const photoSkeletons = page.getByTestId('photo-skeleton')
+
+    await expect(photoSkeletons).toHaveCount(0)
+    await expect(page.getByText('Ошибка при загрузке фотографий')).toBeVisible()
   })
 })

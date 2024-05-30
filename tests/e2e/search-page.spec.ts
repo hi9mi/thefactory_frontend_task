@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
+import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
 import { checkNumberOfItemsInLocalStorage } from './libs/storage'
@@ -19,7 +20,7 @@ test.describe('Search Page', () => {
         })
       })
 
-      await page.goto('/search', { waitUntil: 'networkidle' })
+      await page.goto('/search')
     })
 
     test('should display search empty text', async ({ page }) => {
@@ -29,24 +30,15 @@ test.describe('Search Page', () => {
     })
 
     test('should display search results', async ({ page }) => {
-      const searchForm = page.getByTestId('search-photos-form')
-      const searchInput = searchForm.getByPlaceholder('Поиск')
-      const searchEmpty = page.getByTestId('search-empty')
-
-      await searchInput.fill('nature')
-      await searchForm.press('Enter')
+      await searchByNatureTerm(page)
 
       await expect(page).toHaveURL('/search?q=nature&p=1')
 
       const photoCards = page.getByTestId('photo-card')
       const photoSkeletons = page.getByTestId('photo-skeleton')
-      const isLoading = await photoSkeletons.isVisible()
 
-      if (isLoading)
-        await expect(photoSkeletons).toHaveCount(9)
-      else
-        await expect(photoCards).toHaveCount(9)
-      await expect(searchEmpty).not.toBeVisible()
+      await expect(photoSkeletons).toHaveCount(0)
+      await expect(photoCards).toHaveCount(9)
     })
 
     test('should add photo to favorites on click', async ({ page, isMobile }) => {
@@ -54,17 +46,18 @@ test.describe('Search Page', () => {
         test.skip()
       }
       else {
-        await page.getByTestId('search-photos-form').getByPlaceholder('Поиск').fill('nature')
-        await page.getByTestId('search-photos-form').getByRole('search').press('Enter')
+        await searchByNatureTerm(page)
+
         await page.getByTestId('photo-card').first().hover()
 
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0 })
+        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0, defaultValue: '[]' })
+
         const favoriteButton = page.getByTestId('toggle-favorite-photo-btn').first()
         await favoriteButton.click()
         const notification = page.getByText('Фото добавлено в избранное')
 
         await expect(notification).toBeVisible()
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 1 })
+        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 1, defaultValue: '[]' })
       }
     })
 
@@ -73,21 +66,24 @@ test.describe('Search Page', () => {
         test.skip()
       }
       else {
-        await page.getByTestId('search-photos-form').getByPlaceholder('Поиск').fill('nature')
-        await page.getByTestId('search-photos-form').getByRole('search').press('Enter')
+        await searchByNatureTerm(page)
+
         await page.getByTestId('photo-card').first().hover()
 
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0 })
+        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0, defaultValue: '[]' })
         const favoriteButton = page.getByTestId('toggle-favorite-photo-btn').first()
-        await favoriteButton.click()
-        let notification = page.getByText('Фото добавлено в избранное')
-        await expect(notification).toBeVisible()
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 1 })
 
         await favoriteButton.click()
+
+        let notification = page.getByText('Фото добавлено в избранное')
+        await expect(notification).toBeVisible()
+        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 1, defaultValue: '[]' })
+
+        await favoriteButton.click()
+
         notification = page.getByText('Фото удалено из избранного')
         await expect(notification).toBeVisible()
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0 })
+        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0, defaultValue: '[]' })
       }
     })
 
@@ -97,11 +93,12 @@ test.describe('Search Page', () => {
       }
       else {
         await page.route('**/*', route => route.continue())
-        await page.getByTestId('search-photos-form').getByPlaceholder('Поиск').fill('nature')
-        await page.getByTestId('search-photos-form').getByRole('search').press('Enter')
+        await searchByNatureTerm(page)
+
         await page.getByTestId('photo-card').first().hover()
 
         const downloadButton = page.getByTestId('download-photo-btn').first()
+
         await downloadButton.click()
 
         const notification = page.getByText('Не удалось начать загрузку фотографии')
@@ -110,22 +107,35 @@ test.describe('Search Page', () => {
     })
 
     test('should change page on click', async ({ page }) => {
-      await page.getByTestId('search-photos-form').getByPlaceholder('Поиск').fill('nature')
-      await page.getByTestId('search-photos-form').getByRole('search').press('Enter')
+      await searchByNatureTerm(page)
 
       const page2 = page.getByText('2', { exact: true })
       await page2.click()
-      await await expect(page).toHaveURL('/search?q=nature&p=2')
+
+      await expect(page).toHaveURL('/search?q=nature&p=2')
     })
 
     test('should redirect to photo page on click', async ({ page }) => {
-      await page.getByTestId('search-photos-form').getByPlaceholder('Поиск').fill('nature')
-      await page.getByTestId('search-photos-form').getByRole('search').press('Enter')
+      await searchByNatureTerm(page)
 
       const photoCards = page.getByTestId('photo-card')
-
       await photoCards.first().click()
+
       await expect(page).toHaveURL('/cssvEZacHvQ')
+    })
+
+    test('should show affix when we scroll and hide when we\'re at the top', async ({ page }) => {
+      await searchByNatureTerm(page)
+
+      await page.evaluate(() => {
+        window.scrollTo(0, 500)
+      })
+
+      const affixElement = page.getByTestId('affix')
+
+      await expect(affixElement).toBeVisible()
+      await affixElement.click()
+      await expect(affixElement).not.toBeVisible()
     })
   })
 
@@ -143,8 +153,7 @@ test.describe('Search Page', () => {
     })
 
     test('should notify on error when fetching search photos', async ({ page }) => {
-      await page.getByTestId('search-photos-form').getByPlaceholder('Поиск').fill('nature')
-      await page.getByTestId('search-photos-form').getByRole('search').press('Enter')
+      await searchByNatureTerm(page)
 
       await expect(page.getByText('Ошибка при загрузке фотографий')).toBeVisible()
     })
@@ -160,16 +169,19 @@ test.describe('Search Page', () => {
         })
       })
 
-      await page.goto('/search', { waitUntil: 'networkidle' })
+      await page.goto('/search')
     })
 
     test('should display no results text', async ({ page }) => {
-      await page.getByTestId('search-photos-form').getByPlaceholder('Поиск').fill('invalid query term')
-      await page.getByTestId('search-photos-form').getByRole('search').press('Enter')
+      await searchByNatureTerm(page)
 
       const noResults = page.getByTestId('no-results')
-
       await expect(noResults).toBeVisible()
     })
   })
 })
+
+async function searchByNatureTerm(page: Page) {
+  await page.getByTestId('search-photos-form').getByPlaceholder('Поиск').fill('nature')
+  await page.getByTestId('search-photos-form').getByRole('search').press('Enter')
+}

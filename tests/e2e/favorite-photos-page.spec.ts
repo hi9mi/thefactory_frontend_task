@@ -1,12 +1,15 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import { expect, test } from '@playwright/test'
 
 import { checkNumberOfItemsInLocalStorage, simulateLocalStorageEvent } from './libs/storage'
 
 test.describe('Favorites Photos Page', () => {
-  const fixturesPath = path.join(import.meta.dirname, '/fixtures')
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = path.dirname(__filename)
+  const fixturesPath = path.join(__dirname, 'fixtures')
   const randomPhotos = fs.readFileSync(path.join(fixturesPath, 'unsplash', 'random-photos.json'), 'utf8')
   const newValue = fs.readFileSync(path.join(fixturesPath, 'unsplash', 'storage-new-value.json'), 'utf8')
 

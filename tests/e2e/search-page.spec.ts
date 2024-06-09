@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
@@ -7,7 +8,9 @@ import { expect, test } from '@playwright/test'
 import { checkNumberOfItemsInLocalStorage } from './libs/storage'
 
 test.describe('Search Page', () => {
-  const fixturesPath = path.join(import.meta.dirname, '/fixtures')
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = path.dirname(__filename)
+  const fixturesPath = path.join(__dirname, 'fixtures')
   const searchPhotosNature = fs.readFileSync(path.join(fixturesPath, 'unsplash', 'search-photos-nature.json'), 'utf8')
 
   test.describe('Successful loading search photos', () => {

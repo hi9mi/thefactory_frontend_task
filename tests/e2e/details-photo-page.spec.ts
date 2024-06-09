@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -19,12 +20,17 @@ test.describe('Details Photo Page', () => {
         body: photo,
         contentType: 'application/json',
       })
+      console.log('successfully fulfilled')
     })
 
     await page.goto('/wQRPdaExlS4')
   })
 
   test('should loads and displays photo details', async ({ page }) => {
+    console.log('__dirname: %s', __dirname)
+    console.log('fixturesPath: %s', fixturesPath)
+    console.log('photo: %o', photo)
+
     await expect(page.getByTestId('loader')).not.toBeVisible()
 
     const userName = await page.locator('[data-testid="user-name"]').textContent()

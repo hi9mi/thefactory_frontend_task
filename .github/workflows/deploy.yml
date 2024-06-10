@@ -44,14 +44,13 @@ jobs:
       - name: Instal Playwright deps
         run: npx playwright install --with-deps
 
-      - name: Build App for E2E tests
-        run: npm run build
-
       - name: Run e2e Playwright tests
         env:
           CI: 1
           BASE_URL: http://localhost:3000
           DEBUG: pw:browser,pw:api
+          VITE_UNSPLASH_CLIENT_ID: ${{ secrets.UNSPLASH_CLIENT_ID }}
+          VITE_UNSPLASH_API_URL: ${{ secrets.UNSPLASH_API_URL }}
         run: npm run test:e2e
 
       - uses: actions/upload-artifact@v4
@@ -76,6 +75,7 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           UNSPLASH_CLIENT_ID: ${{ secrets.UNSPLASH_CLIENT_ID }}
+          UNSPLASH_API_URL: ${{ secrets.UNSPLASH_API_URL }}
         run: |
           npm install -g vercel
-          vercel --prod --token $VERCEL_TOKEN --env VITE_UNSPLASH_CLIENT_ID=$UNSPLASH_CLIENT_ID
+          vercel --prod --token $VERCEL_TOKEN --env VITE_UNSPLASH_CLIENT_ID=$UNSPLASH_CLIENT_ID --env VITE_UNSPLASH_API_URL=$UNSPLASH_API_URL

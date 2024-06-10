@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -34,10 +33,6 @@ test.describe('Search Page', () => {
     })
 
     test('should display search results', async ({ page }) => {
-      console.log('__dirname: %s', __dirname)
-      console.log('fixturesPath: %s', fixturesPath)
-      console.log('searchPhotosNature: %o', searchPhotosNature)
-
       await searchByNatureTerm(page)
 
       await expect(page).toHaveURL('/search?q=nature&p=1')

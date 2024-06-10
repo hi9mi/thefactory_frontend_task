@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -18,7 +17,6 @@ test.describe('Gallery Page', () => {
   test.describe('Successful loading random photos', () => {
     test.beforeEach(async ({ page }) => {
       await page.route('https://api.unsplash.com/photos/random**', async (route) => {
-        console.log('randomPhotos: %o', randomPhotos)
         await route.fulfill({
           status: 200,
           body: randomPhotos,
@@ -27,8 +25,6 @@ test.describe('Gallery Page', () => {
       })
 
       await page.route('https://api.unsplash.com/search/photos**', async (route) => {
-        console.log('searchPhotosNature: %o', searchPhotosNature)
-
         await route.fulfill({
           status: 200,
           body: searchPhotosNature,
@@ -40,11 +36,6 @@ test.describe('Gallery Page', () => {
     })
 
     test('should show random photos', async ({ page }) => {
-      console.log('__dirname: %s', __dirname)
-      console.log('fixturesPath: %s', fixturesPath)
-      console.log('randomPhotos: %o', randomPhotos)
-      console.log('searchPhotosNature: %o', searchPhotosNature)
-
       const photoCards = page.getByTestId('photo-card')
       const photoSkeletons = page.getByTestId('photo-skeleton')
 

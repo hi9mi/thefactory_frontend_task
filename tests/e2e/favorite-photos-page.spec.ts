@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -25,11 +24,6 @@ test.describe('Favorites Photos Page', () => {
   })
 
   test('should show favorite photos', async ({ page }) => {
-    console.log('__dirname: %s', __dirname)
-    console.log('fixturesPath: %s', fixturesPath)
-    console.log('randomPhotos: %o', randomPhotos)
-    console.log('newValue: %o', newValue)
-
     const photoCards = page.getByTestId('photo-card')
     const pagination = page.getByTestId('pagination')
     const page1 = pagination.getByText('1')

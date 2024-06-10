@@ -115,7 +115,7 @@ test.describe('Favorites Photos Page', () => {
   })
 
   test('should show affix when we scroll and hide when we\'re at the top', async ({ page }) => {
-    await page.waitForLoadState()
+    await page.waitForSelector('[data-testid="photo-card"]')
 
     await page.evaluate(() => {
       window.scrollTo(0, 500)

@@ -56,6 +56,8 @@ test.describe('Gallery Page', () => {
     })
 
     test('should show affix when we scroll and hide when we\'re at the top', async ({ page }) => {
+      await page.waitForLoadState()
+
       await page.evaluate(() => {
         window.scrollTo(0, 500)
       })

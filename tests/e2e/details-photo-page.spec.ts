@@ -84,6 +84,8 @@ test.describe('Details Photo Page', () => {
   test('should download photo on click', async ({ page }) => {
     await page.route('**/*', route => route.continue())
 
+    await page.waitForSelector('[data-testid="download-photo-btn"]')
+
     await page.click('[data-testid="download-photo-btn"]')
 
     const notification = page.getByText('Не удалось начать загрузку фотографии')

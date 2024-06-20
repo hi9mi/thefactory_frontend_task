@@ -37,8 +37,11 @@ npm run build
 # Run preview server
 npm run preview
 
-# Run tests
-npm run test
+# Run unit tests
+npm run test:unit
+
+# Run end-to-end tests
+npm run test:e2e
 
 # Setup git hooks
 npm prepare
@@ -65,16 +68,13 @@ npm run upgrade
 npm run visualize
 ```
 
-## TODO
-
-- [ ] tests
-- [ ] i18n
-- [ ] CI/CD
-- [ ] a11y
-
-## Project Structure Documentation
+## Project Structure
 
 Overview of the project's directories and files, detailing the purpose and function of each.
+
+### Tests (`/tests`)
+
+The directory containing the unit and end-to-end tests.
 
 ### Source Code (`/src`)
 
@@ -85,7 +85,7 @@ The main directory containing the application's source code.
 Core files for initializing and configuring the application.
 
 - **`create-app.ts`**: Sets up the Vue application instance.
-- **`index.css`**: Defines global styles.
+- **`/styles`**: Contains CSS styles(global styles, variables, reset and etc).
 - **`/init-with`**: Contains initialization modules for libraries and plugins.
 - **`main.ts`**: Entry point of the application.
 - **`tf-app.vue`**: Root Vue component.
@@ -165,9 +165,9 @@ Manages the application's navigational structure and includes route guards for s
 A collection of common utilities, components, and resources that are reused across the application.
 
 - **`/api`**: Modules for interacting with the API.
-- **`/assets`**: Static assets like images and icons.
 - **`/libs`**: General libraries and utilities.
 - **`/ui`**: Reusable user interface components organized by functionality.
+  - **`/assets`**: Static assets like images and icons.
   - **`/buttons`**: Interactive button elements.
   - **`/data-display`**: Components for displaying data.
   - **`/feedback`**: User feedback elements like loaders and notifications.
@@ -175,7 +175,6 @@ A collection of common utilities, components, and resources that are reused acro
   - **`/overlays`**: Overlay components like modals and popovers.
   - **story files (`*.story.vue`)**: Nested within each UI category for isolated development and demonstration of components.
 - **`/workers`**: Web Workers for background tasks.
-- **`/__mocks__`**: Mocks for unit tests.
 
 ### Widgets (`/widgets`)
 
@@ -193,3 +192,12 @@ Kebab-case is used for naming all directories and files in this project. This ap
 - **Case Sensitivity**: To avoid potential bugs and issues with case sensitivity and to ensure better cross-platform compatibility, kebab-case is utilized. Further information can be found [here](https://en.wikipedia.org/wiki/Case_sensitivity) and [here](https://www.hanselman.com/blog/git-is-casesensitive-and-your-filesystem-may-not-be-weird-folder-merging-on-windows).
 - **Clarity**: The use of kebab-case prevents the merging of words, enhancing readability (e.g., `CuteIDKOKReader` becomes `cute-id-kok-reader.ts`).
 - **Uniformity Across File Types**: Kebab-case is applied to all files and folders, resulting in consistent naming regardless of file type (e.g., `get-price.ts`, `price.vue`, `price.test.ts`, and `app/app.vue`).
+
+## TODO
+
+- [x] tests
+- [ ] CI/CD
+- [ ] a11y
+- [ ] add unsplash api sdk
+- [ ] migrate to vike
+- [ ] i18n

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
@@ -7,17 +7,27 @@ import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-f
 import { routes } from '@tf-app/routing'
 import type { Photo } from '@tf-app/shared/api'
 import * as api from '@tf-app/shared/api'
+import { hexToRgb } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
-import MaximazeIcon from '~icons/tf-icons/maximaze'
+import FullScreenIcon from '~icons/tf-icons/full-screen'
 
 const router = useRouter()
 const route = useRoute()
 const photo = ref<Photo | null>(null)
 const isLoadingDetailsPhoto = ref(false)
+
+const previewButtonStyles = computed(() => {
+  if (photo.value) {
+    const { r, g, b } = hexToRgb(photo.value.color)
+    const avgColor = (r + g + b) / 3
+    return avgColor > 128 ? { '--full-screen-icon-color': '#ffffff' } : { '--full-screen-icon-color': '#000000' }
+  }
+  return { '--full-screen-icon-color': '#ffffff' }
+})
 
 function handleShowFullPhoto() {
   router.push({ name: routes.photoPage.children.fullPhoto.name })
@@ -91,10 +101,11 @@ getDetailsPhoto(route.params.id.toString())
           <TfActionButton
             type="button"
             :class="classes.previewBtn"
-            data-testid="preview-btn"
+            data-testid="pr`eview-btn"
+            :style="previewButtonStyles"
             @click="handleShowFullPhoto"
           >
-            <MaximazeIcon
+            <FullScreenIcon
               aria-label="Открыть на весь экран фото"
               width="24"
               height="24"
@@ -210,8 +221,7 @@ getDetailsPhoto(route.params.id.toString())
   position: absolute;
   bottom: 30px;
   right: 40px;
-  color: #fff;
-  mix-blend-mode: exclusion;
+  color: var(--full-screen-icon-color);
 }
 
 .previewBtn:focus-visible {

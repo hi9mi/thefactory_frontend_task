@@ -1,3 +1,4 @@
+export * from './colors/hex-to-rgb'
 export * from './dom/generate-id'
 export * from './rate-limiters/debounce'
 export * from './storage/local'

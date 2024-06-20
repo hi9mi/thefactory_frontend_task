@@ -7,7 +7,7 @@ import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-f
 import { routes } from '@tf-app/routing'
 import type { Photo } from '@tf-app/shared/api'
 import * as api from '@tf-app/shared/api'
-import { hexToRgb } from '@tf-app/shared/libs'
+import { computeRelativeBrightness, hexToRgb } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
@@ -23,8 +23,8 @@ const isLoadingDetailsPhoto = ref(false)
 const previewButtonStyles = computed(() => {
   if (photo.value) {
     const { r, g, b } = hexToRgb(photo.value.color)
-    const avgColor = (r + g + b) / 3
-    return avgColor > 128 ? { '--full-screen-icon-color': '#ffffff' } : { '--full-screen-icon-color': '#000000' }
+    const brightness = computeRelativeBrightness(r, g, b)
+    return brightness < 128 ? { '--full-screen-icon-color': '#ffffff' } : { '--full-screen-icon-color': '#000000' }
   }
   return { '--full-screen-icon-color': '#ffffff' }
 })

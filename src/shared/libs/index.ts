@@ -1,3 +1,4 @@
+export * from './colors/compute-relative-brightness'
 export * from './colors/hex-to-rgb'
 export * from './dom/generate-id'
 export * from './rate-limiters/debounce'

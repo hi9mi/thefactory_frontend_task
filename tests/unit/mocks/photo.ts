@@ -5,6 +5,7 @@ export const mockPhoto = {
   width: 2800,
   height: 3501,
   blur_hash: 'LKMZ?Z}l$1ngv#RO%gWrxCaKITs:',
+  color: '#d9d9c0',
   alt_description: 'a woman wearing a sweater and green sunglasses',
   urls: {
     raw: 'https://images.unsplash.com/photo-1712876718842-5b7d59ad453b?ixid=M3w0MDgwODh8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTQ4OTYyNDJ8&ixlib=rb-4.0.3',

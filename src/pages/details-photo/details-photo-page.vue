@@ -101,7 +101,7 @@ getDetailsPhoto(route.params.id.toString())
           <TfActionButton
             type="button"
             :class="classes.previewBtn"
-            data-testid="pr`eview-btn"
+            data-testid="preview-btn"
             :style="previewButtonStyles"
             @click="handleShowFullPhoto"
           >

@@ -33,9 +33,9 @@ export default defineConfig(({ mode }) => {
       theme: {
         title: 'The factory',
         logo: {
-          light: './src/shared/assets/logo.png',
-          dark: './src/shared/assets/logo.png',
-          square: './src/shared/assets/logo.png',
+          light: './src/shared/ui/assets/logo.png',
+          dark: './src/shared/ui/assets/logo.png',
+          square: './src/shared/ui/assets/logo.png',
         },
         logoHref: 'https://thefactory-frontend-task.vercel.app/',
         favicon: 'favicon.ico',
@@ -124,7 +124,7 @@ export default defineConfig(({ mode }) => {
       Icons({
         compiler: 'vue3',
         customCollections: {
-          'tf-icons': FileSystemIconLoader('./src/shared/assets/icons'),
+          'tf-icons': FileSystemIconLoader('./src/shared/ui/assets/icons'),
         },
       }),
     ],

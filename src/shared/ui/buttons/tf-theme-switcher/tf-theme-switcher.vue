@@ -86,11 +86,15 @@ const toggleDark = useToggle(isDarkTheme)
   opacity: 0;
 }
 
-.themeSwitcherButton:is(:hover, :focus-visible) .sunAndMoon > :is(:global(.moon), :global(.sun)) {
+.themeSwitcherButton:is(:hover, :focus-visible)
+  .sunAndMoon
+  > :is(:global(.moon), :global(.sun)) {
   fill: var(--icon-fill-hover);
 }
 
-.themeSwitcherButton:is(:hover, :focus-visible) .sunAndMoon > :global(.sunBeams) {
+.themeSwitcherButton:is(:hover, :focus-visible)
+  .sunAndMoon
+  > :global(.sunBeams) {
   stroke: var(--icon-fill-hover);
 }
 

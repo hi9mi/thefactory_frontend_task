@@ -14,12 +14,13 @@ const toggleDark = useToggle(isDarkTheme)
 
 <template>
   <button
-    id="theme-switcher"
+    id="toggle-theme-btn"
     :aria-label="isDarkTheme ? 'Toggle Dark theme' : 'Toggle Light theme'"
     title="Toggles light & dark theme"
     aria-live="polite"
     type="button"
-    :class="classes.themeSwitcherButton"
+    :class="classes.button"
+    data-testid="toggle-theme-btn"
     @click="toggleDark()"
   >
     <SunAndMoonIcon :class="classes.sunAndMoon" />
@@ -27,7 +28,7 @@ const toggleDark = useToggle(isDarkTheme)
 </template>
 
 <style module="classes">
-.themeSwitcherButton {
+.button {
   --size: 23px;
   --icon-fill: #ffce6a;
   --icon-fill-hover: #ffd47c;
@@ -50,12 +51,12 @@ const toggleDark = useToggle(isDarkTheme)
   }
 }
 
-.themeSwitcherButton:focus-visible {
+.button:focus-visible {
   outline: 3px dashed var(--icon-fill);
   outline-offset: 4px;
 }
 
-.themeSwitcherButton > svg {
+.button > svg {
   inline-size: 100%;
   block-size: 100%;
   stroke-linecap: round;
@@ -86,15 +87,13 @@ const toggleDark = useToggle(isDarkTheme)
   opacity: 0;
 }
 
-.themeSwitcherButton:is(:hover, :focus-visible)
+.button:is(:hover, :focus-visible)
   .sunAndMoon
   > :is(:global(.moon), :global(.sun)) {
   fill: var(--icon-fill-hover);
 }
 
-.themeSwitcherButton:is(:hover, :focus-visible)
-  .sunAndMoon
-  > :global(.sunBeams) {
+.button:is(:hover, :focus-visible) .sunAndMoon > :global(.sunBeams) {
   stroke: var(--icon-fill-hover);
 }
 
@@ -110,7 +109,7 @@ const toggleDark = useToggle(isDarkTheme)
   }
 }
 
-:global(html:is(.dark)) .themeSwitcherButton {
+:global(html:is(.dark)) .button {
   --icon-fill: #e29800;
   --icon-fill-hover: #c28200;
 }

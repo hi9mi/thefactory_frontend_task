@@ -2,8 +2,8 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
+import ToggleTheme from '@tf-app/features/toggle-theme/toggle-theme.vue'
 import { routes } from '@tf-app/routing'
-import TfThemeSwitcher from '@tf-app/shared/ui/buttons/tf-theme-switcher/tf-theme-switcher.vue'
 
 import HeartIcon from '~icons/tf-icons/heart'
 import SearchIcon from '~icons/tf-icons/search'
@@ -56,7 +56,7 @@ const showSearchIcon = computed(() => {
             <span :class="classes.linkText">Избранное</span>
           </RouterLink>
         </nav>
-        <TfThemeSwitcher />
+        <ToggleTheme />
       </div>
     </div>
   </header>

@@ -33,8 +33,8 @@ fullPhotoContainer.id = FULL_PHOTO_CONTAINER_ID
 document.body.appendChild(fullPhotoContainer)
 
 onMounted(() => {
-  document.body.style.top = `${-scrollTop}px`
-  document.body.classList.add('lock-scrollbar')
+  document.documentElement.style.top = `${-scrollTop}px`
+  document.documentElement.classList.add('lock-scrollbar')
   document.addEventListener('keydown', handleEscapeKey)
 })
 
@@ -42,8 +42,8 @@ onBeforeUnmount(() => {
   if (fullPhotoContainer)
     document.body.removeChild(fullPhotoContainer)
 
-  document.body.classList.remove('lock-scrollbar')
-  document.body.style.top = ''
+  document.documentElement.classList.remove('lock-scrollbar')
+  document.documentElement.style.top = ''
   window.scrollTo({ top: scrollTop, left: 0, behavior: 'instant' })
   document.removeEventListener('keydown', handleEscapeKey)
 })
@@ -111,19 +111,17 @@ function hideFullPhoto() {
   position: fixed;
   width: 100%;
   height: 100%;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  inset: 0;
   z-index: 100;
   padding: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .overlay {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   z-index: 101;
@@ -134,11 +132,9 @@ function hideFullPhoto() {
 .photo {
   position: relative;
   z-index: 102;
-  width: min-content;
-  max-width: 1200px;
+  max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  margin: 0 auto;
 }
 
 .closeBtn {

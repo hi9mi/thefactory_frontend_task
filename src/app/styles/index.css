@@ -25,6 +25,10 @@ html:is(.dark) {
   color-scheme: dark;
 }
 
+html {
+  overflow-y: scroll;
+}
+
 html,
 body,
 #app {
@@ -34,6 +38,7 @@ body,
   font-weight: 400;
   background-color: var(--background-color-main);
   color: var(--text-color-default);
+  height: 100%;
 }
 
 #nprogress {

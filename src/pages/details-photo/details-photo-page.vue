@@ -24,9 +24,17 @@ const previewButtonStyles = computed(() => {
   if (photo.value) {
     const { r, g, b } = hexToRgb(photo.value.color)
     const brightness = computeRelativeBrightness(r, g, b)
-    return brightness < 128 ? { '--full-screen-icon-color': '#ffffff' } : { '--full-screen-icon-color': '#000000' }
+    return brightness < 128
+      ? {
+          '--full-screen-icon-color': '#ffffff',
+          '--full-screen-icon-filter': 'url("#blackShadow")',
+        }
+      : {
+          '--full-screen-icon-color': '#000000',
+          '--full-screen-icon-filter': 'url("#whiteShadow")',
+        }
   }
-  return { '--full-screen-icon-color': '#ffffff' }
+  return { '--full-screen-icon-color': '#ffffff', '--full-screen-icon-filter': 'url("#blackShadow")' }
 })
 
 function handleShowFullPhoto() {
@@ -110,6 +118,7 @@ getDetailsPhoto(route.params.id.toString())
               width="24"
               height="24"
               fill="currentColor"
+              :class="classes.fullScreenIcon"
             />
           </TfActionButton>
         </div>
@@ -136,6 +145,7 @@ getDetailsPhoto(route.params.id.toString())
 
 .wrapper {
   position: relative;
+  height: 100%;
   margin: 100px 0;
 }
 
@@ -165,7 +175,7 @@ getDetailsPhoto(route.params.id.toString())
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 50px 0;
+  margin-bottom: 50px;
   flex-wrap: wrap;
   gap: 20px;
 }
@@ -182,10 +192,12 @@ getDetailsPhoto(route.params.id.toString())
 
 .userName {
   font-size: 30px;
+  margin: 0;
 }
 
 .userNickname {
   font-size: 18px;
+  margin: 0;
 }
 
 .userProfileImg {
@@ -222,6 +234,10 @@ getDetailsPhoto(route.params.id.toString())
   bottom: 30px;
   right: 40px;
   color: var(--full-screen-icon-color);
+}
+
+.fullScreenIcon {
+  filter: var(--full-screen-icon-filter, url('#blackShadow'));
 }
 
 .previewBtn:focus-visible {

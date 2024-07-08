@@ -79,9 +79,9 @@ describe('show full photo feature', () => {
   })
 
   it('removes the lock-scrollbar class on route change', () => {
-    expect(document.body.classList.contains('lock-scrollbar')).toBe(true)
+    expect(document.documentElement.classList.contains('lock-scrollbar')).toBe(true)
     wrapper.unmount()
-    expect(document.body.classList.contains('lock-scrollbar')).toBe(false)
+    expect(document.documentElement.classList.contains('lock-scrollbar')).toBe(false)
   })
 
   it('closes the full photo on overlay click', async () => {

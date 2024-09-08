@@ -1,11 +1,11 @@
-import { ref } from 'vue'
-import { useRouteQuery } from '@vueuse/router'
-import { createPinia, setActivePinia } from 'pinia'
-import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
 import { useGalleryStore } from '@tf-app/entities/gallery'
 import * as api from '@tf-app/shared/api'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
+import { useRouteQuery } from '@vueuse/router'
+
+import { createPinia, setActivePinia } from 'pinia'
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { ref } from 'vue'
 
 import { mockPhoto, mockPhotos } from '../mocks/photo'
 

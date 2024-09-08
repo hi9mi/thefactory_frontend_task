@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { usePagination } from './libs'
-import TfPaginationEdge from './tf-pagination-edge.vue'
-import TfPaginationItem from './tf-pagination-item.vue'
-
 import ChevronLeftIcon from '~icons/tf-icons/chevron-left'
 import ChevronRightIcon from '~icons/tf-icons/chevron-right'
+import { usePagination } from './libs'
+
+import TfPaginationEdge from './tf-pagination-edge.vue'
+import TfPaginationItem from './tf-pagination-item.vue'
 
 const props = withDefaults(defineProps<{
   page: number

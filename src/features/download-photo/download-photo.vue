@@ -29,6 +29,7 @@ async function downloadPhoto() {
     globalThis.URL.revokeObjectURL(href)
   }
   catch (error) {
+    console.error('Download photo error', error)
     notify({
       title: 'Не удалось начать загрузку фотографии',
       message: 'Что-то пошло не так, попробуйте еще раз',

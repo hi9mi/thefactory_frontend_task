@@ -1,7 +1,7 @@
-import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
-
-import type { ElementRects, Placement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
 import { addScroll, adjustPositionWithinViewport, computeCommonX, computeCommonY, computeCoordsFromPlacement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
+
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { ElementRects, Placement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
 
 describe('computeCoordsFromPlacement', () => {
   const mockAnchorRect: DOMRect = {

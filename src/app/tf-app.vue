@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { watch } from 'vue'
-import { pwaInfo } from 'virtual:pwa-info'
-import { useRegisterSW } from 'virtual:pwa-register/vue'
-
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 import TfNotifications from '@tf-app/shared/ui/feedback/tf-notification/tf-notifications.vue'
+import { pwaInfo } from 'virtual:pwa-info'
+
+import { useRegisterSW } from 'virtual:pwa-register/vue'
+import { watch } from 'vue'
 
 // eslint-disable-next-line no-console
 console.log(pwaInfo)
@@ -20,8 +20,8 @@ const {
   onRegisteredSW(swUrl, r) {
     // eslint-disable-next-line no-console
     console.log(`Service Worker at: ${swUrl}`)
-    if (reloadSW === 'true') {
-      r && setInterval(async () => {
+    if (reloadSW === 'true' && r) {
+      setInterval(async () => {
         // eslint-disable-next-line no-console
         console.log('Checking for sw update')
         await r.update()

@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
-
 import { hexToRgb } from '@tf-app/shared/libs'
+
+import { describe, expect, it } from 'vitest'
 
 describe('hexToRgb', () => {
   it('should return correct rgb values for hex color #000000', () => {

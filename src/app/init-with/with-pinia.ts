@@ -1,6 +1,6 @@
-import type { App } from 'vue'
 import { createPinia } from 'pinia'
 import { PiniaLogger } from 'pinia-logger'
+import type { App } from 'vue'
 
 export function withPinia(app: App) {
   const pinia = createPinia()

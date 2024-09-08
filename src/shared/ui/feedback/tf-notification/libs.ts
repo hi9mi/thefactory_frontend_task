@@ -1,6 +1,6 @@
-import mitt from 'mitt'
-
 import { generateId } from '@tf-app/shared/libs'
+
+import mitt from 'mitt'
 
 export type NotificationTypes = 'error' | 'success'
 export interface NotificationOptions {

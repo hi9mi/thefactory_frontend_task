@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { reactive, ref, shallowRef, watch } from 'vue'
-
 import { generateId } from '@tf-app/shared/libs'
-import type { Placement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
+
 import { computeCoordsFromPlacement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
+import { reactive, ref, shallowRef, watch } from 'vue'
+import type { Placement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
 
 const props = withDefaults(defineProps<{
   id?: string
@@ -109,11 +109,7 @@ watch(tooltipElement, () => {
   padding: 4px 8px;
   font-size: 14px;
   color: var(--text-color-default, #000);
-  box-shadow: var(
-    --shadow-small,
-    0 1px 3px 0 rgb(0 0 0 / 10%),
-    0 1px 2px 0 rgb(0 0 0 / 6%)
-  );
+  box-shadow: var(--shadow-small, 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%));
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
+
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
-import type { Photo } from '@tf-app/shared/api'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
+import { ref } from 'vue'
+import type { Photo } from '@tf-app/shared/api'
 
 defineProps<{ photo: Photo }>()
 
@@ -70,12 +70,7 @@ function toggleActions() {
   position: absolute;
   z-index: 2;
   pointer-events: none;
-  background-image: linear-gradient(
-    180deg,
-    rgb(0 0 0 / 57%) 0%,
-    rgb(0 0 0 / 34%) 50%,
-    rgb(0 0 0 / 59%) 100%
-  );
+  background-image: linear-gradient(180deg, rgb(0 0 0 / 57%) 0%, rgb(0 0 0 / 34%) 50%, rgb(0 0 0 / 59%) 100%);
 }
 
 .actions {

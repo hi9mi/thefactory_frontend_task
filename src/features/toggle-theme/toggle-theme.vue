@@ -87,9 +87,7 @@ const toggleDark = useToggle(isDarkTheme)
   opacity: 0;
 }
 
-.button:is(:hover, :focus-visible)
-  .sunAndMoon
-  > :is(:global(.moon), :global(.sun)) {
+.button:is(:hover, :focus-visible) .sunAndMoon > :is(:global(.moon), :global(.sun)) {
   fill: var(--icon-fill-hover);
 }
 

@@ -1,9 +1,9 @@
-import { reactive } from 'vue'
-import { useRoute } from 'vue-router'
+import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { reactive } from 'vue'
 
-import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
+import { useRoute } from 'vue-router'
 
 vi.mock('vue-router', () => ({
   useRoute: vi.fn(),

@@ -1,7 +1,7 @@
-import { mount } from '@vue/test-utils'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
+import { mount } from '@vue/test-utils'
+
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { mockPhoto } from '../mocks/photo'
 

@@ -1,11 +1,11 @@
-import { reactive } from 'vue'
-import { useRoute } from 'vue-router'
+import TfHeader from '@tf-app/widgets/tf-header/tf-header.vue'
 import { mount } from '@vue/test-utils'
+import SearchIcon from '~icons/tf-icons/search'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import TfHeader from '@tf-app/widgets/tf-header/tf-header.vue'
+import { reactive } from 'vue'
 
-import SearchIcon from '~icons/tf-icons/search'
+import { useRoute } from 'vue-router'
 
 vi.mock('vue-router', () => ({
   useRoute: vi.fn(),

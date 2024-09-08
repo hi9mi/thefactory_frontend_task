@@ -1,15 +1,15 @@
 import { createTestingPinia } from '@pinia/testing'
-import { mount } from '@vue/test-utils'
-import { useRouteQuery } from '@vueuse/router'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
 
-import { mockFavoritePhoto, mockUnFavoritePhoto } from '../mocks/photo'
-
+import { mount } from '@vue/test-utils'
+import { useRouteQuery } from '@vueuse/router'
 import HeartIcon from '~icons/tf-icons/heart'
+
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { mockFavoritePhoto, mockUnFavoritePhoto } from '../mocks/photo'
 
 vi.mock('@vueuse/router', () => ({
   useRouteQuery: vi.fn(),

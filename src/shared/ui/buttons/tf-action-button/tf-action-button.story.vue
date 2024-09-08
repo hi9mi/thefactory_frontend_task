@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import DownloadIcon from '~icons/tf-icons/download'
 import { logEvent } from 'histoire/client'
 
-import TfActionButton from './tf-action-button.vue'
+import { reactive } from 'vue'
 
-import DownloadIcon from '~icons/tf-icons/download'
+import TfActionButton from './tf-action-button.vue'
 
 const state = reactive({
   disabled: false,

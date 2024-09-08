@@ -1,9 +1,9 @@
-import { useRouteQuery } from '@vueuse/router'
-import { defineStore } from 'pinia'
-
-import type { Photo } from '@tf-app/shared/api'
 import { usePersistLS } from '@tf-app/shared/libs'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
+
+import { useRouteQuery } from '@vueuse/router'
+import { defineStore } from 'pinia'
+import type { Photo } from '@tf-app/shared/api'
 
 const LS_KEY = 'favorites'
 

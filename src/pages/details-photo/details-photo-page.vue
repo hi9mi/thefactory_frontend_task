@@ -38,7 +38,7 @@ const previewButtonStyles = computed(() => {
 })
 
 function handleShowFullPhoto() {
-  router.push({ name: routes.photoPage.children.fullPhoto.name })
+  router.replace({ name: routes.photoPage.children.fullPhoto.name })
 }
 
 async function getDetailsPhoto(id: string) {

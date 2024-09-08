@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-
 import TfSkeleton from '@tf-app/shared/ui/feedback/tf-skeleton/tf-skeleton.vue'
+
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 const height = ref(440)
 

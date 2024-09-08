@@ -1,12 +1,12 @@
 <script lang="ts" setup>
+import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
+
+import DownloadIcon from '~icons/tf-icons/download'
 import { reactive } from 'vue'
 
 import type { Placement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
-import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 
 import TfTooltip from './tf-tooltip.vue'
-
-import DownloadIcon from '~icons/tf-icons/download'
 
 const state = reactive<{ label: string, position: Placement }>({
   label: 'Example of TfTooltip',

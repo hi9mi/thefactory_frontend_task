@@ -1,5 +1,5 @@
-import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
 
 interface Routes {
   [key: string]: {

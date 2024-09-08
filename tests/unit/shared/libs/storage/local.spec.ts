@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
-
 import { getItemFromLS, setItemToLS } from '@tf-app/shared/libs/storage/local'
+
+import { describe, expect, it } from 'vitest'
 
 describe('getItemFromLS', () => {
   it('should return default value for non-existent key', () => {

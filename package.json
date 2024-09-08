@@ -51,7 +51,6 @@
     "dotenv": "^16.4.5",
     "eslint": "^9.10.0",
     "eslint-plugin-format": "^0.1.2",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
     "happy-dom": "^15.7.3",
     "histoire": "^0.17.17",
     "lint-staged": "^15.2.10",

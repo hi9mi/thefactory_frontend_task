@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { defineAsyncComponent, watch } from 'vue'
-
 import { useGalleryStore } from '@tf-app/entities/gallery'
+
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
+import { defineAsyncComponent, watch } from 'vue'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),

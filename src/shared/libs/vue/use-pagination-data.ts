@@ -1,5 +1,5 @@
-import type { MaybeRef } from 'vue'
 import { computed, ref, toRef } from 'vue'
+import type { MaybeRef } from 'vue'
 
 interface Options {
   limit?: number

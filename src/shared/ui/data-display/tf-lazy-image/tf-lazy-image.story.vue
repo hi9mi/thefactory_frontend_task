@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { reactive } from 'vue'
 import { logEvent } from 'histoire/client'
+import { reactive } from 'vue'
 
 import TfLazyImage from './tf-lazy-image.vue'
 

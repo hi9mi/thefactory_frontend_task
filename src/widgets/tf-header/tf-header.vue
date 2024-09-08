@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-
 import ToggleTheme from '@tf-app/features/toggle-theme/toggle-theme.vue'
 import { routes } from '@tf-app/routing'
 
 import HeartIcon from '~icons/tf-icons/heart'
 import SearchIcon from '~icons/tf-icons/search'
+
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const showSearchIcon = computed(() => {

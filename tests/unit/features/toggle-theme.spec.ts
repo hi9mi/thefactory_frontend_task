@@ -1,9 +1,9 @@
-import { ref, watchEffect } from 'vue'
+import ToggleTheme from '@tf-app/features/toggle-theme/toggle-theme.vue'
 import { mount } from '@vue/test-utils'
 import { useDark, useToggle } from '@vueuse/core'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import ToggleTheme from '@tf-app/features/toggle-theme/toggle-theme.vue'
+import { ref, watchEffect } from 'vue'
 
 vi.mock('@vueuse/core', () => ({
   useDark: vi.fn(),

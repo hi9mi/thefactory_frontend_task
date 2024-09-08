@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
-
 import { computeRelativeBrightness } from '@tf-app/shared/libs'
+
+import { describe, expect, it } from 'vitest'
 
 describe('computeRelativeBrightness', () => {
   it('should return 255 for white color', () => {

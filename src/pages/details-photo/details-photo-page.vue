@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
+
 import { routes } from '@tf-app/routing'
-import type { Photo } from '@tf-app/shared/api'
 import * as api from '@tf-app/shared/api'
 import { computeRelativeBrightness, hexToRgb } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
-
 import FullScreenIcon from '~icons/tf-icons/full-screen'
+import { computed, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+import type { Photo } from '@tf-app/shared/api'
 
 const router = useRouter()
 const route = useRoute()
@@ -47,6 +47,7 @@ async function getDetailsPhoto(id: string) {
     photo.value = await api.getDetailsPhoto(id)
   }
   catch (error) {
+    console.error('Error fetching photo', error)
     notify({ title: 'Ошибка при загрузке фотографии', message: 'Что-то пошло не так, попробуйте позже', type: 'error' })
   }
   isLoadingDetailsPhoto.value = false

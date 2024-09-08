@@ -1,7 +1,7 @@
-import { ref } from 'vue'
+import { usePaginationData } from '@tf-app/shared/libs/vue/use-pagination-data'
 import { describe, expect, it } from 'vitest'
 
-import { usePaginationData } from '@tf-app/shared/libs/vue/use-pagination-data'
+import { ref } from 'vue'
 
 describe('usePaginationData', () => {
   it('should return empty data and totalPages when data is empty', () => {

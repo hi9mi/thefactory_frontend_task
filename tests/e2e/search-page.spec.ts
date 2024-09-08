@@ -2,8 +2,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
+import type { Page } from '@playwright/test'
 
 import { checkNumberOfItemsInLocalStorage } from './libs/storage'
 

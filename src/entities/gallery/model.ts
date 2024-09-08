@@ -1,10 +1,10 @@
-import { computed, ref } from 'vue'
-import { useRouteQuery } from '@vueuse/router'
-import { defineStore } from 'pinia'
-
-import type { Photo, Photos } from '@tf-app/shared/api'
 import * as api from '@tf-app/shared/api'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
+import { useRouteQuery } from '@vueuse/router'
+
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
+import type { Photo, Photos } from '@tf-app/shared/api'
 
 export const useGalleryStore = defineStore('gallery', () => {
   const randomPhotos = ref<Photo[]>([])
@@ -24,6 +24,7 @@ export const useGalleryStore = defineStore('gallery', () => {
       randomPhotos.value = await api.getRandomPhotos()
     }
     catch (error) {
+      console.error('Failed to fetch random photos:', error)
       notify({ title: 'Ошибка при загрузке фотографий', message: 'Что-то пошло не так, попробуйте позже', type: 'error' })
     }
     isLoadingRandomPhotos.value = false
@@ -47,6 +48,7 @@ export const useGalleryStore = defineStore('gallery', () => {
       photos.value = await api.getSearchPhotos(searchTerm.value, page.value)
     }
     catch (error) {
+      console.error('Failed to fetch photos:', error)
       notify({ title: 'Ошибка при загрузке фотографий', message: 'Что-то пошло не так, попробуйте позже', type: 'error' })
     }
     isLoadingPhotos.value = false

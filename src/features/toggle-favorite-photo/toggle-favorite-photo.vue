@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
-
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
-import type { Photo } from '@tf-app/shared/api'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
-import TfTooltip from '@tf-app/shared/ui/overlays/tf-tooltip/tf-tooltip.vue'
 
+import TfTooltip from '@tf-app/shared/ui/overlays/tf-tooltip/tf-tooltip.vue'
 import HeartIcon from '~icons/tf-icons/heart'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+
+import type { Photo } from '@tf-app/shared/api'
 
 const props = defineProps<{
   photo: Photo

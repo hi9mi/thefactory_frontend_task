@@ -1,11 +1,11 @@
-import { ref } from 'vue'
-import { useRouteQuery } from '@vueuse/router'
-import { createPinia, setActivePinia } from 'pinia'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
 import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
 import { usePersistLS } from '@tf-app/shared/libs'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
+import { useRouteQuery } from '@vueuse/router'
+
+import { createPinia, setActivePinia } from 'pinia'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { ref } from 'vue'
 
 import { mockPhoto } from '../mocks/photo'
 

@@ -1,6 +1,6 @@
+import { createFocusTrap } from 'focus-trap'
 import { customRef } from 'vue'
 import type { FocusTrap, Options } from 'focus-trap'
-import { createFocusTrap } from 'focus-trap'
 
 export function useFocusTrap(focusTrapArgs?: Options) {
   const trapRef = customRef((track, trigger) => {
@@ -12,7 +12,12 @@ export function useFocusTrap(focusTrapArgs?: Options) {
       },
       set(value) {
         $trapEl = value
-        value ? initFocusTrap(focusTrapArgs) : clearFocusTrap()
+        if (value) {
+          initFocusTrap(focusTrapArgs)
+        }
+        else {
+          clearFocusTrap()
+        }
         trigger()
       },
     }

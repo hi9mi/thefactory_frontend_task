@@ -7,10 +7,11 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { mockPhoto } from '../mocks/photo'
 
-const mockedPush = vi.fn()
+const mockedFn = vi.fn()
 vi.mock('vue-router', () => ({
   useRouter: () => ({
-    push: mockedPush,
+    push: mockedFn,
+    replace: mockedFn,
   }),
   useRoute: vi.fn(),
 }))

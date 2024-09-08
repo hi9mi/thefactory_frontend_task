@@ -46,8 +46,8 @@ export function createAppRouter(routesMap: RouteRecordRaw[], baseUrl: string) {
     scrollBehavior(to, from, savedPosition) {
       const isSameRoute = to.path === from.path
       const isPreserveScroll = !isSameRoute && shouldPreserveScroll(to, from)
-
-      return isPreserveScroll ? savedPosition || {} : { top: 0, left: 0 }
+      const defaultScrollPosition = { top: 0, left: 0 }
+      return isPreserveScroll ? (savedPosition ?? defaultScrollPosition) : defaultScrollPosition
     },
 
     routes: routesMap,

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import XMarkIcon from '~icons/tf-icons/x-mark'
+import type { NotificationOptions } from './libs'
 
 import { inject, onBeforeUnmount, onMounted } from 'vue'
+import XMarkIcon from '~icons/tf-icons/x-mark'
 import { NOTIFICATIONS_CONTEXT_SYMBOL } from './config'
-import { emitter } from './libs'
 
-import type { NotificationOptions } from './libs'
+import { emitter } from './libs'
 
 const props = defineProps<{
   notification: NotificationOptions

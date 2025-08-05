@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { generateId } from '@tf-app/shared/libs'
+import type { Placement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
 
+import { generateId } from '@tf-app/shared/libs'
 import { computeCoordsFromPlacement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
 import { reactive, ref, shallowRef, watch } from 'vue'
-import type { Placement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
 
 const props = withDefaults(defineProps<{
   id?: string

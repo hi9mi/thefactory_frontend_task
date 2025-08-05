@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import SearchIcon from '~icons/tf-icons/search'
 import { ref, watch } from 'vue'
-
 import { useRoute } from 'vue-router'
+
+import SearchIcon from '~icons/tf-icons/search'
 
 const emit = defineEmits<{
   submit: [string]

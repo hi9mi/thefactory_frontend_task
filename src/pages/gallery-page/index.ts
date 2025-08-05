@@ -1,7 +1,7 @@
-import { routes } from '@tf-app/routing'
-
-import TfHeader from '@tf-app/widgets/tf-header/tf-header.vue'
 import type { RouteRecordRaw } from 'vue-router'
+
+import { routes } from '@tf-app/routing'
+import TfHeader from '@tf-app/widgets/tf-header/tf-header.vue'
 
 const GalleryPageRoute: RouteRecordRaw = {
   path: routes.gallery.path,

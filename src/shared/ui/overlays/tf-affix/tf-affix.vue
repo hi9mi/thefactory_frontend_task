@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ArrowTopIcon from '~icons/tf-icons/arrow-top'
-
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+
+import ArrowTopIcon from '~icons/tf-icons/arrow-top'
 
 defineOptions({
   inheritAttrs: false,

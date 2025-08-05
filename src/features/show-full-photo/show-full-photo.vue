@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import type { Photo } from '@tf-app/shared/api'
 import { routes } from '@tf-app/routing'
-import { useFocusTrap } from '@tf-app/shared/libs'
 
+import { useFocusTrap } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
-import XMarkIcon from '~icons/tf-icons/x-mark'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import type { Photo } from '@tf-app/shared/api'
+import XMarkIcon from '~icons/tf-icons/x-mark'
 
 defineOptions({
   inheritAttrs: false,

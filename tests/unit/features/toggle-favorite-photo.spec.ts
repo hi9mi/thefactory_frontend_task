@@ -5,9 +5,9 @@ import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
 
 import { mount } from '@vue/test-utils'
 import { useRouteQuery } from '@vueuse/router'
-import HeartIcon from '~icons/tf-icons/heart'
-
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import HeartIcon from '~icons/tf-icons/heart'
 
 import { mockFavoritePhoto, mockUnFavoritePhoto } from '../mocks/photo'
 

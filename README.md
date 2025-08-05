@@ -123,10 +123,10 @@ Each `index.ts` file within a page directory exports a `RouteRecordRaw` object t
 ```typescript
 // Inside `/pages/foo-page/index.ts`
 
-import { routes } from '@tf-app/routing'
-
-import TfHeader from '@tf-app/widgets/tf-header/tf-header.vue'
 import type { RouteRecordRaw } from 'vue-router'
+
+import { routes } from '@tf-app/routing'
+import TfHeader from '@tf-app/widgets/tf-header/tf-header.vue'
 
 const FooPageRoute: RouteRecordRaw = {
   path: routes.foo.path,

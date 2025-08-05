@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import DownloadIcon from '~icons/tf-icons/download'
 import { logEvent } from 'histoire/client'
-
 import { reactive } from 'vue'
+
+import DownloadIcon from '~icons/tf-icons/download'
 
 import TfActionButton from './tf-action-button.vue'
 

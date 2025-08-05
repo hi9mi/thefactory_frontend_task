@@ -3,19 +3,19 @@ export interface ElementRects {
   floatRect: DOMRect
 }
 
-export type Placement =
-  | 'bottom'
-  | 'right'
-  | 'left'
-  | 'top'
-  | 'bottom-end'
-  | 'bottom-start'
-  | 'left-end'
-  | 'left-start'
-  | 'right-end'
-  | 'right-start'
-  | 'top-end'
-  | 'top-start'
+export type Placement
+  = | 'bottom'
+    | 'right'
+    | 'left'
+    | 'top'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-end'
+    | 'left-start'
+    | 'right-end'
+    | 'right-start'
+    | 'top-end'
+    | 'top-start'
 
 export function addScroll(coords: { x: number, y: number }) {
   coords.x += window.scrollX

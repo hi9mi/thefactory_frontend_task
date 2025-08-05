@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, provide, reactive } from 'vue'
+import type { NotificationsContext } from './config'
 
+import type { NotificationOptions } from './libs'
+import { onBeforeUnmount, onMounted, provide, reactive } from 'vue'
 import { NOTIFICATIONS_CONTEXT_SYMBOL } from './config'
 import { emitter } from './libs'
 import TfNotification from './tf-notification.vue'
-import type { NotificationsContext } from './config'
-import type { NotificationOptions } from './libs'
 
 const props = defineProps<NotificationsContext>()
 const emit = defineEmits<{

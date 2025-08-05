@@ -1,7 +1,7 @@
-import { createAppRouter } from '@tf-app/routing'
 import type { App } from 'vue'
-
 import type { RouteRecordRaw } from 'vue-router'
+
+import { createAppRouter } from '@tf-app/routing'
 
 interface Params {
   app: App

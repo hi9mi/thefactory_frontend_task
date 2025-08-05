@@ -3,8 +3,8 @@ import { useGalleryStore } from '@tf-app/entities/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 
 import { routes } from '@tf-app/routing'
-import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
+import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
 

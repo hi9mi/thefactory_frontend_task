@@ -1,4 +1,5 @@
-import { type ObjectDirective, reactive } from 'vue'
+import type { ObjectDirective } from 'vue'
+import { reactive } from 'vue'
 
 interface LazyImageOptions {
   originalSrc: string

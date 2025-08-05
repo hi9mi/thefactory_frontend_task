@@ -1,10 +1,10 @@
+import type { Photo, Photos } from '@tf-app/shared/api'
 import * as api from '@tf-app/shared/api'
 import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
-import { useRouteQuery } from '@vueuse/router'
 
+import { useRouteQuery } from '@vueuse/router'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import type { Photo, Photos } from '@tf-app/shared/api'
 
 export const useGalleryStore = defineStore('gallery', () => {
   const randomPhotos = ref<Photo[]>([])

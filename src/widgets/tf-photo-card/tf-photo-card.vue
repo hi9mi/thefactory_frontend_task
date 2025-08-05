@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
+import type { Photo } from '@tf-app/shared/api'
 
+import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import { ref } from 'vue'
-import type { Photo } from '@tf-app/shared/api'
 
 defineProps<{ photo: Photo }>()
 

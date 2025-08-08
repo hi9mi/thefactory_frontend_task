@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGalleryStore } from '@tf-app/entities/gallery'
+import { provideGalleryModel } from '@tf-app/app/providers/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 
 import { routes } from '@tf-app/routing'
@@ -7,6 +7,8 @@ import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-ske
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
+
+const { useGalleryStore } = provideGalleryModel()
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),

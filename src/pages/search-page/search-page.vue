@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGalleryStore } from '@tf-app/entities/gallery'
+import { provideGalleryModel } from '@tf-app/app/providers/gallery'
 
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
@@ -12,6 +12,8 @@ const TfAffix = defineAsyncComponent(() =>
 const TfPagination = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/navigation/tf-pagination/tf-pagination.vue'),
 )
+
+const { useGalleryStore } = provideGalleryModel()
 
 const galleryStore = useGalleryStore()
 

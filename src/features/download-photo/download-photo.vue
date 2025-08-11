@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { TOKENS, useResolver } from '@tf-app/shared/di'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
-import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 
 import DownloadIcon from '~icons/tf-icons/download'
 
@@ -9,6 +9,9 @@ const props = defineProps<{
   name?: string
   withText?: boolean
 }>()
+
+const resolve = useResolver()
+const notifier = resolve(TOKENS.Notifier)
 
 async function downloadPhoto() {
   try {
@@ -30,11 +33,7 @@ async function downloadPhoto() {
   }
   catch (error) {
     console.error('Download photo error', error)
-    notify({
-      title: 'Не удалось начать загрузку фотографии',
-      message: 'Что-то пошло не так, попробуйте еще раз',
-      type: 'error',
-    })
+    notifier.warning('Error while downloading photo', 'Error')
   }
 }
 </script>

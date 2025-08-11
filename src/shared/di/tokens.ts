@@ -3,8 +3,10 @@ import type { Router } from 'vue-router'
 import { token } from 'ditox'
 
 export interface Notifier {
-  success: (msg: string, title?: string) => void
-  error: (msg: string, title?: string) => void
+  success: (message: string, title?: string) => void
+  error: (message: string, title?: string) => void
+  info: (message: string, title?: string) => void
+  warning: (message: string, title?: string) => void
 }
 
 export interface UnsplashAPI {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
-import TfNotifications from '@tf-app/shared/ui/feedback/tf-notification/tf-notifications.vue'
+import { TOKENS, useResolver } from '@tf-app/shared/di'
+import TfNotifications from '@tf-app/shared/ui/feedback/tf-notification/ui/tf-notifications.vue'
 import { pwaInfo } from 'virtual:pwa-info'
 
 import { useRegisterSW } from 'virtual:pwa-register/vue'
@@ -10,6 +10,9 @@ import { watch } from 'vue'
 console.log(pwaInfo)
 
 const reloadSW: any = '__RELOAD_SW__'
+
+const resolve = useResolver()
+const notifier = resolve(TOKENS.Notifier)
 
 const {
   offlineReady,
@@ -35,10 +38,10 @@ const {
 })
 
 watch(offlineReady, () => {
-  notify({ title: 'App ready to work offline', message: 'App is ready to work offline', type: 'success' })
+  notifier.info('App ready to work offline', 'App is ready to work offline')
 })
 watch(needRefresh, () => {
-  notify({ title: 'New content available', message: 'The page will reload after 3 seconds to update', type: 'success' })
+  notifier.info('New content available', 'The page will reload after 3 seconds to update')
   setTimeout(() => {
     updateServiceWorker(true)
   }, 3000)

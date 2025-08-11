@@ -1,21 +1,10 @@
-import type { Notifier, UnsplashAPI } from '@tf-app/shared/di/tokens'
+import type { UnsplashAPI } from '@tf-app/shared/di/tokens'
 import type { App } from 'vue'
 import type { Router } from 'vue-router'
 import * as api from '@tf-app/shared/api'
 import { TOKENS } from '@tf-app/shared/di/tokens'
-import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
+import { useNotificationsStore } from '@tf-app/shared/ui/feedback/tf-notification/model'
 import { di } from './container'
-
-function createNotifier(): Notifier {
-  return {
-    success: (message, title) => {
-      notify({ type: 'success', message, title })
-    },
-    error: (message, title) => {
-      notify({ type: 'error', message, title })
-    },
-  }
-}
 
 function createUnsplashApi(): UnsplashAPI {
   return {
@@ -31,11 +20,14 @@ export function registerAppBindings(params: {
   baseUrl: string
 }): void {
   di.bindValue(TOKENS.Router, params.router)
-  di.bindValue(TOKENS.Notifier, createNotifier())
+  di.bindValue(TOKENS.Notifier, {
+    success: (m, t) => useNotificationsStore().success(m, t),
+    error: (m, t) => useNotificationsStore().error(m, t),
+    info: (m, t) => useNotificationsStore().info(m, t),
+    warning: (m, t) => useNotificationsStore().warning(m, t),
+  })
   di.bindValue(TOKENS.UnsplashAPI, createUnsplashApi())
 
   // todo
   // di.bindValue(TOKENS.Config, createAppConfig())
-
-  params.app.provide('$di', di)
 }

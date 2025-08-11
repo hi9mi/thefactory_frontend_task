@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import { provideGalleryModel } from '@tf-app/app/providers/gallery'
+import { createGalleryModel } from '@tf-app/entities/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 
 import { routes } from '@tf-app/routing'
+import { TOKENS, useResolver } from '@tf-app/shared/di'
 import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
 
-const { useGalleryStore } = provideGalleryModel()
+const resolve = useResolver()
+const notifier = resolve(TOKENS.Notifier)
+const { useGalleryStore } = createGalleryModel({
+  api: resolve(TOKENS.UnsplashAPI),
+  notify: notifier,
+})
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
@@ -27,6 +33,9 @@ function onSubmitSearchForm(searchTerm: string) {
 
 <template>
   <SearchPhotosForm data-testid="search-photos-form" @submit="onSubmitSearchForm" />
+  <button @click="notifier.success('Hello, world!')">
+    test notification
+  </button>
   <div class="container" :class="classes.galleryContainer">
     <section
       :class="classes.gallery"

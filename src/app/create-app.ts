@@ -1,6 +1,6 @@
 import { routesMap } from '@tf-app/pages'
 
-import { registerAppBindings } from '@tf-app/shared/di/register-app-bindings'
+import { di, registerAppBindings, RESOLVER } from '@tf-app/shared/di'
 
 import { createApp as createVueApp } from 'vue'
 
@@ -23,6 +23,7 @@ export function createApp({ baseUrl, performance }: Params) {
   initWith.nprogress(router)
 
   registerAppBindings({ app, router, baseUrl })
+  app.provide(RESOLVER, di.resolve.bind(di))
 
   const isReady = router.isReady()
   const mount = app.mount

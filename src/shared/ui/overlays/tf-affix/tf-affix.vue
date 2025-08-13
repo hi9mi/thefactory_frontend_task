@@ -36,6 +36,7 @@ onBeforeUnmount(() => {
   <Teleport to="#affix">
     <Transition
       name="affix"
+      data-animated
     >
       <button
         v-if="isShowAffix"

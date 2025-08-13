@@ -59,6 +59,7 @@ watch(tooltipElement, () => {
   <Teleport :to="`#${TOOLTIPS_CONTAINER_ID}`">
     <Transition
       name="tooltip"
+      data-animated
     >
       <div
         v-if="isShowTooltip"
@@ -112,11 +113,13 @@ watch(tooltipElement, () => {
   box-shadow: var(--shadow-small, 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%));
   display: -webkit-box;
   -webkit-box-orient: vertical;
+  line-clamp: 1;
   -webkit-line-clamp: 1;
   overflow: hidden;
 }
 
 .multiline {
+  line-clamp: unset;
   -webkit-line-clamp: unset;
 }
 </style>

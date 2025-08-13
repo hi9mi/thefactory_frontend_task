@@ -12,6 +12,7 @@ import LoaderIcon from '~icons/tf-icons/loader'
       height="22"
       aria-hidden="true"
       :class="classes.spinner"
+      data-animated
     />
     <span class="sr-only">Загрузка...</span>
   </div>

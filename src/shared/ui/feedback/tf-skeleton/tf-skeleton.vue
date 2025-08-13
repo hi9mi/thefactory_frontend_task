@@ -32,7 +32,7 @@ function convertValueToPx(value: string | number) {
 </script>
 
 <template>
-  <component :is="element" :class="[classes.skeleton, classes[props.type]]" :style="styleObject" aria-hidden="true" />
+  <component :is="element" :class="[classes.skeleton, classes[props.type]]" :style="styleObject" aria-hidden="true" data-animated />
 </template>
 
 <style module="classes">

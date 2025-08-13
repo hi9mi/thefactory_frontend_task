@@ -23,7 +23,7 @@ const toggleDark = useToggle(isDarkTheme)
     data-testid="toggle-theme-btn"
     @click="toggleDark()"
   >
-    <SunAndMoonIcon :class="classes.sunAndMoon" />
+    <SunAndMoonIcon :class="classes.sunAndMoon" data-animated />
   </button>
 </template>
 

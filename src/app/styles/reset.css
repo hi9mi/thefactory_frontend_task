@@ -52,9 +52,9 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    *:not([data-animated], [data-animated] *),
+    *:not([data-animated], [data-animated] *)::before,
+    *:not([data-animated], [data-animated] *)::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;

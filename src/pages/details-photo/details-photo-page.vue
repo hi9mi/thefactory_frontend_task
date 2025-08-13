@@ -5,16 +5,18 @@ import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import { routes } from '@tf-app/routing'
 import * as api from '@tf-app/shared/api'
+import { TOKENS, useResolver } from '@tf-app/shared/di'
 import { computeRelativeBrightness, hexToRgb } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
-import { notify } from '@tf-app/shared/ui/feedback/tf-notification/libs'
 import { computed, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
 
+import { useRoute, useRouter } from 'vue-router'
 import FullScreenIcon from '~icons/tf-icons/full-screen'
 
+const resolve = useResolver()
+const notifier = resolve(TOKENS.Notifier)
 const router = useRouter()
 const route = useRoute()
 const photo = ref<Photo | null>(null)
@@ -48,7 +50,7 @@ async function getDetailsPhoto(id: string) {
   }
   catch (error) {
     console.error('Error fetching photo', error)
-    notify({ title: 'Ошибка при загрузке фотографии', message: 'Что-то пошло не так, попробуйте позже', type: 'error' })
+    notifier.error('Error while loading photo from API', 'Error')
   }
   isLoadingDetailsPhoto.value = false
 }
@@ -57,6 +59,7 @@ getDetailsPhoto(route.params.id.toString())
 </script>
 
 <template>
+  <TfLoader data-testid="loader" />
   <div :class="classes.wrapper">
     <template v-if="!isLoadingDetailsPhoto && photo">
       <img

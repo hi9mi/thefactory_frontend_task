@@ -19,7 +19,7 @@ function onRemove() {
 
 <template>
   <li
-    :class="classes.notification"
+    :class="classes.item"
     :data-type="notification.type"
     @mouseenter="onEnter"
     @mouseleave="onLeave"
@@ -33,7 +33,7 @@ function onRemove() {
 </template>
 
 <style module="classes">
-.notification {
+.item {
   position: relative;
   padding: 10px 22px;
   background: var(--background-color-primary);
@@ -44,7 +44,7 @@ function onRemove() {
   display: flex;
   flex-direction: column;
 }
-.notification::before {
+.item::before {
   left: 6px;
   top: 50%;
   transform: translateY(-50%);
@@ -55,16 +55,16 @@ function onRemove() {
   height: 80%;
   border-radius: var(--border-radius-small);
 }
-.notification[data-type='success']::before {
+.item[data-type='success']::before {
   background: var(--color-fruit-salad);
 }
-.notification[data-type='error']::before {
+.item[data-type='error']::before {
   background: var(--color-sunset-orange);
 }
-.notification[data-type='info']::before {
+.item[data-type='info']::before {
   background: var(--color-info, #1e3a8a);
 }
-.notification[data-type='warning']::before {
+.item[data-type='warning']::before {
   background: var(--color-warning, #8a6d1e);
 }
 .title {

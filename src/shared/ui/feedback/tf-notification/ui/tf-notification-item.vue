@@ -35,7 +35,7 @@ function onRemove() {
 <style module="classes">
 .item {
   position: relative;
-  padding: 10px 22px;
+  padding: var(--toast-py, 10px) var(--toast-px, 22px);
   background: var(--background-color-primary);
   box-shadow: var(--shadow-large);
   border-radius: var(--border-radius-small);
@@ -77,6 +77,7 @@ function onRemove() {
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin-left: 8px;
 }
 .message {
   font-size: 14px;
@@ -87,6 +88,7 @@ function onRemove() {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin-left: 8px;
 }
 .removeBtn {
   position: absolute;
@@ -96,5 +98,38 @@ function onRemove() {
   border: none;
   cursor: pointer;
   color: var(--text-color-default);
+}
+
+@container tf-notifications-container (inline-size < 340px) {
+  .item {
+    --toast-px: 12px;
+    --toast-py: 8px;
+  }
+}
+
+@container tf-notifications-container (inline-size >= 380px) {
+  .item {
+    --toast-px: 16px;
+    --toast-py: 12px;
+  }
+}
+
+@container tf-notifications-container (inline-size < 340px) {
+  .title {
+    font-size: 14px;
+  }
+  .message {
+    font-size: 13px;
+    -webkit-line-clamp: 2;
+  }
+}
+@container tf-notifications-container (inline-size >= 380px) {
+  .title {
+    font-size: 16px;
+  }
+  .message {
+    font-size: 14px;
+    -webkit-line-clamp: 3;
+  }
 }
 </style>

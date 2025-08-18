@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TOKENS, useResolver } from '@tf-app/shared/di'
+import { TOKENS, useDependency } from '@tf-app/shared/di'
 import TfNotifications from '@tf-app/shared/ui/feedback/tf-notification/ui/tf-notifications.vue'
 import { pwaInfo } from 'virtual:pwa-info'
 
@@ -11,8 +11,7 @@ console.log(pwaInfo)
 
 const reloadSW: any = '__RELOAD_SW__'
 
-const resolve = useResolver()
-const notifier = resolve(TOKENS.Notifier)
+const notifier = useDependency(TOKENS.Notifier)
 
 const {
   offlineReady,

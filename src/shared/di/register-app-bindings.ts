@@ -4,7 +4,6 @@ import type { Router } from 'vue-router'
 import * as api from '@tf-app/shared/api'
 import { TOKENS } from '@tf-app/shared/di/tokens'
 import { useNotificationsStore } from '@tf-app/shared/ui/feedback/tf-notification/model'
-import { di } from './container'
 
 function createUnsplashApi(): UnsplashAPI {
   return {

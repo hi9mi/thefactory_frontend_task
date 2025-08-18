@@ -1,22 +1,24 @@
-import type { Photo, Photos } from '@tf-app/shared/api'
 import type { Router } from 'vue-router'
-import { token } from 'ditox'
+import { token } from '@tf-app/shared/di/container'
 
 export interface Notifier {
-  success: (message: string, title?: string) => void
-  error: (message: string, title?: string) => void
-  info: (message: string, title?: string) => void
-  warning: (message: string, title?: string) => void
+  success: (msg: string, t?: string) => void
+  error: (msg: string, t?: string) => void
+  info: (msg: string, t?: string) => void
+  warning: (msg: string, t?: string) => void
 }
 
 export interface UnsplashAPI {
-  getRandomPhotos: () => Promise<Photo[]>
-  getPhotos: (params: { query: string, page: number }) => Promise<Photos>
-  getDetailsPhoto: (id: string) => Promise<Photo>
+  getRandomPhotos: () => Promise<any>
+  getPhotos: (p: { query: string, page: number }) => Promise<any>
+  getDetailsPhoto: (id: string) => Promise<any>
 }
+
+export interface AppConfig { baseUrl: string }
 
 export const TOKENS = {
   Router: token<Router>('Router'),
   Notifier: token<Notifier>('Notifier'),
   UnsplashAPI: token<UnsplashAPI>('UnsplashAPI'),
+  Config: token<AppConfig>('Config'),
 }

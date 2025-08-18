@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TOKENS, useResolver } from '@tf-app/shared/di'
+import { TOKENS, useDependency } from '@tf-app/shared/di'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
 
 import DownloadIcon from '~icons/tf-icons/download'
@@ -10,8 +10,7 @@ const props = defineProps<{
   withText?: boolean
 }>()
 
-const resolve = useResolver()
-const notifier = resolve(TOKENS.Notifier)
+const notifier = useDependency(TOKENS.Notifier)
 
 async function downloadPhoto() {
   try {

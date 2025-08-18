@@ -1,5 +1,5 @@
 import type { Photo } from '@tf-app/shared/api'
-import { TOKENS, useResolver } from '@tf-app/shared/di'
+import { TOKENS, useDependency } from '@tf-app/shared/di'
 import { usePersistLS } from '@tf-app/shared/libs'
 
 import { useRouteQuery } from '@vueuse/router'
@@ -10,8 +10,7 @@ const LS_KEY = 'favorites'
 export const useFavoritePhotosStore = defineStore('favoritePhotos', () => {
   const favoritePhotos = usePersistLS<Photo[]>([], LS_KEY, true)
   const currentPage = useRouteQuery('page', '1', { mode: 'push', transform: Number })
-  const resolve = useResolver()
-  const notifier = resolve(TOKENS.Notifier)
+  const notifier = useDependency(TOKENS.Notifier)
 
   function toggleFavoritePhoto(photo: Photo) {
     const favPhotoIndex = favoritePhotos.value.findIndex(favPhoto => favPhoto.id === photo.id)

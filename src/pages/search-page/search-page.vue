@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { createGalleryModel } from '@tf-app/entities/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
-import { TOKENS, useResolver } from '@tf-app/shared/di'
+import { TOKENS, useDependency } from '@tf-app/shared/di'
 import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { defineAsyncComponent, watch } from 'vue'
@@ -13,10 +13,9 @@ const TfPagination = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/navigation/tf-pagination/tf-pagination.vue'),
 )
 
-const resolve = useResolver()
 const { useGalleryStore } = createGalleryModel({
-  api: resolve(TOKENS.UnsplashAPI),
-  notify: resolve(TOKENS.Notifier),
+  api: useDependency(TOKENS.UnsplashAPI),
+  notify: useDependency(TOKENS.Notifier),
 })
 
 const galleryStore = useGalleryStore()

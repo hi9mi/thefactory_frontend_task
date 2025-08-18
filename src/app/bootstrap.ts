@@ -2,9 +2,8 @@ import { routesMap } from '@tf-app/pages'
 
 import { applyModules, createDI, createDiPlugin } from '@tf-app/shared/di'
 
-import { configModule, notifierModule, routerModule, unsplashModule } from '@tf-app/shared/di/modules'
-
 import { createApp as createVueApp } from 'vue'
+import { appModule } from './app-module'
 import { initWith } from './init-with'
 import TfApp from './tf-app.vue'
 import './styles/index.css'
@@ -15,7 +14,7 @@ interface Params {
   performance: boolean
 }
 
-export function createApp({ baseUrl, performance }: Params) {
+export function bootstrap({ baseUrl, performance }: Params) {
   const app = createVueApp(TfApp)
   app.config.performance = performance
 
@@ -25,13 +24,10 @@ export function createApp({ baseUrl, performance }: Params) {
 
   const rootDi = createDI()
 
-  applyModules(
-    rootDi,
-    configModule({ baseUrl: import.meta.env.VITE_UNSPLASH_API_URL ?? '' }),
-    routerModule(router),
-    notifierModule(),
-    unsplashModule(),
-  )
+  applyModules(rootDi, appModule({
+    router,
+    baseUrl: import.meta.env.VITE_API_BASE_URL ?? '/api',
+  }))
 
   app.use(createDiPlugin(rootDi))
 

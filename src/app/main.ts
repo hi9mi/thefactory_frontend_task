@@ -1,10 +1,10 @@
-import { createApp } from './create-app'
+import { bootstrap } from './bootstrap'
 
 main()
 
 function main() {
   const { BASE_URL, PROD, DEV } = import.meta.env
-  const app = createApp({
+  const app = bootstrap({
     baseUrl: BASE_URL,
     strict: !PROD,
     performance: DEV,

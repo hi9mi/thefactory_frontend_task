@@ -1,6 +1,7 @@
 import type { DependencyModule } from '@tf-app/shared/di'
 import type { Router } from 'vue-router'
 import { createFavoritesRepoLS, FAVORITES_REPO } from '@tf-app/entities/favorite-photos'
+import { createGalleryCache, GALLERY_CACHE } from '@tf-app/entities/gallery'
 import * as api from '@tf-app/shared/api'
 import { TOKENS } from '@tf-app/shared/di'
 import { useNotificationsStore } from '@tf-app/shared/ui/feedback/tf-notification/model'
@@ -24,5 +25,6 @@ export function appModule(p: { router: Router, baseUrl: string }): DependencyMod
     })
 
     di.set(FAVORITES_REPO, createFavoritesRepoLS())
+    di.set(GALLERY_CACHE, createGalleryCache())
   }
 }

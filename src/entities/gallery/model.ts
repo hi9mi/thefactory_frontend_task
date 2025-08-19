@@ -1,83 +1,158 @@
-import type { Photo, Photos } from '@tf-app/shared/api'
-import type { Notifier, UnsplashAPI } from '@tf-app/shared/di/tokens'
+import type { Ref } from 'vue'
+import type { GalleryGateway, GalleryItem } from './gateway'
+import { token } from '@tf-app/shared/di/container'
+import { computed, reactive, ref } from 'vue'
 
-import { useRouteQuery } from '@vueuse/router'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+interface SearchEntry { items: GalleryItem[], loading: boolean, error: string | null }
 
-export function createGalleryModel(deps: { api: UnsplashAPI, notify: Notifier }) {
-  const useGalleryStore = defineStore('gallery', () => {
-    const randomPhotos = ref<Photo[]>([])
-    const isLoadingPhotos = ref(false)
-    const isLoadingRandomPhotos = ref(false)
-    const photos = ref<Photos | null>(null)
+export interface GalleryCache {
+  random: Ref<GalleryItem[]>
+  randomLoading: Ref<boolean>
+  randomError: Ref<string | null>
 
-    const searchTerm = useRouteQuery('q', '', { mode: 'push', transform: (value: string) => value.trim() })
-    const page = useRouteQuery('p', '1', { mode: 'push', transform: Number })
+  searchEntries: Record<string, SearchEntry>
 
-    const isSearchEmpty = computed(() => searchTerm.value.length === 0)
-    const hasPhotos = computed(() => (photos.value?.total ?? 0) > 0)
-    const hasNoResults = computed(() => !isLoadingPhotos.value && !hasPhotos.value && !isSearchEmpty.value)
+  totalsByQuery: Record<string, number>
 
-    async function fetchRandomPhotos() {
-      isLoadingRandomPhotos.value = true
+  inflight: Map<string, Promise<any>>
+  clear: () => void
+}
+
+export const GALLERY_CACHE = token<GalleryCache>('GalleryCache')
+
+export function createGalleryCache(): GalleryCache {
+  const random = ref<GalleryItem[]>([])
+  const randomLoading = ref(false)
+  const randomError = ref<string | null>(null)
+
+  const searchEntries = reactive<Record<string, { items: GalleryItem[], loading: boolean, error: string | null }>>({})
+  const totalsByQuery = reactive<Record<string, number>>({})
+  const inflight = new Map<string, Promise<any>>()
+
+  function clear() {
+    random.value = []
+    randomLoading.value = false
+    randomError.value = null
+    for (const k of Object.keys(searchEntries)) delete searchEntries[k]
+    for (const k of Object.keys(totalsByQuery)) delete totalsByQuery[k]
+    inflight.clear()
+  }
+
+  return { random, randomLoading, randomError, searchEntries, totalsByQuery, inflight, clear }
+}
+
+function makeEntry() {
+  return reactive<SearchEntry>({ items: [], loading: false, error: null })
+}
+
+function keyOf(q: string, p: number) {
+  return `${q}::${p}`
+}
+
+export function createGalleryEntity(deps: { gateway: GalleryGateway, cache: GalleryCache }) {
+  const { gateway, cache } = deps
+
+  async function ensureRandom(count = 9) {
+    if (cache.random.value.length >= count)
+      return cache.random.value
+
+    const key = 'random'
+    if (cache.inflight.has(key)) {
+      await cache.inflight.get(key)
+      return cache.random.value
+    }
+
+    cache.randomLoading.value = true
+    cache.randomError.value = null
+
+    const promise = (async () => {
       try {
-        randomPhotos.value = await deps.api.getRandomPhotos()
+        const items = await gateway.random(count)
+        cache.random.value = items
       }
-      catch (error) {
-        console.error('Failed to fetch random photos:', error)
-        deps.notify.error('Failed to fetch random photos', 'Error')
+      catch (e: any) {
+        cache.randomError.value = e?.message ?? 'Failed to load random photos'
       }
       finally {
-        isLoadingRandomPhotos.value = false
+        cache.randomLoading.value = false
       }
+    })().finally(() => cache.inflight.delete(key))
+
+    cache.inflight.set(key, promise)
+    await promise
+    return cache.random.value
+  }
+
+  async function reloadRandom(count = 9) {
+    cache.random.value = []
+    return ensureRandom(count)
+  }
+
+  function ensureEntry(q: string, p: number): SearchEntry {
+    const key = keyOf(q, p)
+    return (cache.searchEntries[key] ??= makeEntry())
+  }
+
+  async function search(query: string, page = 1) {
+    const q = (query ?? '').trim()
+    if (!q)
+      return []
+
+    const key = keyOf(q, page)
+    const entry = ensureEntry(q, page)
+
+    if (entry.items.length)
+      return entry.items
+    if (cache.inflight.has(key)) {
+      await cache.inflight.get(key)
+      return entry.items
     }
 
-    function changeSearchTerm(newSearchTerm: string) {
-      searchTerm.value = newSearchTerm
-    }
+    entry.loading = true
+    entry.error = null
 
-    function changeCurrentPage(newPage: number) {
-      page.value = newPage
-    }
-
-    async function fetchPhotos() {
-      if (searchTerm.value.length === 0) {
-        photos.value = null
-        return
-      }
-      isLoadingPhotos.value = true
+    const promise = (async () => {
       try {
-        photos.value = await deps.api.getPhotos({ query: searchTerm.value, page: Number(page.value ?? 1) })
+        const { items, totalPages } = await gateway.search(q, page)
+        entry.items = items
+        cache.totalsByQuery[q] = totalPages
       }
-      catch (error) {
-        console.error('Failed to fetch photos:', error)
-        deps.notify.error('Failed to fetch search result photos', 'Error')
+      catch (e: any) {
+        entry.error = e?.message ?? 'Search failed'
       }
       finally {
-        isLoadingPhotos.value = false
+        entry.loading = false
       }
-    }
+    })().finally(() => cache.inflight.delete(key))
 
-    return {
-      // state
-      randomPhotos,
-      isLoadingPhotos,
-      isLoadingRandomPhotos,
-      photos,
-      searchTerm,
-      page,
-      // getters
-      hasPhotos,
-      hasNoResults,
-      isSearchEmpty,
-      // actions
-      fetchRandomPhotos,
-      changeSearchTerm,
-      changeCurrentPage,
-      fetchPhotos,
-    }
-  })
+    cache.inflight.set(key, promise)
+    await promise
+    return entry.items
+  }
 
-  return { useGalleryStore }
+  function getSearchState(query: string, page: number) {
+    return ensureEntry(query, page)
+  }
+
+  function getTotalPages(query: string) {
+    return cache.totalsByQuery[query.trim()] ?? 0
+  }
+
+  const randomLoaded = computed(() => cache.random.value.length > 0 && !cache.randomLoading.value)
+
+  return {
+    random: cache.random,
+    randomLoading: cache.randomLoading,
+    randomError: cache.randomError,
+    randomLoaded,
+
+    ensureRandom,
+    reloadRandom,
+
+    search,
+    getSearchState,
+    getTotalPages,
+
+    clear: cache.clear,
+  }
 }

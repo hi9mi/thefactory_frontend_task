@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { createGalleryModel } from '@tf-app/entities/gallery'
+import { createGalleryEntity, createGalleryGateway, GALLERY_CACHE } from '@tf-app/entities/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import { TOKENS, useDependency } from '@tf-app/shared/di'
 import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
-import { defineAsyncComponent, watch } from 'vue'
+import { useRouteQuery } from '@vueuse/router'
+import { computed, defineAsyncComponent, watch } from 'vue'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
@@ -13,70 +14,69 @@ const TfPagination = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/navigation/tf-pagination/tf-pagination.vue'),
 )
 
-const { useGalleryStore } = createGalleryModel({
-  api: useDependency(TOKENS.UnsplashAPI),
-  notify: useDependency(TOKENS.Notifier),
-})
+const api = useDependency(TOKENS.UnsplashAPI)
+const notify = useDependency(TOKENS.Notifier)
+const cache = useDependency(GALLERY_CACHE)
+const gallery = createGalleryEntity({ gateway: createGalleryGateway(api), cache })
 
-const galleryStore = useGalleryStore()
+const q = useRouteQuery<string>('q', '', { mode: 'push' })
+const page = useRouteQuery('page', '1', { mode: 'push', transform: Number })
 
-async function onSubmitSearchForm(searchTerm: string) {
-  galleryStore.changeSearchTerm(searchTerm)
-  galleryStore.changeCurrentPage(1)
+async function runSearch() {
+  await gallery.search(q.value, page.value)
 }
+watch([q, page], runSearch, { immediate: true, flush: 'post' })
 
-watch(() => [galleryStore.page, galleryStore.searchTerm], (
-  newValue,
-  oldValue,
-) => {
-  if (newValue[0] === oldValue?.[0] && newValue[1] === oldValue?.[1])
-    return
+const entry = computed(() => gallery.getSearchState(q.value, page.value))
+const totalPages = computed(() => gallery.getTotalPages(q.value))
+const hasNoResults = computed(() => !entry.value.loading && entry.value.items.length === 0)
+const isSearchEmpty = computed(() => hasNoResults.value && q.value === '')
 
-  galleryStore.fetchPhotos()
-}, {
-  immediate: true,
+watch(() => entry.value.error, (err) => {
+  if (err)
+    notify.error('Error searching')
 })
 </script>
 
 <template>
-  <SearchPhotosForm data-testid="search-photos-form" @submit="onSubmitSearchForm" />
+  <SearchPhotosForm data-testid="search-photos-form" mode="inline" @submit="(newQuery) => q = newQuery" />
   <div class="container" :class="classes.galleryContainer">
     <section
       :class="classes.gallery"
     >
-      <template v-if="galleryStore.isLoadingPhotos">
+      <template v-if="entry.loading">
         <TfPhotoCardSkeleton v-for="i of 9" :key="i" data-testid="photo-skeleton" />
       </template>
-      <template v-else-if="galleryStore.hasPhotos">
+      <template v-else-if="entry.items.length">
         <TfPhotoCard
-          v-for="photo of galleryStore.photos!.results"
+          v-for="photo of entry.items"
           :key="photo.id"
           data-testid="photo-card"
           :photo="photo"
         />
       </template>
       <p
-        v-else-if="galleryStore.hasNoResults"
+        v-else-if="hasNoResults"
         :class="classes.galleryEmpty"
         data-testid="no-results"
       >
-        По вашему запросу не найдено фотографий
+        Not found photos
       </p>
       <p
-        v-else-if="galleryStore.isSearchEmpty"
+        v-else-if="isSearchEmpty"
         :class="classes.galleryEmpty"
         data-testid="search-empty"
       >
-        Для того чтобы найти фотографии, введите запрос
+        Search empty, try type in search
       </p>
     </section>
     <TfPagination
-      v-if="galleryStore.hasPhotos"
-      :total-pages="galleryStore.photos!.total_pages"
-      :page="galleryStore.page"
-      :disabled="galleryStore.isLoadingPhotos"
+      v-if="entry.items.length"
+      :total-pages="totalPages"
+      :page="page"
+      :disabled="entry.loading"
       data-testid="pagination"
-      @change-page="galleryStore.changeCurrentPage"
+      @change-page="(p) => page = p"
     />
 
     <TfAffix data-testid="affix" />

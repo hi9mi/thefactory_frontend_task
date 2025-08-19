@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { Photo } from '@tf-app/shared/api'
+import type { GalleryItem } from '@tf-app/entities/gallery'
 
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import { ref } from 'vue'
 
-defineProps<{ photo: Photo }>()
+defineProps<{ photo: GalleryItem }>()
 
 const isActionsVisible = ref(false)
 
@@ -19,22 +19,22 @@ function toggleActions() {
   <article :class="classes.photoCard" @mouseenter="toggleActions" @mouseleave="toggleActions">
     <TfBlurhashImage
       :id="photo.id"
-      :blurhash="photo.blur_hash"
+      :blurhash="photo.blurHash"
       :blurhash-width="440"
       :blurhash-height="440"
-      :src="`${photo.urls.raw}&w=640&h=640&dpr=2&q=80`"
-      :alt="photo.alt_description"
-      :srcset="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
+      :src="`${photo.urlRaw}&w=640&h=640&dpr=2&q=80`"
+      :alt="photo.alt"
+      :srcset="`${photo.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urlRaw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urlRaw}&w=1024&h=1024dpr=3&q=80 1024w`"
       sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
       :class="classes.photo"
     />
-    <RouterLink :to="`/${photo.id}`" :class="classes.photoLink" :title="photo.alt_description" />
+    <RouterLink :to="`/${photo.id}`" :class="classes.photoLink" :title="photo.alt" />
     <Transition name="fade">
       <div v-if="isActionsVisible" :class="classes.overlay" data-testid="photo-actions-overlay" />
     </Transition>
     <div v-if="isActionsVisible" :class="classes.actions">
       <ToggleFavoritePhoto :photo="photo" />
-      <DownloadPhoto :src="photo.urls.full" :name="photo.id" />
+      <DownloadPhoto :src="photo.urlFull" :name="photo.id" />
     </div>
   </article>
 </template>

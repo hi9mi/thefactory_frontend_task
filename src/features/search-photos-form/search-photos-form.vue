@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 import SearchIcon from '~icons/tf-icons/search'
 
-const emit = defineEmits<{
-  submit: [string]
-}>()
-const route = useRoute()
-const searchTerm = ref(route.query.q as string ?? '')
+const props = withDefaults(defineProps<{ mode?: 'navigate' | 'inline' }>(), { mode: 'navigate' })
+const emit = defineEmits<{ submit: [searchTerm: string] }>()
+
+const searchTerm = defineModel<string>({ default: '' })
+
+const router = useRouter()
 
 function onSubmit() {
-  emit('submit', searchTerm.value)
+  if (props.mode === 'navigate') {
+    router.push({ name: 'search', query: { q: searchTerm.value, page: 1 } })
+  }
+  else {
+    emit('submit', searchTerm.value)
+  }
 }
-
-watch(() => route.query.q, (newValue) => {
-  searchTerm.value = newValue as string
-})
 </script>
 
 <template>

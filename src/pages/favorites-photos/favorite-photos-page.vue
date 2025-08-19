@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
+import { createFavoritesEntity, FAVORITES_REPO } from '@tf-app/entities/favorite-photos'
+import { useDependency } from '@tf-app/shared/di'
 import { usePaginationData } from '@tf-app/shared/libs'
 
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
-import { storeToRefs } from 'pinia'
+import { useRouteQuery } from '@vueuse/router'
 import { defineAsyncComponent } from 'vue'
 
 const TfAffix = defineAsyncComponent(() =>
@@ -13,15 +14,18 @@ const TfPagination = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/navigation/tf-pagination/tf-pagination.vue'),
 )
 
-const favoritePhotosStore = useFavoritePhotosStore()
-const { favoritePhotos, currentPage } = storeToRefs(favoritePhotosStore)
+const repo = useDependency(FAVORITES_REPO)
+const favorites = createFavoritesEntity({ repo })
+
+const favoritePhotos = favorites.items
+const currentPage = useRouteQuery('page', '1', { mode: 'push', transform: Number })
 const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationData(favoritePhotos, { currentPage })
 </script>
 
 <template>
   <div class="container" :class="classes.container">
     <h1 :class="classes.title">
-      Избранное
+      Favorites
     </h1>
     <section
       v-if="paginatedFavoritePhotos.length > 0"
@@ -39,7 +43,7 @@ const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationD
       :class="classes.favoritesEmpty"
       data-testid="favorites-empty"
     >
-      В избранном пусто...
+      No photos added yet...
     </p>
     <TfPagination
       v-if="totalPages > 0"
@@ -75,11 +79,6 @@ const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationD
 .favoritesEmpty {
   font-size: 18px;
   text-align: center;
-  display: grid;
-  grid-column: 2;
-  grid-row: 1;
-  grid-template-columns: subgrid;
-  place-self: center center;
 }
 
 @media screen and (width <= 760px) {

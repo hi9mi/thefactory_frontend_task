@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import type { Photo } from '@tf-app/shared/api'
-import { useFavoritePhotosStore } from '@tf-app/entities/favorite-photos'
+import { FAVORITES_REPO } from '@tf-app/entities/favorite-photos'
 
+import { TOKENS, useDependency } from '@tf-app/shared/di'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
 import TfTooltip from '@tf-app/shared/ui/overlays/tf-tooltip/tf-tooltip.vue'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
 
+import { computed } from 'vue'
 import HeartIcon from '~icons/tf-icons/heart'
+import { createToggleFavorite } from './model'
 
 const props = defineProps<{
   photo: Photo
 }>()
-const favoritePhotosStore = useFavoritePhotosStore()
-const { favoritePhotos } = storeToRefs(favoritePhotosStore)
+const repo = useDependency(FAVORITES_REPO)
+const notify = useDependency(TOKENS.Notifier)
+const toggleFav = createToggleFavorite({ repo, notify })
 
-const isFavoritePhoto = computed(() => favoritePhotos.value.some(f => f.id === props.photo.id))
-const tooltipLabel = computed(() => isFavoritePhoto.value ? 'Удалить из избранного' : 'Добавить в избранное')
+const isFavoritePhoto = computed(() => repo.items.value.some(f => f.id === props.photo.id))
+const tooltipLabel = computed(() => isFavoritePhoto.value ? 'Remove from favorites' : 'Add to favorites')
 </script>
 
 <template>
@@ -28,7 +30,7 @@ const tooltipLabel = computed(() => isFavoritePhoto.value ? 'Удалить из
         bg-color="white"
         type="button"
         :aria-labelledby="labelledby"
-        @click="favoritePhotosStore.toggleFavoritePhoto(photo)"
+        @click="toggleFav.toggle(photo)"
         @mouseenter="onMouseEnter"
         @mouseleave="onMouseLeave"
       >

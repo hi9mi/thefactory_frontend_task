@@ -1,5 +1,4 @@
 export * from './container'
-export * from './register-app-bindings'
-export * from './resolver'
+export * from './modules'
 export * from './tokens'
 export * from './vue-ditox'

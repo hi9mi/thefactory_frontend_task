@@ -1,28 +1,73 @@
 import type { Photo } from '@tf-app/shared/api'
-import { TOKENS, useDependency } from '@tf-app/shared/di'
-import { usePersistLS } from '@tf-app/shared/libs'
+import type { Ref } from 'vue'
+import { token } from '@tf-app/shared/di/container'
+import { computed, ref } from 'vue'
 
-import { useRouteQuery } from '@vueuse/router'
-import { defineStore } from 'pinia'
+export interface FavoritesRepo {
+  items: Ref<Photo[]>
+  has: (id: string) => boolean
+  add: (item: Photo) => void
+  remove: (id: string) => void
+  clear: () => void
+}
 
-const LS_KEY = 'favorites'
+export const FAVORITES_REPO = token<FavoritesRepo>('FavoritesRepo')
 
-export const useFavoritePhotosStore = defineStore('favoritePhotos', () => {
-  const favoritePhotos = usePersistLS<Photo[]>([], LS_KEY, true)
-  const currentPage = useRouteQuery('page', '1', { mode: 'push', transform: Number })
-  const notifier = useDependency(TOKENS.Notifier)
+const KEY = 'favorites:v1'
+function load(): Photo[] {
+  try {
+    return JSON.parse(localStorage.getItem(KEY) ?? '[]') as Photo[]
+  }
+  catch {
+    return []
+  }
+}
+function save(items: Ref<Photo[]>) {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(items.value))
+  }
+  catch {}
+}
 
-  function toggleFavoritePhoto(photo: Photo) {
-    const favPhotoIndex = favoritePhotos.value.findIndex(favPhoto => favPhoto.id === photo.id)
-    if (favPhotoIndex !== -1) {
-      favoritePhotos.value.splice(favPhotoIndex, 1)
-      notifier.success('Photo successfully removed from favorites', 'Removed from favorites')
-    }
-    else {
-      favoritePhotos.value.push(photo)
-      notifier.success('Photo successfully added to favorites', 'Added to favorites')
-    }
+export function createFavoritesRepoLS(): FavoritesRepo {
+  const items = ref<Photo[]>(load())
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', (e) => {
+      if (e.key === KEY && e.storageArea === localStorage && e.newValue) {
+        try {
+          items.value = JSON.parse(e.newValue) as Photo[]
+        }
+        catch {}
+      }
+    })
   }
 
-  return { favoritePhotos, toggleFavoritePhoto, currentPage }
-})
+  const has = (id: string) => items.value.some(x => x.id === id)
+  const add = (item: Photo) => {
+    if (!has(item.id)) {
+      items.value = [...items.value, item]
+      save(items)
+    }
+  }
+  const remove = (id: string) => {
+    if (has(id)) {
+      items.value = items.value.filter(x => x.id !== id)
+      save(items)
+    }
+  }
+  const clear = () => {
+    items.value = []
+    save(items)
+  }
+
+  return { items, has, add, remove, clear }
+}
+
+export function createFavoritesEntity(deps: { repo: FavoritesRepo }) {
+  const { repo } = deps
+  const total = computed(() => repo.items.value.length)
+  const toggle = (item: Photo) => repo.has(item.id) ? repo.remove(item.id) : repo.add(item)
+
+  return { items: repo.items, total, has: repo.has, add: repo.add, remove: repo.remove, clear: repo.clear, toggle }
+}

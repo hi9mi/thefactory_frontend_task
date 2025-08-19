@@ -9,7 +9,6 @@ export function createDiPlugin(rootDi: DI) {
   return {
     install(app: App) {
       app.provide(DiKey, rootDi)
-      app.config.globalProperties.$di = rootDi
     },
   }
 }

@@ -1,7 +1,8 @@
-import type { DependencyModule } from '@tf-app/shared/di/container'
+import type { DependencyModule } from '@tf-app/shared/di'
 import type { Router } from 'vue-router'
+import { createFavoritesRepoLS, FAVORITES_REPO } from '@tf-app/entities/favorite-photos'
 import * as api from '@tf-app/shared/api'
-import { TOKENS } from '@tf-app/shared/di/tokens'
+import { TOKENS } from '@tf-app/shared/di'
 import { useNotificationsStore } from '@tf-app/shared/ui/feedback/tf-notification/model'
 
 export function appModule(p: { router: Router, baseUrl: string }): DependencyModule {
@@ -21,5 +22,7 @@ export function appModule(p: { router: Router, baseUrl: string }): DependencyMod
       getPhotos: ({ query, page }) => api.getSearchPhotos(query, page),
       getDetailsPhoto: id => api.getDetailsPhoto(id),
     })
+
+    di.set(FAVORITES_REPO, createFavoritesRepoLS())
   }
 }

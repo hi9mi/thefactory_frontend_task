@@ -1,6 +1,5 @@
 import type { Photo, Photos } from '@tf-app/shared/api'
 import type { UnsplashAPI } from '@tf-app/shared/di/tokens'
-import { token } from 'ditox'
 
 export interface GalleryItem {
   id: string
@@ -52,8 +51,6 @@ export interface GalleryGateway {
   random: (count?: number) => Promise<GalleryItem[]>
   search: (query: string, page: number) => Promise<GallerySearchResult>
 }
-
-export const GALLEY_GATEWAY = token<GalleryGateway>('GALLERY_GATEWAY')
 
 export function createGalleryGateway(api: UnsplashAPI): GalleryGateway {
   return {

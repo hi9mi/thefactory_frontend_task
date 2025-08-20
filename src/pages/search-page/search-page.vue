@@ -2,10 +2,11 @@
 import { createGalleryEntity, createGalleryGateway, GALLERY_CACHE } from '@tf-app/entities/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import { TOKENS, useDependency } from '@tf-app/shared/di'
+import { debounce } from '@tf-app/shared/libs'
 import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { useRouteQuery } from '@vueuse/router'
-import { computed, defineAsyncComponent, watch } from 'vue'
+import { computed, defineAsyncComponent, onWatcherCleanup, watch } from 'vue'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
@@ -19,13 +20,27 @@ const notify = useDependency(TOKENS.Notifier)
 const cache = useDependency(GALLERY_CACHE)
 const gallery = createGalleryEntity({ gateway: createGalleryGateway(api), cache })
 
-const q = useRouteQuery<string>('q', '', { mode: 'push' })
+const q = useRouteQuery<string>('q', '', { mode: 'replace' })
 const page = useRouteQuery('page', '1', { mode: 'push', transform: Number })
 
 async function runSearch() {
+  if (!q.value.trim())
+    return
   await gallery.search(q.value, page.value)
 }
-watch([q, page], runSearch, { immediate: true, flush: 'post' })
+
+const [debouncedRunSearch, teardownRunSearch] = debounce(runSearch, 500)
+
+watch(q, (newQ, oldQ) => {
+  if (newQ !== oldQ && page.value !== 1)
+    page.value = 1
+}, { flush: 'sync' })
+
+runSearch()
+watch([q, page], () => {
+  debouncedRunSearch()
+  onWatcherCleanup(teardownRunSearch)
+}, { flush: 'post' })
 
 const entry = computed(() => gallery.getSearchState(q.value, page.value))
 const totalPages = computed(() => gallery.getTotalPages(q.value))
@@ -39,7 +54,7 @@ watch(() => entry.value.error, (err) => {
 </script>
 
 <template>
-  <SearchPhotosForm data-testid="search-photos-form" mode="inline" @submit="(newQuery) => q = newQuery" />
+  <SearchPhotosForm v-model="q" data-testid="search-photos-form" mode="inline" />
   <div class="container" :class="classes.galleryContainer">
     <section
       :class="classes.gallery"
@@ -56,18 +71,18 @@ watch(() => entry.value.error, (err) => {
         />
       </template>
       <p
-        v-else-if="hasNoResults"
-        :class="classes.galleryEmpty"
-        data-testid="no-results"
-      >
-        Not found photos
-      </p>
-      <p
         v-else-if="isSearchEmpty"
         :class="classes.galleryEmpty"
         data-testid="search-empty"
       >
         Search empty, try type in search
+      </p>
+      <p
+        v-else-if="hasNoResults"
+        :class="classes.galleryEmpty"
+        data-testid="no-results"
+      >
+        Not found photos
       </p>
     </section>
     <TfPagination

@@ -56,7 +56,7 @@ watch(() => entry.value.error, (e) => {
       <img
         :class="classes.photoBg"
         :src="`${entry.item.urlRaw}&w=320&h=320&dpr=1&q=80`"
-        :srcset="`${entry.item.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${entry.item.urlRaw}&w=640&h=640&dpr=2&q=80 640w, ${entry.item.urlRaw}&w=1024&h=1024dpr=3&q=80 1024w`"
+        :srcset="`${entry.item.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${entry.item.urlRaw}&w=640&h=640&dpr=2&q=80 640w, ${entry.item.urlRaw}&w=1024&h=1024&dpr=3&q=80 1024w`"
         sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
         alt=""
         role="presentation"

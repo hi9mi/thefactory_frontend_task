@@ -1,20 +1,19 @@
 <script setup lang="ts">
-import type { Photo } from '@tf-app/shared/api'
 import { routes } from '@tf-app/routing'
-
 import { useFocusTrap } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
 
+import { useRoute, useRouter } from 'vue-router'
 import XMarkIcon from '~icons/tf-icons/x-mark'
 
 defineOptions({
   inheritAttrs: false,
 })
+
 defineProps<{
-  photo: Photo
-  description?: string
+  src: string
+  description: string
 }>()
 
 const emit = defineEmits<{
@@ -85,8 +84,8 @@ function hideFullPhoto() {
         @click="hideFullPhoto"
       />
       <img
-        :src="`${photo.urls.raw}&w=640&h=640&dpr=2&q=80`"
-        :srcset="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
+        :src="`${src}&w=640&h=640&dpr=2&q=80`"
+        :srcset="`${src}&w=320&h=320&dpr=1&q=80 320w, ${src}&w=640&h=640&dpr=2&q=80 640w, ${src}&w=1024&h=1024dpr=3&q=80 1024w`"
         sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
         :alt="description"
         :class="classes.photo"
@@ -99,7 +98,7 @@ function hideFullPhoto() {
         <XMarkIcon
           width="25"
           height="25"
-          aria-label="Закрыть"
+          aria-label="Close"
         />
       </TfActionButton>
     </div>

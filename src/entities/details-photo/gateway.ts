@@ -1,0 +1,51 @@
+import type { Photo } from '@tf-app/shared/api'
+import type { UnsplashAPI } from '@tf-app/shared/di/tokens'
+
+export interface DetailsPhoto {
+  id: string
+  urlSmall: string
+  urlFull: string
+  urlRaw: string
+  author: string
+  authorUsername: string
+  authorAvatar: string
+  alt?: string
+  color?: string
+  blurHash: string | null
+  width: number
+  height: number
+  unsplashLink: string
+  downloadLink: string
+}
+
+export function mapDetails(dto: Photo): DetailsPhoto {
+  return {
+    id: dto.id,
+    urlSmall: dto.urls.small,
+    urlFull: dto.urls.full,
+    urlRaw: dto.urls.raw,
+    author: dto.user.name,
+    authorUsername: dto.user.username,
+    authorAvatar: dto.user.profile_image.medium,
+    alt: dto.alt_description,
+    color: dto.color,
+    blurHash: dto.blur_hash,
+    width: dto.width,
+    height: dto.height,
+    unsplashLink: dto.links.html,
+    downloadLink: dto.links.download,
+  }
+}
+
+export interface PhotoDetailsGateway {
+  getById: (id: string) => Promise<DetailsPhoto>
+}
+
+export function createPhotoDetailsGateway(api: UnsplashAPI): PhotoDetailsGateway {
+  return {
+    async getById(id) {
+      const raw = await api.getDetailsPhoto(id)
+      return mapDetails(raw as any)
+    },
+  }
+}

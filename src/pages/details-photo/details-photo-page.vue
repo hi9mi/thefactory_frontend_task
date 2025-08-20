@@ -1,70 +1,62 @@
 <script setup lang="ts">
-import type { Photo } from '@tf-app/shared/api'
-import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
+import { createPhotoDetailsEntity, createPhotoDetailsGateway, PHOTO_DETAILS_CACHE } from '@tf-app/entities/details-photo'
 
+import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import { routes } from '@tf-app/routing'
-import * as api from '@tf-app/shared/api'
 import { TOKENS, useDependency } from '@tf-app/shared/di'
 import { computeRelativeBrightness, hexToRgb } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
-import { computed, ref } from 'vue'
 
+import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import FullScreenIcon from '~icons/tf-icons/full-screen'
 
-const notifier = useDependency(TOKENS.Notifier)
+const api = useDependency(TOKENS.UnsplashAPI)
+const notify = useDependency(TOKENS.Notifier)
+const cache = useDependency(PHOTO_DETAILS_CACHE)
+const details = createPhotoDetailsEntity({ gateway: createPhotoDetailsGateway(api), cache })
+
 const router = useRouter()
 const route = useRoute()
-const photo = ref<Photo | null>(null)
-const isLoadingDetailsPhoto = ref(false)
+const id = computed(() => String(route.params.id ?? ''))
+
+const entry = computed(() => details.getState(id.value))
+
+watch(id, (n) => {
+  if (n)
+    details.ensure(n)
+}, { immediate: true })
 
 const previewButtonStyles = computed(() => {
-  if (photo.value) {
-    const { r, g, b } = hexToRgb(photo.value.color)
-    const brightness = computeRelativeBrightness(r, g, b)
-    return brightness < 128
-      ? {
-          '--full-screen-icon-color': '#ffffff',
-          '--full-screen-icon-filter': 'url("#blackShadow")',
-        }
-      : {
-          '--full-screen-icon-color': '#000000',
-          '--full-screen-icon-filter': 'url("#whiteShadow")',
-        }
-  }
-  return { '--full-screen-icon-color': '#ffffff', '--full-screen-icon-filter': 'url("#blackShadow")' }
+  const def = { '--full-screen-icon-color': '#ffffff', '--full-screen-icon-filter': 'url("#blackShadow")' }
+  if (!entry.value.item?.color)
+    return def
+  const { r, g, b } = hexToRgb(entry.value.item.color)
+  const brightness = computeRelativeBrightness(r, g, b)
+  return brightness < 128
+    ? { '--full-screen-icon-color': '#ffffff', '--full-screen-icon-filter': 'url("#blackShadow")' }
+    : { '--full-screen-icon-color': '#000000', '--full-screen-icon-filter': 'url("#whiteShadow")' }
 })
 
 function handleShowFullPhoto() {
-  router.replace({ name: routes.photoPage.children.fullPhoto.name })
+  router.push({ name: routes.photoPage.children.fullPhoto.name })
 }
-
-async function getDetailsPhoto(id: string) {
-  isLoadingDetailsPhoto.value = true
-  try {
-    photo.value = await api.getDetailsPhoto(id)
-  }
-  catch (error) {
-    console.error('Error fetching photo', error)
-    notifier.error('Error while loading photo from API', 'Error')
-  }
-  isLoadingDetailsPhoto.value = false
-}
-
-getDetailsPhoto(route.params.id.toString())
+watch(() => entry.value.error, (e) => {
+  if (e)
+    notify.error('Error while loading photo from API', 'Error')
+})
 </script>
 
 <template>
-  <TfLoader data-testid="loader" />
   <div :class="classes.wrapper">
-    <template v-if="!isLoadingDetailsPhoto && photo">
+    <template v-if="!entry.loading && entry.item">
       <img
         :class="classes.photoBg"
-        :src="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80`"
-        :srcset="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urls.raw}&w=1024&h=1024dpr=3&q=80 1024w`"
+        :src="`${entry.item.urlRaw}&w=320&h=320&dpr=1&q=80`"
+        :srcset="`${entry.item.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${entry.item.urlRaw}&w=640&h=640&dpr=2&q=80 640w, ${entry.item.urlRaw}&w=1024&h=1024dpr=3&q=80 1024w`"
         sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
         alt=""
         role="presentation"
@@ -76,38 +68,38 @@ getDetailsPhoto(route.params.id.toString())
           <div :class="classes.userDetails">
             <img
               :class="classes.userProfileImg"
-              :src="photo.user.profile_image.medium"
-              :alt="photo.user.name"
+              :src="entry.item.authorAvatar"
+              :alt="entry.item.author"
             >
             <div :class="classes.userBio">
               <p :class="classes.userName" data-testid="user-name">
-                {{ photo.user.name }}
+                {{ entry.item.author }}
               </p>
               <p :class="classes.userNickname" data-testid="user-nickname">
-                @{{ photo.user.username }}
+                @{{ entry.item.authorUsername }}
               </p>
             </div>
           </div>
           <div :class="classes.photoActions">
-            <ToggleFavoritePhoto :photo="photo" />
+            <ToggleFavoritePhoto :photo="entry.item" />
             <DownloadPhoto
-              :src="photo.urls.full"
+              :src="entry.item.urlRaw"
               :with-text="true"
-              :name="photo.id"
+              :name="entry.item.id"
             />
           </div>
         </div>
         <div :class="classes.photoWrapper">
           <TfBlurhashImage
-            :id="photo.id"
+            :id="entry.item.id"
             :blurhash-width="740"
             :blurhash-height="740"
-            :blurhash="photo.blur_hash"
-            :src="`${photo.urls.raw}&w=740&h=740&dpr=1&q=80`"
-            :srcset="`${photo.urls.raw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urls.raw}&w=740&h=740&dpr=1&q=80 740w, ${photo.urls.raw}&w=1440&h=1440&dpr=1&q=80 1440w`"
+            :blurhash="entry.item.blurHash"
+            :src="`${entry.item.urlRaw}&w=740&h=740&dpr=1&q=80`"
+            :srcset="`${entry.item.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${entry.item.urlRaw}&w=740&h=740&dpr=1&q=80 740w, ${entry.item.urlRaw}&w=1440&h=1440&dpr=1&q=80 1440w`"
             sizes="(max-width: 560px) 320px, (max-width: 960px) 740px, 1440px"
             :class="classes.photo"
-            :alt="photo.alt_description"
+            :alt="entry.item.alt"
           />
           <TfActionButton
             type="button"
@@ -127,14 +119,14 @@ getDetailsPhoto(route.params.id.toString())
         </div>
       </div>
     </template>
-    <TfLoader v-else-if="isLoadingDetailsPhoto" data-testid="loader" />
+    <TfLoader v-else-if="entry.loading" data-testid="loader" />
   </div>
   <RouterView v-slot="{ Component }" :name="routes.photoPage.children.fullPhoto.name">
     <component
       :is="Component"
-      v-if="photo"
-      :photo="photo"
-      :description="photo.alt_description"
+      v-if="entry.item"
+      :src="entry.item.urlRaw"
+      :description="entry.item.alt"
       data-testid="full-photo"
     />
   </RouterView>

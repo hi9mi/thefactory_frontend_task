@@ -1,5 +1,4 @@
-import type { Photo, Photos } from '@tf-app/shared/api'
-import type { UnsplashAPI } from '@tf-app/shared/di/tokens'
+import type { UnsplashAPI, UnsplashPhotoDTO, UnsplashSearchDTO } from '@tf-app/shared/api'
 
 export interface GalleryItem {
   id: string
@@ -9,7 +8,7 @@ export interface GalleryItem {
   author?: string
   authorUsername?: string
   likes?: number
-  alt?: string
+  alt: string | null
   color?: string
   blurHash: string | null
   w?: number
@@ -22,7 +21,7 @@ export interface GallerySearchResult {
   totalPages: number
 }
 
-export function mapPhoto(dto: Photo): GalleryItem {
+export function mapPhoto(dto: UnsplashPhotoDTO): GalleryItem {
   return {
     id: dto.id,
     urlSmall: dto.urls.small,
@@ -39,7 +38,7 @@ export function mapPhoto(dto: Photo): GalleryItem {
   }
 }
 
-export function mapSearch(dto: Photos): GallerySearchResult {
+export function mapSearch(dto: UnsplashSearchDTO): GallerySearchResult {
   return {
     items: dto.results.map(mapPhoto),
     total: dto.total,
@@ -48,19 +47,19 @@ export function mapSearch(dto: Photos): GallerySearchResult {
 }
 
 export interface GalleryGateway {
-  random: (count?: number) => Promise<GalleryItem[]>
-  search: (query: string, page: number) => Promise<GallerySearchResult>
+  random: (count?: number, init?: RequestInit) => Promise<GalleryItem[]>
+  search: (query: string, page: number, init?: RequestInit) => Promise<GallerySearchResult>
 }
 
 export function createGalleryGateway(api: UnsplashAPI): GalleryGateway {
   return {
-    async random(count = 9) {
-      const raw = await api.getRandomPhotos()
+    async random(count = 9, init) {
+      const raw = await api.getRandomPhotos(count, init)
       const arr = Array.isArray(raw) ? raw : []
       return arr.slice(0, count).map(mapPhoto)
     },
-    async search(query, page) {
-      const res = await api.getPhotos({ query, page })
+    async search(query, page, init) {
+      const res = await api.getPhotos({ query, page }, init)
       return mapSearch(res as any)
     },
   }

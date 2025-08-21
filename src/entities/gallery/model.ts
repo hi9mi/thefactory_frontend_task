@@ -52,7 +52,7 @@ function keyOf(q: string, p: number) {
 export function createGalleryEntity(deps: { gateway: GalleryGateway, cache: GalleryCache }) {
   const { gateway, cache } = deps
 
-  async function ensureRandom(count = 9) {
+  async function ensureRandom(count = 9, init?: RequestInit) {
     if (cache.random.value.length >= count)
       return cache.random.value
 
@@ -67,11 +67,12 @@ export function createGalleryEntity(deps: { gateway: GalleryGateway, cache: Gall
 
     const promise = (async () => {
       try {
-        const items = await gateway.random(count)
+        const items = await gateway.random(count, init)
         cache.random.value = items
       }
       catch (e: any) {
-        cache.randomError.value = e?.message ?? 'Failed to load random photos'
+        if (e?.name !== 'AbortError')
+          cache.randomError.value = e?.message ?? 'Failed to load random photos'
       }
       finally {
         cache.randomLoading.value = false
@@ -83,9 +84,9 @@ export function createGalleryEntity(deps: { gateway: GalleryGateway, cache: Gall
     return cache.random.value
   }
 
-  async function reloadRandom(count = 9) {
+  async function reloadRandom(count = 9, init?: RequestInit) {
     cache.random.value = []
-    return ensureRandom(count)
+    return ensureRandom(count, init)
   }
 
   function ensureEntry(q: string, p: number): SearchEntry {
@@ -93,7 +94,7 @@ export function createGalleryEntity(deps: { gateway: GalleryGateway, cache: Gall
     return (cache.searchEntries[key] ??= makeEntry())
   }
 
-  async function search(query: string, page = 1) {
+  async function search(query: string, page = 1, init?: RequestInit) {
     const q = (query ?? '').trim()
     if (!q)
       return []
@@ -113,12 +114,13 @@ export function createGalleryEntity(deps: { gateway: GalleryGateway, cache: Gall
 
     const promise = (async () => {
       try {
-        const { items, totalPages } = await gateway.search(q, page)
+        const { items, totalPages } = await gateway.search(q, page, init)
         entry.items = items
         cache.totalsByQuery[q] = totalPages
       }
       catch (e: any) {
-        entry.error = e?.message ?? 'Search failed'
+        if (e?.name !== 'AbortError')
+          entry.error = e?.message ?? 'Search failed'
       }
       finally {
         entry.loading = false

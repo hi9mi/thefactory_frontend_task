@@ -29,7 +29,7 @@ function ensureEntry(cache: PhotoDetailsCache, id: string): Entry {
 export function createPhotoDetailsEntity(deps: { gateway: PhotoDetailsGateway, cache: PhotoDetailsCache }) {
   const { gateway, cache } = deps
 
-  async function ensure(id: string) {
+  async function ensure(id: string, init?: RequestInit) {
     const entry = ensureEntry(cache, id)
     if (entry.item)
       return entry.item
@@ -42,10 +42,11 @@ export function createPhotoDetailsEntity(deps: { gateway: PhotoDetailsGateway, c
     entry.error = null
     const promise = (async () => {
       try {
-        entry.item = await gateway.getById(id)
+        entry.item = await gateway.getById(id, init)
       }
       catch (err: any) {
-        entry.error = err?.message ?? 'Failed to load photo'
+        if (err?.name !== 'AbortError')
+          entry.error = err?.message ?? 'Failed to load photo'
       }
       finally {
         entry.loading = false
@@ -57,10 +58,10 @@ export function createPhotoDetailsEntity(deps: { gateway: PhotoDetailsGateway, c
     return entry.item
   }
 
-  async function reload(id: string) {
+  async function reload(id: string, init?: RequestInit) {
     const e = ensureEntry(cache, id)
     e.item = null
-    return ensure(id)
+    return ensure(id, init)
   }
 
   function getState(id: string): Entry {

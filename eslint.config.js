@@ -4,6 +4,7 @@ export default antfu({
   vue: true,
   rules: {
     'node/prefer-global/process': 'off',
+    'eslint-comments/no-unlimited-disable': 'off',
   },
   formatters: true,
   ignores: [

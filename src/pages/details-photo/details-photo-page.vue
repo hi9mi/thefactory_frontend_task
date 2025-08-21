@@ -10,7 +10,7 @@ import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
 
-import { computed, watch } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import FullScreenIcon from '~icons/tf-icons/full-screen'
 
@@ -24,10 +24,18 @@ const route = useRoute()
 const id = computed(() => String(route.params.id ?? ''))
 
 const entry = computed(() => details.getState(id.value))
+const controller = shallowRef<AbortController | null>(null)
 
-watch(id, (n) => {
-  if (n)
-    details.ensure(n)
+watch(id, (_val, _oldVal, onCleanup) => {
+  if (!_val)
+    return
+  controller.value?.abort()
+  const c = new AbortController()
+  controller.value = c
+
+  details.ensure(_val, { signal: c.signal })
+
+  onCleanup(() => c.abort())
 }, { immediate: true })
 
 const previewButtonStyles = computed(() => {
@@ -99,7 +107,7 @@ watch(() => entry.value.error, (e) => {
             :srcset="`${entry.item.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${entry.item.urlRaw}&w=740&h=740&dpr=1&q=80 740w, ${entry.item.urlRaw}&w=1440&h=1440&dpr=1&q=80 1440w`"
             sizes="(max-width: 560px) 320px, (max-width: 960px) 740px, 1440px"
             :class="classes.photo"
-            :alt="entry.item.alt"
+            :alt="entry.item.alt ?? 'Photo'"
           />
           <TfActionButton
             type="button"

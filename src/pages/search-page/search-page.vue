@@ -6,7 +6,7 @@ import { debounce } from '@tf-app/shared/libs'
 import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { useRouteQuery } from '@vueuse/router'
-import { computed, defineAsyncComponent, onWatcherCleanup, watch } from 'vue'
+import { computed, defineAsyncComponent, shallowRef, watch } from 'vue'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
@@ -23,24 +23,34 @@ const gallery = createGalleryEntity({ gateway: createGalleryGateway(api), cache 
 const q = useRouteQuery<string>('q', '', { mode: 'replace' })
 const page = useRouteQuery('page', '1', { mode: 'push', transform: Number })
 
-async function runSearch() {
-  if (!q.value.trim())
-    return
-  await gallery.search(q.value, page.value)
-}
-
-const [debouncedRunSearch, teardownRunSearch] = debounce(runSearch, 500)
-
 watch(q, (newQ, oldQ) => {
   if (newQ !== oldQ && page.value !== 1)
     page.value = 1
 }, { flush: 'sync' })
 
-runSearch()
-watch([q, page], () => {
-  debouncedRunSearch()
-  onWatcherCleanup(teardownRunSearch)
-}, { flush: 'post' })
+const [debouncedSearch, cancelDebounce] = debounce((query: string, pageNum: number, init?: RequestInit) => {
+  return gallery.search(query, pageNum, init)
+}, 500)
+const controller = shallowRef<AbortController | null>(null)
+
+watch([q, page], (_vals, _old, onCleanup) => {
+  const query = q.value.trim()
+  if (!query) {
+    cancelDebounce()
+    return
+  }
+
+  controller.value?.abort()
+  const c = new AbortController()
+  controller.value = c
+
+  debouncedSearch(query, page.value, { signal: c.signal })
+
+  onCleanup(() => {
+    c.abort()
+    cancelDebounce()
+  })
+}, { immediate: true, flush: 'post' })
 
 const entry = computed(() => gallery.getSearchState(q.value, page.value))
 const totalPages = computed(() => gallery.getTotalPages(q.value))

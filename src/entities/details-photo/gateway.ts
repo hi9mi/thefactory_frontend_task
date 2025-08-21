@@ -1,5 +1,4 @@
-import type { Photo } from '@tf-app/shared/api'
-import type { UnsplashAPI } from '@tf-app/shared/di/tokens'
+import type { UnsplashAPI, UnsplashPhotoDTO } from '@tf-app/shared/api'
 
 export interface DetailsPhoto {
   id: string
@@ -9,7 +8,7 @@ export interface DetailsPhoto {
   author: string
   authorUsername: string
   authorAvatar: string
-  alt?: string
+  alt: string | null
   color?: string
   blurHash: string | null
   width: number
@@ -18,7 +17,7 @@ export interface DetailsPhoto {
   downloadLink: string
 }
 
-export function mapDetails(dto: Photo): DetailsPhoto {
+export function mapDetails(dto: UnsplashPhotoDTO): DetailsPhoto {
   return {
     id: dto.id,
     urlSmall: dto.urls.small,
@@ -38,14 +37,14 @@ export function mapDetails(dto: Photo): DetailsPhoto {
 }
 
 export interface PhotoDetailsGateway {
-  getById: (id: string) => Promise<DetailsPhoto>
+  getById: (id: string, init?: RequestInit) => Promise<DetailsPhoto>
 }
 
 export function createPhotoDetailsGateway(api: UnsplashAPI): PhotoDetailsGateway {
   return {
-    async getById(id) {
-      const raw = await api.getDetailsPhoto(id)
-      return mapDetails(raw as any)
+    async getById(id, init) {
+      const raw = await api.getDetailsPhoto(id, init)
+      return mapDetails(raw)
     },
   }
 }

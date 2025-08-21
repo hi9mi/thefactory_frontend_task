@@ -5,21 +5,29 @@ import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-
 import { TOKENS, useDependency } from '@tf-app/shared/di'
 import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
-import { defineAsyncComponent, onMounted, watch } from 'vue'
+import { defineAsyncComponent, onMounted, onScopeDispose, shallowRef, watch } from 'vue'
 
 const api = useDependency(TOKENS.UnsplashAPI)
 const notify = useDependency(TOKENS.Notifier)
 const cache = useDependency(GALLERY_CACHE)
 const gallery = createGalleryEntity({ gateway: createGalleryGateway(api), cache })
 const { random, randomLoading, randomError } = gallery
+const controller = shallowRef<AbortController | null>(null)
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
 )
 
 onMounted(() => {
-  gallery.ensureRandom(9)
+  controller.value?.abort()
+  controller.value = new AbortController()
+  gallery.ensureRandom(9, { signal: controller.value.signal })
 })
+
+onScopeDispose(() => {
+  controller.value?.abort()
+})
+
 watch(randomError, (err) => {
   if (err)
     notify.error('Error loading photos')

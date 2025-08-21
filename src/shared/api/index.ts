@@ -1,2 +1,3 @@
-export * from './details-photo'
-export * from './gallery'
+export * from './http'
+export * from './schemas'
+export * from './unsplash'

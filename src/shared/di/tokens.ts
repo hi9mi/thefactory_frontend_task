@@ -1,3 +1,5 @@
+import type { UnsplashAPI } from '@tf-app/shared/api'
+import type { AppConfig } from '@tf-app/shared/libs'
 import type { Router } from 'vue-router'
 import { token } from '@tf-app/shared/di/container'
 
@@ -7,14 +9,6 @@ export interface Notifier {
   info: (msg: string, t?: string) => void
   warning: (msg: string, t?: string) => void
 }
-
-export interface UnsplashAPI {
-  getRandomPhotos: () => Promise<any>
-  getPhotos: (p: { query: string, page: number }) => Promise<any>
-  getDetailsPhoto: (id: string) => Promise<any>
-}
-
-export interface AppConfig { baseUrl: string }
 
 export const TOKENS = {
   Router: token<Router>('Router'),

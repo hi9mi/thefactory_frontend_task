@@ -52,9 +52,9 @@ const previewButtonStyles = computed(() => {
 function handleShowFullPhoto() {
   router.push({ name: routes.photoPage.children.fullPhoto.name })
 }
-watch(() => entry.value.error, (e) => {
-  if (e)
-    notify.error('Error while loading photo from API', 'Error')
+watch(() => entry.value.error, (err) => {
+  if (err)
+    notify.error(err, 'Failed loading photo')
 })
 </script>
 

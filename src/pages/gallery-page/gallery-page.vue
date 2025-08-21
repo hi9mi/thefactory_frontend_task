@@ -30,7 +30,7 @@ onScopeDispose(() => {
 
 watch(randomError, (err) => {
   if (err)
-    notify.error('Error loading photos')
+    notify.error(err, 'Failed load photos')
 })
 </script>
 

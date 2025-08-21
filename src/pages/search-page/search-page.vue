@@ -59,7 +59,7 @@ const isSearchEmpty = computed(() => hasNoResults.value && q.value === '')
 
 watch(() => entry.value.error, (err) => {
   if (err)
-    notify.error('Error searching')
+    notify.error(err, 'Failed search photos')
 })
 </script>
 

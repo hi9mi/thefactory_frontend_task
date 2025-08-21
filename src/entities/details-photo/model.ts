@@ -1,4 +1,5 @@
 import type { DetailsPhoto, PhotoDetailsGateway } from './gateway'
+import { isAbortError, isHttpError } from '@tf-app/shared/api'
 import { token } from '@tf-app/shared/di/container'
 import { reactive } from 'vue'
 
@@ -44,9 +45,29 @@ export function createPhotoDetailsEntity(deps: { gateway: PhotoDetailsGateway, c
       try {
         entry.item = await gateway.getById(id, init)
       }
-      catch (err: any) {
-        if (err?.name !== 'AbortError')
-          entry.error = err?.message ?? 'Failed to load photo'
+      catch (e) {
+        if (isAbortError(e))
+          return
+        if (isHttpError(e)) {
+          if (e.status === 401)
+            entry.error = 'Invalid access token'
+          else if (e.status === 403)
+            entry.error = 'Forbidden (check permissions/rate limit)'
+          else if (e.status === 404)
+            entry.error = 'Not found'
+          else if (e.status === 400)
+            entry.error = 'Bad request'
+          else if (e.status >= 500)
+            entry.error = 'Server error, try later'
+          if (e.errors?.length)
+            entry.error = e.errors.join(', ')
+          if (e.rateLimit?.remaining === 0) {
+            entry.error = 'Rate limit exceeded, please try again later'
+          }
+        }
+        else {
+          entry.error = (e as any)?.message ?? 'Unknown Error'
+        }
       }
       finally {
         entry.loading = false

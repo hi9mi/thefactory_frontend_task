@@ -1,5 +1,6 @@
 import type { Ref } from 'vue'
 import type { GalleryGateway, GalleryItem } from './gateway'
+import { isAbortError, isHttpError } from '@tf-app/shared/api'
 import { token } from '@tf-app/shared/di/container'
 import { computed, reactive, ref } from 'vue'
 
@@ -70,9 +71,29 @@ export function createGalleryEntity(deps: { gateway: GalleryGateway, cache: Gall
         const items = await gateway.random(count, init)
         cache.random.value = items
       }
-      catch (e: any) {
-        if (e?.name !== 'AbortError')
-          cache.randomError.value = e?.message ?? 'Failed to load random photos'
+      catch (e) {
+        if (isAbortError(e))
+          return
+        if (isHttpError(e)) {
+          if (e.status === 401)
+            cache.randomError.value = 'Invalid access token'
+          else if (e.status === 403)
+            cache.randomError.value = 'Forbidden (check permissions/rate limit)'
+          else if (e.status === 404)
+            cache.randomError.value = 'Not found'
+          else if (e.status === 400)
+            cache.randomError.value = 'Bad request'
+          else if (e.status >= 500)
+            cache.randomError.value = 'Server error, try later'
+          if (e.errors?.length)
+            cache.randomError.value = e.errors.join(', ')
+          if (e.rateLimit?.remaining === 0) {
+            cache.randomError.value = 'Rate limit exceeded, please try again later'
+          }
+        }
+        else {
+          cache.randomError.value = (e as any)?.message ?? 'Unknown Error'
+        }
       }
       finally {
         cache.randomLoading.value = false
@@ -118,9 +139,29 @@ export function createGalleryEntity(deps: { gateway: GalleryGateway, cache: Gall
         entry.items = items
         cache.totalsByQuery[q] = totalPages
       }
-      catch (e: any) {
-        if (e?.name !== 'AbortError')
-          entry.error = e?.message ?? 'Search failed'
+      catch (e) {
+        if (isAbortError(e))
+          return
+        if (isHttpError(e)) {
+          if (e.status === 401)
+            entry.error = 'Invalid access token'
+          else if (e.status === 403)
+            entry.error = 'Forbidden (check permissions/rate limit)'
+          else if (e.status === 404)
+            entry.error = 'Not found'
+          else if (e.status === 400)
+            entry.error = 'Bad request'
+          else if (e.status >= 500)
+            entry.error = 'Server error, try later'
+          if (e.errors?.length)
+            entry.error = e.errors.join(', ')
+          if (e.rateLimit?.remaining === 0) {
+            entry.error = 'Rate limit exceeded, please try again later'
+          }
+        }
+        else {
+          entry.error = (e as any)?.message ?? 'Unknown Error'
+        }
       }
       finally {
         entry.loading = false

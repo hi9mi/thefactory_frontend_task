@@ -1,5 +1,5 @@
 import type { UnsplashAPI } from '@tf-app/shared/api'
-import type { AppConfig } from '@tf-app/shared/libs'
+import type { AppConfig, LRUCacheManager } from '@tf-app/shared/libs'
 import type { Router } from 'vue-router'
 import { token } from '@tf-app/shared/di/container'
 
@@ -15,4 +15,5 @@ export const TOKENS = {
   Notifier: token<Notifier>('Notifier'),
   UnsplashAPI: token<UnsplashAPI>('UnsplashAPI'),
   Config: token<AppConfig>('Config'),
+  LRUCache: token<LRUCacheManager>('LRUCache'),
 }

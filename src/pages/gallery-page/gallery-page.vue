@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createGalleryEntity, createGalleryGateway, GALLERY_CACHE } from '@tf-app/entities/gallery'
+import { createGalleryEntity, createGalleryGateway } from '@tf-app/entities/gallery'
 
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import { TOKENS, useDependency } from '@tf-app/shared/di'
@@ -9,8 +9,8 @@ import { defineAsyncComponent, onMounted, onScopeDispose, shallowRef, watch } fr
 
 const api = useDependency(TOKENS.UnsplashAPI)
 const notify = useDependency(TOKENS.Notifier)
-const cache = useDependency(GALLERY_CACHE)
-const gallery = createGalleryEntity({ gateway: createGalleryGateway(api), cache })
+const lru = useDependency(TOKENS.LRUCache)
+const gallery = createGalleryEntity({ gateway: createGalleryGateway(api), lru })
 const { random, randomLoading, randomError } = gallery
 const controller = shallowRef<AbortController | null>(null)
 

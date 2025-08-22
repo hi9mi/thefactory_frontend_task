@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createPhotoDetailsEntity, createPhotoDetailsGateway, PHOTO_DETAILS_CACHE } from '@tf-app/entities/details-photo'
+import { createPhotoDetailsEntity, createPhotoDetailsGateway } from '@tf-app/entities/details-photo'
 
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
@@ -16,8 +16,8 @@ import FullScreenIcon from '~icons/tf-icons/full-screen'
 
 const api = useDependency(TOKENS.UnsplashAPI)
 const notify = useDependency(TOKENS.Notifier)
-const cache = useDependency(PHOTO_DETAILS_CACHE)
-const details = createPhotoDetailsEntity({ gateway: createPhotoDetailsGateway(api), cache })
+const lru = useDependency(TOKENS.LRUCache)
+const details = createPhotoDetailsEntity({ gateway: createPhotoDetailsGateway(api), lru })
 
 const router = useRouter()
 const route = useRoute()

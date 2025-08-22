@@ -1,93 +1,99 @@
+import type { LRUCacheManager } from '@tf-app/shared/libs/cache/manager'
 import type { DetailsPhoto, PhotoDetailsGateway } from './gateway'
 import { isAbortError, isHttpError } from '@tf-app/shared/api'
-import { token } from '@tf-app/shared/di/container'
 import { reactive } from 'vue'
 
 interface Entry { item: DetailsPhoto | null, loading: boolean, error: string | null }
 
-export interface PhotoDetailsCache {
-  byId: Record<string, Entry>
-  inflight: Map<string, Promise<any>>
-  clear: () => void
-}
+export function createPhotoDetailsEntity(deps: { gateway: PhotoDetailsGateway, lru: LRUCacheManager }) {
+  const { gateway, lru } = deps
 
-export const PHOTO_DETAILS_CACHE = token<PhotoDetailsCache>('PhotoDetailsCache')
+  const cache = lru.scope<string, DetailsPhoto>('details', {
+    max: 100,
+    ttl: 30 * 60_000,
+    serializeKey: id => id,
+  })
 
-export function createPhotoDetailsCache(): PhotoDetailsCache {
-  const byId = reactive<Record<string, Entry>>({})
-  const inflight = new Map<string, Promise<any>>()
-  function clear() {
-    for (const k of Object.keys(byId)) delete byId[k]
-    inflight.clear()
-  }
-  return { byId, inflight, clear }
-}
+  const byId: Record<string, Entry> = reactive({})
+  const inflight = new Map<string, Promise<unknown>>()
 
-function ensureEntry(cache: PhotoDetailsCache, id: string): Entry {
-  return (cache.byId[id] ??= reactive<Entry>({ item: null, loading: false, error: null }))
-}
-
-export function createPhotoDetailsEntity(deps: { gateway: PhotoDetailsGateway, cache: PhotoDetailsCache }) {
-  const { gateway, cache } = deps
+  const ensureEntry = (id: string): Entry =>
+    (byId[id] ??= reactive<Entry>({ item: null, loading: false, error: null }))
 
   async function ensure(id: string, init?: RequestInit) {
-    const entry = ensureEntry(cache, id)
-    if (entry.item)
-      return entry.item
-    if (cache.inflight.has(id)) {
-      await cache.inflight.get(id)
-      return entry.item
+    const e = ensureEntry(id)
+
+    const hit = cache.get(id)
+    if (hit) {
+      e.item = hit
+      e.loading = false
+      e.error = null
+      return hit
     }
 
-    entry.loading = true
-    entry.error = null
+    if (inflight.has(id)) {
+      await inflight.get(id)
+      return e.item
+    }
+
+    e.loading = true
+    e.error = null
+
     const promise = (async () => {
       try {
-        entry.item = await gateway.getById(id, init)
+        const item = await gateway.getById(id, init)
+        cache.set(id, item)
+        e.item = item
       }
-      catch (e) {
-        if (isAbortError(e))
+      catch (err: any) {
+        if (isAbortError(err))
           return
-        if (isHttpError(e)) {
-          if (e.status === 401)
-            entry.error = 'Invalid access token'
-          else if (e.status === 403)
-            entry.error = 'Forbidden (check permissions/rate limit)'
-          else if (e.status === 404)
-            entry.error = 'Not found'
-          else if (e.status === 400)
-            entry.error = 'Bad request'
-          else if (e.status >= 500)
-            entry.error = 'Server error, try later'
-          if (e.errors?.length)
-            entry.error = e.errors.join(', ')
-          if (e.rateLimit?.remaining === 0) {
-            entry.error = 'Rate limit exceeded, please try again later'
-          }
+        if (isHttpError(err)) {
+          if (err.errors?.length)
+            e.error = err.errors.join(', ')
+          else if (err.status === 401)
+            e.error = 'Invalid access token'
+          else if (err.status === 403)
+            e.error = 'Forbidden (check permissions/rate limit)'
+          else if (err.status === 404)
+            e.error = 'Not found'
+          else if (err.status === 400)
+            e.error = 'Bad request'
+          else if (err.status >= 500)
+            e.error = 'Server error, try later'
+          if (err.rateLimit?.remaining === 0)
+            e.error = 'Rate limit exceeded, please try again later'
         }
         else {
-          entry.error = (e as any)?.message ?? 'Unknown Error'
+          e.error = err?.message ?? 'Unknown error'
         }
       }
       finally {
-        entry.loading = false
+        e.loading = false
       }
-    })().finally(() => cache.inflight.delete(id))
+    })().finally(() => inflight.delete(id))
 
-    cache.inflight.set(id, promise)
+    inflight.set(id, promise)
     await promise
-    return entry.item
+    return e.item
   }
 
   async function reload(id: string, init?: RequestInit) {
-    const e = ensureEntry(cache, id)
+    cache.delete(id)
+    const e = ensureEntry(id)
     e.item = null
     return ensure(id, init)
   }
 
   function getState(id: string): Entry {
-    return ensureEntry(cache, id)
+    return ensureEntry(id)
   }
 
-  return { ensure, reload, getState, clear: cache.clear }
+  function clear() {
+    for (const k of Object.keys(byId)) delete byId[k]
+    inflight.clear()
+    cache.clear()
+  }
+
+  return { ensure, reload, getState, clear }
 }

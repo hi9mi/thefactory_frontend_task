@@ -8,7 +8,7 @@ export interface DetailsPhoto {
   author: string
   authorUsername: string
   authorAvatar: string
-  alt: string | null
+  alt?: string
   color?: string
   blurHash: string | null
   width: number

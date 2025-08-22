@@ -1,3 +1,4 @@
+export * from './cache/manager'
 export * from './colors/compute-relative-brightness'
 export * from './colors/hex-to-rgb'
 export * from './config/schema'

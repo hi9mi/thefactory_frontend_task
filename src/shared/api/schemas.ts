@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const UnsplashPhotoSchema = z.object({
-  alt_description: z.string().nullable(),
+  alt_description: z.string().optional(),
   id: z.string(),
   blur_hash: z.string().nullable(),
   color: z.string().optional(),

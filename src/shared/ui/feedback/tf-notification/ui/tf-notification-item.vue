@@ -21,12 +21,31 @@ function onRemove() {
   <li
     :class="classes.item"
     :data-type="notification.type"
-    @mouseenter="onEnter"
-    @mouseleave="onLeave"
+    role="group"
+    @focusin="onEnter"
+    @focusout="onLeave"
   >
+    <button
+      type="button"
+      :class="classes.pauseOverlay"
+      aria-hidden="true"
+      tabindex="-1"
+      @mouseenter="onEnter"
+      @mouseleave="onLeave"
+      @focus="onEnter"
+      @blur="onLeave"
+    />
     <span v-if="notification.title" :class="classes.title">{{ notification.title }}</span>
     <span :class="classes.message">{{ notification.message }}</span>
-    <button v-if="hasRemoveButton" :class="classes.removeBtn" @click.stop="onRemove">
+    <button
+      v-if="hasRemoveButton"
+      :class="classes.removeBtn"
+      @click.stop="onRemove"
+      @mouseenter="onEnter"
+      @mouseleave="onLeave"
+      @focus="onEnter"
+      @blur="onLeave"
+    >
       <XMarkIcon width="16" height="16" aria-label="Скрыть уведомление" />
     </button>
   </li>
@@ -67,6 +86,16 @@ function onRemove() {
 .item[data-type='warning']::before {
   background: var(--color-warning, #8a6d1e);
 }
+.pauseOverlay {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: auto;
+  z-index: 1;
+  outline: none;
+}
 .title {
   font-size: 14px;
   font-weight: 500;
@@ -98,6 +127,7 @@ function onRemove() {
   border: none;
   cursor: pointer;
   color: var(--text-color-default);
+  z-index: 2;
 }
 
 @container tf-notifications-container (inline-size < 340px) {
@@ -120,6 +150,7 @@ function onRemove() {
   }
   .message {
     font-size: 13px;
+    line-clamp: 2;
     -webkit-line-clamp: 2;
   }
 }
@@ -129,6 +160,7 @@ function onRemove() {
   }
   .message {
     font-size: 14px;
+    line-clamp: 3;
     -webkit-line-clamp: 3;
   }
 }

@@ -4,19 +4,12 @@ import type { GalleryItem } from '@tf-app/entities/gallery'
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
-import { ref } from 'vue'
 
 defineProps<{ photo: GalleryItem }>()
-
-const isActionsVisible = ref(false)
-
-function toggleActions() {
-  isActionsVisible.value = !isActionsVisible.value
-}
 </script>
 
 <template>
-  <article :class="classes.photoCard" @mouseenter="toggleActions" @mouseleave="toggleActions">
+  <article :class="classes.photoCard">
     <TfBlurhashImage
       :id="photo.id"
       :blurhash="photo.blurHash"
@@ -24,35 +17,18 @@ function toggleActions() {
       :blurhash-height="440"
       :src="`${photo.urlRaw}&w=640&h=640&dpr=2&q=80`"
       :alt="photo.alt"
-      :srcset="`${photo.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urlRaw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urlRaw}&w=1024&h=1024dpr=3&q=80 1024w`"
+      :srcset="`${photo.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urlRaw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urlRaw}&w=1024&h=1024&dpr=3&q=80 1024w`"
       sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
       :class="classes.photo"
     />
     <RouterLink :to="`/${photo.id}`" :class="classes.photoLink" :title="photo.alt" />
-    <Transition name="fade">
-      <div v-if="isActionsVisible" :class="classes.overlay" data-testid="photo-actions-overlay" />
-    </Transition>
-    <div v-if="isActionsVisible" :class="classes.actions">
+    <div :class="classes.overlay" aria-hidden="true" data-testid="photo-actions-overlay" />
+    <div :class="classes.actions">
       <ToggleFavoritePhoto :photo="photo" />
       <DownloadPhoto :src="photo.urlFull" :name="photo.id" />
     </div>
   </article>
 </template>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition:
-    opacity 0.1s ease-in-out,
-    visibility 0.1s ease-in-out;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-  visibility: hidden;
-}
-</style>
 
 <style module="classes">
 .photoCard {
@@ -108,6 +84,35 @@ function toggleActions() {
   z-index: 3;
 }
 
+.overlay,
+.actions {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.12s ease,
+    visibility 0.12s ease;
+}
+
+.photoCard:hover .overlay,
+.photoCard:focus-within .overlay,
+.photoCard:hover .actions,
+.photoCard:focus-within .actions {
+  opacity: 1;
+  visibility: visible;
+}
+
+.overlay {
+  pointer-events: none;
+}
+
+.actions {
+  pointer-events: none;
+}
+.photoCard:hover .actions,
+.photoCard:focus-within .actions {
+  pointer-events: auto;
+}
+
 @media (hover: none) {
   .photoLink:hover + .overlay,
   .photoCard:has(.actions:hover) > .overlay {
@@ -120,9 +125,21 @@ function toggleActions() {
   }
 }
 
-@media screen and (width <= 376px) {
+@container gallery (inline-size <= 960px) {
   .photoCard {
     height: 320px;
+  }
+}
+
+@container gallery (inline-size <= 560px) {
+  .photoCard {
+    height: 280px;
+  }
+}
+
+@container gallery (inline-size <= 3000px) {
+  .photoCard {
+    outline: 2px dashed;
   }
 }
 </style>

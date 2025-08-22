@@ -32,13 +32,29 @@ const tooltipCoords = reactive({
 })
 const isShowTooltip = ref(false)
 
-function onMouseEnter(event: Event) {
+function showFrom(event: Event) {
   anchorElement.value = event.currentTarget as HTMLElement
   isShowTooltip.value = true
 }
-function onMouseLeave() {
+function hide() {
   isShowTooltip.value = false
   anchorElement.value = null
+}
+function onMouseEnter(event: Event) {
+  showFrom(event)
+}
+function onMouseLeave() {
+  hide()
+}
+function onFocus(event: FocusEvent) {
+  showFrom(event)
+}
+function onBlur() {
+  hide()
+}
+function onKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape')
+    hide()
 }
 
 watch(tooltipElement, () => {
@@ -64,6 +80,7 @@ watch(tooltipElement, () => {
       <div
         v-if="isShowTooltip"
         :id="id"
+
         ref="tooltipElement"
         role="tooltip"
         :style="tooltipCoords"
@@ -76,7 +93,18 @@ watch(tooltipElement, () => {
       </div>
     </Transition>
   </Teleport>
-  <slot name="anchor" :on-mouse-enter="onMouseEnter" :on-mouse-leave="onMouseLeave" :on-touch-start="onMouseEnter" :labelledby="id" />
+  <slot
+    name="anchor"
+    :describedby="id"
+    :labelledby="id"
+    :on-mouse-enter="onMouseEnter"
+    :on-mouse-leave="onMouseLeave"
+    :on-focus="onFocus"
+    :on-blur="onBlur"
+    :on-keydown="onKeydown"
+    :on-touch-start="onFocus"
+    :on-touch-end="onBlur"
+  />
 </template>
 
 <style scoped>

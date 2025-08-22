@@ -8,7 +8,7 @@ export interface GalleryItem {
   author?: string
   authorUsername?: string
   likes?: number
-  alt: string | null
+  alt?: string
   color?: string
   blurHash: string | null
   w?: number

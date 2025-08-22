@@ -1,12 +1,18 @@
 import antfu from '@antfu/eslint-config'
 
 export default antfu({
-  vue: true,
+  vue: {
+    a11y: true,
+  },
+  formatters: {
+    css: true,
+    html: true,
+    markdown: 'prettier',
+  },
   rules: {
     'node/prefer-global/process': 'off',
     'eslint-comments/no-unlimited-disable': 'off',
   },
-  formatters: true,
   ignores: [
     'node_modules',
     'dist',

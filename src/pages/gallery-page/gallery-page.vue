@@ -59,27 +59,41 @@ watch(randomError, (err) => {
 <style module="classes">
 .galleryContainer {
   padding-bottom: 40px;
+
+  container: gallery / inline-size;
 }
 
 .gallery {
+  --card-min: 320px;
+  --gap: 40px;
+  --mtop: 100px;
+
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto;
-  grid-gap: 40px;
-  margin-top: 100px;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-min), 1fr));
+  gap: var(--gap);
+  margin-top: var(--mtop);
   margin-bottom: 40px;
 }
 
-@media screen and (width <= 760px) {
+@container gallery (max-width: 1024px) {
   .gallery {
-    grid-template-columns: repeat(2, 1fr);
-    margin-top: 60px;
+    --gap: 32px;
+    --mtop: 80px;
   }
 }
 
-@media screen and (width <= 560px) {
+@container gallery (max-width: 760px) {
   .gallery {
-    grid-template-columns: repeat(1, 1fr);
+    --gap: 24px;
+    --mtop: 60px;
+    --card-min: 300px;
+  }
+}
+
+@container gallery (max-width: 560px) {
+  .gallery {
+    --gap: 20px;
+    --card-min: 280px;
   }
 }
 </style>

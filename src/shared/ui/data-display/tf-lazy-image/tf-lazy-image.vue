@@ -52,6 +52,7 @@ function onError(element: HTMLImageElement) {
       onIntersect,
       onError,
     }"
+    alt=""
     :class="imageClasses"
   >
 </template>

@@ -33,7 +33,7 @@ const options = [
     <Variant title="TfTooltip">
       <TfTooltip :label="state.label" :position="state.position">
         <template #anchor="{ labelledby, onMouseEnter, onMouseLeave }">
-          <TfActionButton :aria-labelledby="labelledby" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
+          <TfActionButton :aria-labelledby="labelledby" @focusin="onMouseEnter" @focusout="onMouseLeave">
             <DownloadIcon width="22" height="22" />
           </TfActionButton>
         </template>

@@ -52,6 +52,7 @@
     "dotenv": "^17.2.1",
     "eslint": "^9.32.0",
     "eslint-plugin-format": "^1.0.1",
+    "eslint-plugin-vuejs-accessibility": "^2.4.1",
     "happy-dom": "^18.0.1",
     "histoire": "^0.17.17",
     "lint-staged": "^16.1.4",

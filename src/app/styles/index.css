@@ -59,8 +59,16 @@ body,
 .container {
   max-width: 1480px;
   width: 100%;
-  margin: 0 auto;
-  padding: 0 20px;
+  margin-inline: auto;
+  padding-inline: clamp(12px, 2.5vw, 20px);
+  padding-block: 0;
+}
+
+@supports (padding: max(0px)) {
+  .container {
+    padding-left: calc(clamp(12px, 2.5vw, 20px) + env(safe-area-inset-left));
+    padding-right: calc(clamp(12px, 2.5vw, 20px) + env(safe-area-inset-right));
+  }
 }
 
 .sr-only {

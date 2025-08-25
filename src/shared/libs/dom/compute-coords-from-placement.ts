@@ -38,12 +38,12 @@ export function adjustPositionWithinViewport(coords: { x: number, y: number }, f
   if (coords.x < 0)
     coords.x = window.scrollX
   else if (coords.x + floatRect.width > viewportWidth)
-    coords.x = viewportWidth + scrollX - floatRect.width
+    coords.x = viewportWidth - floatRect.width
 
   if (coords.y < 0)
     coords.y = window.scrollY
   else if (coords.y + floatRect.height > viewportHeight)
-    coords.y = viewportHeight + scrollY - floatRect.height
+    coords.y = viewportHeight - floatRect.height
 
   return coords
 }

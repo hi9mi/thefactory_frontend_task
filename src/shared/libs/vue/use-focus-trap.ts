@@ -3,6 +3,9 @@ import { createFocusTrap } from 'focus-trap'
 import { customRef } from 'vue'
 
 export function useFocusTrap(focusTrapArgs?: Options) {
+  let trap: FocusTrap | null = null
+  let boundEl: HTMLElement | null = null
+
   const trapRef = customRef((track, trigger) => {
     let $trapEl: HTMLElement | null = null
     return {
@@ -11,9 +14,11 @@ export function useFocusTrap(focusTrapArgs?: Options) {
         return $trapEl
       },
       set(value) {
+        const changed = value !== $trapEl
         $trapEl = value
         if (value) {
-          initFocusTrap(focusTrapArgs)
+          if (changed || !trap)
+            initFocusTrap(focusTrapArgs)
         }
         else {
           clearFocusTrap()
@@ -23,17 +28,21 @@ export function useFocusTrap(focusTrapArgs?: Options) {
     }
   })
 
-  let trap: FocusTrap | null = null
   function initFocusTrap(focusTrapArgs?: Options) {
     if (!trapRef.value)
       return
+    if (trap && boundEl === trapRef.value)
+      return
+    trap?.deactivate()
     trap = createFocusTrap(trapRef.value, focusTrapArgs)
+    boundEl = trapRef.value
     trap.activate()
   }
 
   function clearFocusTrap() {
     trap?.deactivate()
     trap = null
+    boundEl = null
   }
 
   return {

@@ -1,7 +1,7 @@
 import type { ObjectDirective } from 'vue'
 import { reactive } from 'vue'
 
-interface LazyImageOptions {
+export interface LazyImageOptions {
   originalSrc: string
   placeholderSrc: string
   srcset?: string

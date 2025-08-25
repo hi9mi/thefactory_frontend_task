@@ -44,7 +44,7 @@ export default defineConfig(({ mode }) => {
       viteIgnorePlugins: ['vite-plugin-pwa:dev-sw', 'vite-plugin-pwa:build', 'vite-plugin-pwa:info', 'vite-plugin-pwa', 'vite:html'],
     },
     test: {
-      environment: 'happy-dom',
+      environment: 'jsdom',
       css: {
         modules: {
           classNameStrategy: 'non-scoped',
@@ -53,7 +53,16 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@tf-app': path.resolve(__dirname, './src'),
       },
-      include: ['tests/unit/**/*.spec.ts'],
+      include: ['src/**/*.test.{ts,vue}'],
+      globals: true,
+      coverage: {
+        enabled: true,
+        provider: 'v8',
+        reportsDirectory: './coverage',
+        reporter: ['text', 'html'],
+        include: ['src/**/*.{ts,vue}'],
+        exclude: ['**/*.d.ts', '**/*.test.*', '**/*.spec.*', '**/__fixtures__/**'],
+      },
     },
     plugins: [
       vue(),

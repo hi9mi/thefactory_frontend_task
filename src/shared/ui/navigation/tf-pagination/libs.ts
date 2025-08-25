@@ -29,13 +29,9 @@ export function usePagination({
   const hasNextPage = computed(() => activePage.value < _total.value)
 
   function setPage(newPage: number) {
-    if (!hasPrevPage.value)
-      activePage.value = 1
-
-    if (!hasNextPage.value)
-      activePage.value = _total.value
-
-    activePage.value = newPage
+    const total = _total.value || 1
+    const clamped = Math.max(1, Math.min(newPage, total))
+    activePage.value = clamped
   }
 
   const next = () => setPage(activePage.value + 1)

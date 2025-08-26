@@ -36,7 +36,7 @@ export function createGalleryEntity(deps: { gateway: GalleryGateway, lru: LRUCac
   const ensureEntry = (q: string, p: number): SearchEntry =>
     (entries[keyOf(q, p)] ??= reactive<SearchEntry>({ items: [], loading: false, error: null }))
 
-  async function ensureRandom(count = 9, init?: RequestInit) {
+  async function ensureRandom(count = 18, init?: RequestInit) {
     const cacheKey = String(count)
     const hit = randomCache.get(cacheKey)
     if (hit && hit.length >= count) {
@@ -98,7 +98,10 @@ export function createGalleryEntity(deps: { gateway: GalleryGateway, lru: LRUCac
     return ensureRandom(count, init)
   }
 
-  async function search(query: string, page = 1, init?: RequestInit) {
+  async function search(
+    { query, page, perPage }: { query: string, page: number, perPage: number },
+    init?: RequestInit,
+  ) {
     const q = (query ?? '').trim()
     if (!q)
       return []
@@ -124,7 +127,7 @@ export function createGalleryEntity(deps: { gateway: GalleryGateway, lru: LRUCac
 
     const promise = (async () => {
       try {
-        const { items, totalPages } = await gateway.search(q, page, init)
+        const { items, totalPages } = await gateway.search({ query, page, perPage }, init)
         listCache.set(cacheKey, items)
         totalsCache.set(q, totalPages)
         entry.items = items

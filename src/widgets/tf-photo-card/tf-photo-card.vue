@@ -37,7 +37,7 @@ defineProps<{ photo: GalleryItem }>()
   flex-direction: column;
   border-radius: var(--border-radius-small);
   z-index: 1;
-  height: 440px;
+  height: 100%;
   width: 100%;
 }
 
@@ -122,24 +122,6 @@ defineProps<{ photo: GalleryItem }>()
   .actions:hover,
   .photoLink:hover + .overlay + .actions {
     display: none;
-  }
-}
-
-@container gallery (inline-size <= 960px) {
-  .photoCard {
-    height: 320px;
-  }
-}
-
-@container gallery (inline-size <= 560px) {
-  .photoCard {
-    height: 280px;
-  }
-}
-
-@container gallery (inline-size <= 3000px) {
-  .photoCard {
-    outline: 2px dashed;
   }
 }
 </style>

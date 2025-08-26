@@ -32,6 +32,7 @@
     "blurhash": "^2.0.5",
     "ditox": "^3.0.0",
     "focus-trap": "^7.6.5",
+    "magic-grid": "^3.4.7",
     "nprogress": "^0.2.0",
     "pinia": "^3.0.3",
     "vue": "^3.5.18",

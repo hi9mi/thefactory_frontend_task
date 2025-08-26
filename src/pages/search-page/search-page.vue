@@ -3,10 +3,10 @@ import { createGalleryEntity, createGalleryGateway } from '@tf-app/entities/gall
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import { TOKENS, useDependency } from '@tf-app/shared/di'
 import { debounce } from '@tf-app/shared/libs'
-import TfPhotoCardSkeleton from '@tf-app/widgets/tf-photo-card/tf-photo-card-skeleton.vue'
+import TfMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { useRouteQuery } from '@vueuse/router'
-import { computed, defineAsyncComponent, shallowRef, watch } from 'vue'
+import { computed, defineAsyncComponent, ref, shallowRef, watch } from 'vue'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
@@ -15,6 +15,8 @@ const TfPagination = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/navigation/tf-pagination/tf-pagination.vue'),
 )
 
+const BATCH = 18
+
 const api = useDependency(TOKENS.UnsplashAPI)
 const notify = useDependency(TOKENS.Notifier)
 const lru = useDependency(TOKENS.LRUCache)
@@ -22,6 +24,7 @@ const gallery = createGalleryEntity({ gateway: createGalleryGateway(api), lru })
 
 const q = useRouteQuery<string>('q', '', { mode: 'replace' })
 const page = useRouteQuery('page', '1', { mode: 'push', transform: Number })
+const isDebouncing = ref(false)
 
 watch(q, (newQ, oldQ) => {
   if (newQ !== oldQ && page.value !== 1)
@@ -29,7 +32,11 @@ watch(q, (newQ, oldQ) => {
 }, { flush: 'sync' })
 
 const [debouncedSearch, cancelDebounce] = debounce((query: string, pageNum: number, init?: RequestInit) => {
-  return gallery.search(query, pageNum, init)
+  return gallery
+    .search({ query, page: pageNum, perPage: BATCH }, init)
+    .finally(() => {
+      isDebouncing.value = false
+    })
 }, 500)
 const controller = shallowRef<AbortController | null>(null)
 
@@ -37,6 +44,7 @@ watch([q, page], (_vals, _old, onCleanup) => {
   const query = q.value.trim()
   if (!query) {
     cancelDebounce()
+    isDebouncing.value = false
     return
   }
 
@@ -44,18 +52,21 @@ watch([q, page], (_vals, _old, onCleanup) => {
   const c = new AbortController()
   controller.value = c
 
+  isDebouncing.value = true
   debouncedSearch(query, page.value, { signal: c.signal })
 
   onCleanup(() => {
     c.abort()
     cancelDebounce()
   })
-}, { immediate: true, flush: 'post' })
+}, { immediate: true })
 
 const entry = computed(() => gallery.getSearchState(q.value, page.value))
+const busy = computed(() => entry.value.loading || isDebouncing.value)
 const totalPages = computed(() => gallery.getTotalPages(q.value))
-const hasNoResults = computed(() => !entry.value.loading && entry.value.items.length === 0)
-const isSearchEmpty = computed(() => hasNoResults.value && q.value === '')
+const showGrid = computed(() => busy.value || entry.value.items.length > 0)
+const hasNoResults = computed(() => busy.value && q.value.trim() !== '' && entry.value.items.length === 0)
+const isSearchEmpty = computed(() => !busy.value && q.value.trim() === '')
 
 watch(() => entry.value.error, (err) => {
   if (err)
@@ -65,23 +76,38 @@ watch(() => entry.value.error, (err) => {
 
 <template>
   <SearchPhotosForm v-model="q" data-testid="search-photos-form" mode="inline" />
+
   <div class="container" :class="classes.galleryContainer">
-    <section
-      :class="classes.gallery"
+    <TfMasonryGrid
+      v-if="showGrid"
+      :items="entry.items"
+      :loading="entry.loading || busy"
+      :skeleton-count="BATCH"
+      :initial-items-count="BATCH"
+      :max-cols="6"
+      :get-aspect-ratio="(p) => (p.w && p.h ? p.w / p.h : undefined)"
     >
-      <template v-if="entry.loading">
-        <TfPhotoCardSkeleton v-for="i of 9" :key="i" data-testid="photo-skeleton" />
-      </template>
-      <template v-else-if="entry.items.length">
+      <template #default="{ item }">
         <TfPhotoCard
-          v-for="photo of entry.items"
-          :key="photo.id"
           data-testid="photo-card"
-          :photo="photo"
+          :photo="item"
         />
       </template>
+    </TfMasonryGrid>
+    <TfPagination
+      v-if="entry.items.length"
+      :total-pages="totalPages"
+      :page="page"
+      :disabled="entry.loading"
+      data-testid="pagination"
+      @change-page="(p) => page = p"
+    />
+
+    <div
+      v-if="!busy"
+    >
       <p
-        v-else-if="isSearchEmpty"
+        v-if="isSearchEmpty"
         :class="classes.galleryEmpty"
         data-testid="search-empty"
       >
@@ -94,62 +120,18 @@ watch(() => entry.value.error, (err) => {
       >
         Not found photos
       </p>
-    </section>
-    <TfPagination
-      v-if="entry.items.length"
-      :total-pages="totalPages"
-      :page="page"
-      :disabled="entry.loading"
-      data-testid="pagination"
-      @change-page="(p) => page = p"
-    />
-
+    </div>
     <TfAffix data-testid="affix" />
   </div>
 </template>
 
 <style module="classes">
 .galleryContainer {
-  padding-bottom: 40px;
-}
-
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto;
-  grid-gap: 40px;
-  margin-top: 100px;
-  margin-bottom: 40px;
+  container: gallery / inline-size;
 }
 
 .galleryEmpty {
   font-size: 18px;
   text-align: center;
-  display: grid;
-  grid-column: 2;
-  grid-row: 1;
-  grid-template-columns: subgrid;
-  place-self: center center;
-}
-
-@media screen and (width <= 760px) {
-  .gallery {
-    grid-template-columns: repeat(2, 1fr);
-    margin-top: 60px;
-  }
-
-  .galleryEmpty {
-    grid-column: span 2;
-  }
-}
-
-@media screen and (width <= 560px) {
-  .gallery {
-    grid-template-columns: repeat(1, 1fr);
-  }
-
-  .galleryEmpty {
-    grid-column: 1;
-  }
 }
 </style>

@@ -2,6 +2,7 @@
 import { createFavoritesEntity, FAVORITES_REPO } from '@tf-app/entities/favorite-photos'
 import { useDependency } from '@tf-app/shared/di'
 import { usePaginationData } from '@tf-app/shared/libs'
+import TfMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
 
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { useRouteQuery } from '@vueuse/router'
@@ -14,12 +15,14 @@ const TfPagination = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/navigation/tf-pagination/tf-pagination.vue'),
 )
 
+const BATCH = 18
+
 const repo = useDependency(FAVORITES_REPO)
 const favorites = createFavoritesEntity({ repo })
 
 const favoritePhotos = favorites.items
 const currentPage = useRouteQuery('page', '1', { mode: 'push', transform: Number })
-const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationData(favoritePhotos, { currentPage })
+const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationData(favoritePhotos, { currentPage, limit: BATCH })
 </script>
 
 <template>
@@ -27,19 +30,23 @@ const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationD
     <h1 :class="classes.title">
       Favorites
     </h1>
-    <section
-      v-if="paginatedFavoritePhotos.length > 0"
-      :class="classes.gallery"
+    <TfMasonryGrid
+      :items="paginatedFavoritePhotos"
+      :loading="false"
+      :skeleton-count="BATCH"
+      :initial-items-count="BATCH"
+      :max-cols="6"
+      :get-aspect-ratio="(p) => (p.w && p.h ? p.w / p.h : undefined)"
     >
-      <TfPhotoCard
-        v-for="favPhoto of paginatedFavoritePhotos"
-        :key="favPhoto.id"
-        :photo="favPhoto"
-        data-testid="photo-card"
-      />
-    </section>
+      <template #default="{ item }">
+        <TfPhotoCard
+          data-testid="photo-card"
+          :photo="item"
+        />
+      </template>
+    </TfMasonryGrid>
     <p
-      v-else
+      v-if="paginatedFavoritePhotos.length < 1"
       :class="classes.favoritesEmpty"
       data-testid="favorites-empty"
     >
@@ -65,15 +72,7 @@ const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationD
 }
 
 .container {
-  padding-bottom: 40px;
-}
-
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto;
-  grid-gap: 40px;
-  margin: 100px 0 40px;
+  container: gallery / inline-size;
 }
 
 .favoritesEmpty {
@@ -81,33 +80,24 @@ const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationD
   text-align: center;
 }
 
-@media screen and (width <= 760px) {
-  .gallery {
-    grid-template-columns: repeat(2, 1fr);
+@container gallery (max-width: 1024px) {
+  .title {
+    font-size: 64px;
+    margin: 80px 0;
   }
+}
 
+@container gallery (max-width: 760px) {
   .title {
     font-size: 56px;
     margin: 70px 0;
   }
-
-  .favoritesEmpty {
-    grid-column: span 2;
-  }
 }
 
-@media screen and (width <= 560px) {
+@container gallery (max-width: 560px) {
   .title {
     font-size: 36px;
     margin: 50px 0;
-  }
-
-  .gallery {
-    grid-template-columns: repeat(1, 1fr);
-  }
-
-  .favoritesEmpty {
-    grid-column: 1;
   }
 }
 </style>

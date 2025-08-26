@@ -8,7 +8,7 @@ import {
 
 export interface UnsplashAPI {
   getRandomPhotos: (count: number, init?: RequestInit) => Promise<UnsplashPhotoDTO[]>
-  getPhotos: (params: { query: string, page: number }, init?: RequestInit) => Promise<UnsplashSearchDTO>
+  getPhotos: (params: { query: string, page: number, perPage: number }, init?: RequestInit) => Promise<UnsplashSearchDTO>
   getDetailsPhoto: (id: string, init?: RequestInit) => Promise<UnsplashPhotoDTO>
 }
 
@@ -50,9 +50,9 @@ export function createUnsplashApi(cfg: AppConfig): UnsplashAPI {
         'Unsplash.random',
       ),
 
-    getPhotos: ({ query, page }, init) =>
+    getPhotos: ({ query, page, perPage }, init) =>
       getJson(
-        `${BASE}/search/photos?query=${encodeURIComponent(query)}&page=${page}`,
+        `${BASE}/search/photos?query=${encodeURIComponent(query)}&page=${page}&per_page=${perPage}`,
         withInit(baseInit, init),
         UnsplashSearchSchema,
         'Unsplash.search',

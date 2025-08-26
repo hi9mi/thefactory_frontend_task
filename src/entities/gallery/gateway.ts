@@ -30,7 +30,7 @@ export function mapPhoto(dto: UnsplashPhotoDTO): GalleryItem {
     author: dto.user?.name,
     authorUsername: dto.user?.username,
     likes: undefined,
-    alt: dto.alt_description,
+    alt: dto.alt_description ?? '',
     color: dto.color,
     blurHash: dto.blur_hash,
     w: dto.width,
@@ -48,18 +48,18 @@ export function mapSearch(dto: UnsplashSearchDTO): GallerySearchResult {
 
 export interface GalleryGateway {
   random: (count?: number, init?: RequestInit) => Promise<GalleryItem[]>
-  search: (query: string, page: number, init?: RequestInit) => Promise<GallerySearchResult>
+  search: ({ query, page, perPage }: { query: string, page: number, perPage: number }, init?: RequestInit) => Promise<GallerySearchResult>
 }
 
 export function createGalleryGateway(api: UnsplashAPI): GalleryGateway {
   return {
-    async random(count = 9, init) {
+    async random(count = 18, init) {
       const raw = await api.getRandomPhotos(count, init)
       const arr = Array.isArray(raw) ? raw : []
       return arr.slice(0, count).map(mapPhoto)
     },
-    async search(query, page, init) {
-      const res = await api.getPhotos({ query, page }, init)
+    async search({ query, page, perPage }, init) {
+      const res = await api.getPhotos({ query, page, perPage }, init)
       return mapSearch(res as any)
     },
   }

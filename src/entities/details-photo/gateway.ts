@@ -26,7 +26,7 @@ export function mapDetails(dto: UnsplashPhotoDTO): DetailsPhoto {
     author: dto.user.name,
     authorUsername: dto.user.username,
     authorAvatar: dto.user.profile_image.medium,
-    alt: dto.alt_description,
+    alt: dto.alt_description ?? '',
     color: dto.color,
     blurHash: dto.blur_hash,
     width: dto.width,

@@ -57,7 +57,6 @@ onMounted(async () => {
 
     if (grid.value) {
       grid.value.gutter = gutter
-      grid.value.maxColumns = cols
     }
     layoutSoon()
   })
@@ -72,7 +71,7 @@ onBeforeUnmount(() => {
   grid.value = null
 })
 
-watch(() => props.items.length, async () => {
+watch([() => props.items.length, () => props.loading], async () => {
   await nextTick()
   if (grid.value) {
     grid.value.size = props.loading ? props.skeletonCount! : props.items.length

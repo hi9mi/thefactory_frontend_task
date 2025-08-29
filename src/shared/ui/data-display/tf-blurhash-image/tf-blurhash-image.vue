@@ -72,6 +72,7 @@ function handleBlurhashImage(event: MessageEvent<{ payload: { bitmap: ImageBitma
   object-position: center;
   width: 100%;
   height: auto;
+  border-radius: var(--border-radius-small, 4px);
 }
 
 .loading {
@@ -86,5 +87,6 @@ function handleBlurhashImage(event: MessageEvent<{ payload: { bitmap: ImageBitma
   height: 100%;
   width: 100%;
   background-color: var(--color-weathered-stone);
+  border-radius: var(--border-radius-small, 4px);
 }
 </style>

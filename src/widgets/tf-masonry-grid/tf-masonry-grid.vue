@@ -89,7 +89,7 @@ watch([() => props.items.length, () => props.loading], async () => {
         :class="classes.item"
         :style="{ aspectRatio: SKELETON_RATIOS[(i - 1) % SKELETON_RATIOS.length] }"
       >
-        <TfSkeleton type="block" width="100%" height="100%" />
+        <TfSkeleton type="block" width="100%" height="100%" radius="4px" />
       </div>
     </template>
 

@@ -151,7 +151,9 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            ethers: ['mitt', 'nprogress', 'focus-trap'],
+            ethers: ['magic-grid', 'nprogress', 'ditox', 'blurhash'],
+            zod: ['zod'],
+            focusTrap: ['focus-trap'],
             router: ['vue-router'],
             pinia: ['pinia'],
             vue: ['vue'],

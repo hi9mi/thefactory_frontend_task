@@ -1,41 +1,45 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-
 import { expect, test } from '@playwright/test'
-
 import { checkNumberOfItemsInLocalStorage, simulateLocalStorageEvent } from './libs/storage'
 
 test.describe('Favorites Photos Page', () => {
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = path.dirname(__filename)
   const fixturesPath = path.join(__dirname, 'fixtures')
-  const randomPhotos = fs.readFileSync(path.join(fixturesPath, 'unsplash', 'random-photos.json'), 'utf8')
-  const newValue = fs.readFileSync(path.join(fixturesPath, 'unsplash', 'storage-new-value.json'), 'utf8')
 
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/search')
+  const randomPhotosStr = fs.readFileSync(path.join(fixturesPath, 'unsplash', 'random-photos.json'), 'utf8')
+  const newValueStr = fs.readFileSync(path.join(fixturesPath, 'unsplash', 'storage-new-value.json'), 'utf8')
 
-    await page.evaluate((photos) => {
-      localStorage.setItem('favorites', photos)
-    }, randomPhotos)
+  const randomPhotos = JSON.parse(randomPhotosStr) as Array<{ id: string }>
+  const newValue = JSON.parse(newValueStr) as Array<{ id: string }>
+  const a = randomPhotos.concat(newValue)
+  const LS_KEY = 'favorites:v1'
+  const BATCH = 18
 
-    await page.goto('/favorites')
+  test.beforeEach(async ({ page, context }) => {
+    await context.addInitScript(({ key, value }) => {
+      window.localStorage.setItem(key, value)
+    }, { key: LS_KEY, value: randomPhotosStr })
+
+    await page.goto('/favorites', { waitUntil: 'domcontentloaded' })
+    await page.getByTestId('photo-card').first().waitFor()
   })
 
-  test('should show favorite photos', async ({ page }) => {
+  test('shows favorite photos', async ({ page }) => {
     const photoCards = page.getByTestId('photo-card')
     const pagination = page.getByTestId('pagination')
     const page1 = pagination.getByText('1')
     const page2 = pagination.getByText('2')
 
-    await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 9 })
-    await expect(photoCards).toHaveCount(9)
+    await checkNumberOfItemsInLocalStorage({ key: LS_KEY, page, expected: randomPhotos.length })
+    await expect(photoCards).toHaveCount(randomPhotos.length)
     await expect(page1).toBeVisible()
     await expect(page2).not.toBeVisible()
   })
 
-  test('should paginate correctly', async ({ page }) => {
+  test('paginates correctly after storage change', async ({ page }) => {
     const photoCards = page.getByTestId('photo-card')
     const pagination = page.getByTestId('pagination')
     const page1 = pagination.getByText('1')
@@ -44,87 +48,98 @@ test.describe('Favorites Photos Page', () => {
     await expect(page1).toBeVisible()
     await expect(page2).not.toBeVisible()
 
-    await simulateLocalStorageEvent({ page, key: 'favorites', oldValue: randomPhotos, newValue })
+    await simulateLocalStorageEvent({
+      page,
+      key: LS_KEY,
+      oldValue: randomPhotosStr,
+      newValue: JSON.stringify(a),
+    })
 
     await expect(page1).toBeVisible()
     await expect(page2).toBeVisible()
 
     await page2.click()
+    await expect(page).toHaveURL(/\/favorites\?page=2$/)
 
-    await expect(page).toHaveURL('/favorites?page=2')
-    await expect(photoCards).toHaveCount(1)
+    const expectedTailCount = Math.max(a.length - BATCH, 0)
+    await expect(photoCards).toHaveCount(expectedTailCount)
   })
 
-  test('should redirect to photo page on click', async ({ page }) => {
-    const photoCards = page.getByTestId('photo-card')
-
-    await photoCards.first().click()
-    await expect(page).toHaveURL('/Cleue5NMLuY')
+  test('redirects to photo details on card click', async ({ page }) => {
+    const firstId = randomPhotos[0].id
+    await page.getByTestId('photo-card').first().click()
+    await expect(page).toHaveURL(new RegExp(`/${firstId}$`))
   })
 
-  test('should show favorite and download buttons on hover', async ({ page, isMobile }) => {
-    if (isMobile) {
+  test('shows favorite and download buttons on hover (desktop only)', async ({ page, isMobile }) => {
+    if (isMobile)
       test.skip()
-    }
-    else {
-      const photoCard = page.getByTestId('photo-card').first()
-      await photoCard.hover()
 
-      const favoriteButton = page.getByTestId('toggle-favorite-photo-btn').first()
-      const downloadButton = page.getByTestId('download-photo-btn').first()
+    const photoCard = page.getByTestId('photo-card').first()
+    await photoCard.scrollIntoViewIfNeeded()
+    await photoCard.hover()
 
-      await expect(favoriteButton).toBeVisible()
-      await expect(downloadButton).toBeVisible()
-    }
+    const favoriteButton = page.getByTestId('toggle-favorite-photo-btn').first()
+    const downloadButton = page.getByTestId('download-photo-btn').first()
+
+    await expect(favoriteButton).toBeVisible()
+    await expect(downloadButton).toBeVisible()
   })
 
-  test('should remove photo from favorites on click', async ({ page, isMobile }) => {
-    if (isMobile) {
+  test('removes photo from favorites on click (desktop only)', async ({ page, isMobile }) => {
+    if (isMobile)
       test.skip()
-    }
-    else {
-      await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 9 })
 
-      const photoCard = page.getByTestId('photo-card').first()
-      await photoCard.hover()
+    await checkNumberOfItemsInLocalStorage({ key: LS_KEY, page, expected: randomPhotos.length })
 
-      const favoriteButton = page.getByTestId('toggle-favorite-photo-btn').first()
-      await favoriteButton.click()
+    const photoCard = page.getByTestId('photo-card').first()
+    await photoCard.scrollIntoViewIfNeeded()
+    await photoCard.hover()
 
-      const notification = page.getByText('Фото удалено из избранного')
-      await expect(notification).toBeVisible()
-      await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 8 })
-    }
+    const favoriteButton = page.getByTestId('toggle-favorite-photo-btn').first()
+    await favoriteButton.click()
+
+    const notification = page.getByText('Photo removed from favorites')
+    await expect(notification).toBeVisible()
+    await checkNumberOfItemsInLocalStorage({ key: LS_KEY, page, expected: randomPhotos.length - 1 })
   })
 
-  test('should download photo on click', async ({ page, isMobile }) => {
-    if (isMobile) {
+  test('downloads photo on click (desktop only)', async ({ page, isMobile }) => {
+    if (isMobile)
       test.skip()
-    }
-    else {
-      await page.route('**/*', route => route.continue())
-      const photoCard = page.getByTestId('photo-card').first()
-      await photoCard.hover()
 
-      const downloadButton = page.getByTestId('download-photo-btn').first()
-      await downloadButton.click()
+    await page.route('**/*', r => r.continue())
 
-      const notification = page.getByText('Не удалось начать загрузку фотографии')
-      await expect(notification).not.toBeVisible()
-    }
+    const photoCard = page.getByTestId('photo-card').first()
+    await photoCard.scrollIntoViewIfNeeded()
+    await photoCard.hover()
+
+    const downloadButton = page.getByTestId('download-photo-btn').first()
+    await downloadButton.click()
+
+    const notification = page.getByText('Error while downloading photo')
+    await expect(notification).toBeHidden()
   })
 
-  test('should show affix when we scroll and hide when we\'re at the top', async ({ page }) => {
-    await page.waitForSelector('[data-testid="photo-card"]')
-
-    await page.evaluate(() => {
-      window.scrollTo(0, 500)
-    })
-
+  test('shows affix on scroll and hides after click', async ({ page }) => {
+    await page.getByTestId('photo-card').first().waitFor()
+    await page.evaluate(() => window.scrollTo(0, 500))
     const affixElement = page.getByTestId('affix')
 
     await expect(affixElement).toBeVisible()
     await affixElement.click()
     await expect(affixElement).not.toBeVisible()
+  })
+
+  test('shows empty state when no favorites', async ({ page }) => {
+    await simulateLocalStorageEvent({
+      page,
+      key: LS_KEY,
+      oldValue: randomPhotosStr,
+      newValue: '[]',
+    })
+
+    await expect(page.getByTestId('favorites-empty')).toBeVisible()
+    await expect(page.getByTestId('pagination')).toBeHidden()
   })
 })

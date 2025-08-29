@@ -65,7 +65,7 @@ const entry = computed(() => gallery.getSearchState(q.value, page.value))
 const busy = computed(() => entry.value.loading || isDebouncing.value)
 const totalPages = computed(() => gallery.getTotalPages(q.value))
 const showGrid = computed(() => busy.value || entry.value.items.length > 0)
-const hasNoResults = computed(() => busy.value && q.value.trim() !== '' && entry.value.items.length === 0)
+const hasNoResults = computed(() => !busy.value && entry.value.items.length === 0)
 const isSearchEmpty = computed(() => !busy.value && q.value.trim() === '')
 
 watch(() => entry.value.error, (err) => {

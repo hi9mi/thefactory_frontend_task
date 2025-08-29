@@ -1,190 +1,168 @@
 import type { Page } from '@playwright/test'
 import fs from 'node:fs'
 import path from 'node:path'
-
 import { fileURLToPath } from 'node:url'
 import { expect, test } from '@playwright/test'
-
 import { checkNumberOfItemsInLocalStorage } from './libs/storage'
 
 test.describe('Search Page', () => {
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = path.dirname(__filename)
   const fixturesPath = path.join(__dirname, 'fixtures')
-  const searchPhotosNature = fs.readFileSync(path.join(fixturesPath, 'unsplash', 'search-photos-nature.json'), 'utf8')
+
+  const searchPhotosNatureStr = fs.readFileSync(
+    path.join(fixturesPath, 'unsplash', 'search-photos-nature.json'),
+    'utf8',
+  )
+  const searchPhotosNature = JSON.parse(searchPhotosNatureStr) as {
+    results: Array<{ id: string }>
+  }
+  const KEY = 'favorites:v1'
 
   test.describe('Successful loading search photos', () => {
     test.beforeEach(async ({ page }) => {
-      await page.route('https://api.unsplash.com/search/photos**', async (route) => {
-        await route.fulfill({
-          status: 200,
-          body: searchPhotosNature,
-          contentType: 'application/json',
-        })
-      })
-
-      await page.goto('/search')
+      await page.route('https://api.unsplash.com/search/photos**', route =>
+        route.fulfill({ status: 200, body: searchPhotosNatureStr, contentType: 'application/json' }))
+      await page.goto('/search', { waitUntil: 'domcontentloaded' })
     })
 
     test('should display search empty text', async ({ page }) => {
-      const searchEmpty = page.getByTestId('search-empty')
-
-      await expect(searchEmpty).toBeVisible()
+      await expect(page.getByTestId('search-empty')).toBeVisible()
     })
 
     test('should display search results', async ({ page }) => {
       await searchByNatureTerm(page)
 
-      await expect(page).toHaveURL('/search?q=nature&p=1')
+      const url = new URL(page.url())
+      expect(url.pathname).toBe('/search')
+      expect(url.searchParams.get('q')).toBe('nature')
+      expect([null, '1']).toContain(url.searchParams.get('page'))
 
       const photoCards = page.getByTestId('photo-card')
       const photoSkeletons = page.getByTestId('photo-skeleton')
 
+      await expect(photoCards).toHaveCount(searchPhotosNature.results.length)
       await expect(photoSkeletons).toHaveCount(0)
-      await expect(photoCards).toHaveCount(9)
     })
 
     test('should add photo to favorites on click', async ({ page, isMobile }) => {
-      if (isMobile) {
+      if (isMobile)
         test.skip()
-      }
-      else {
-        await searchByNatureTerm(page)
 
-        await page.getByTestId('photo-card').first().hover()
+      await searchByNatureTerm(page)
 
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0, defaultValue: '[]' })
+      const card = page.getByTestId('photo-card').first()
+      await card.hover()
 
-        const favoriteButton = page.getByTestId('toggle-favorite-photo-btn').first()
-        await favoriteButton.click()
-        const notification = page.getByText('Фото добавлено в избранное')
+      await checkNumberOfItemsInLocalStorage({ key: KEY, page, expected: 0, defaultValue: '[]' })
+      await card.getByTestId('toggle-favorite-photo-btn').click()
 
-        await expect(notification).toBeVisible()
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 1, defaultValue: '[]' })
-      }
+      await expect(page.getByText('Photo added to favorites')).toBeVisible()
+      await checkNumberOfItemsInLocalStorage({ key: KEY, page, expected: 1, defaultValue: '[]' })
     })
 
     test('should remove photo from favorites on click', async ({ page, isMobile }) => {
-      if (isMobile) {
+      if (isMobile)
         test.skip()
-      }
-      else {
-        await searchByNatureTerm(page)
 
-        await page.getByTestId('photo-card').first().hover()
+      await searchByNatureTerm(page)
 
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0, defaultValue: '[]' })
-        const favoriteButton = page.getByTestId('toggle-favorite-photo-btn').first()
+      const card = page.getByTestId('photo-card').first()
+      await card.hover()
 
-        await favoriteButton.click()
+      await checkNumberOfItemsInLocalStorage({ key: KEY, page, expected: 0, defaultValue: '[]' })
+      const favBtn = card.getByTestId('toggle-favorite-photo-btn')
 
-        let notification = page.getByText('Фото добавлено в избранное')
-        await expect(notification).toBeVisible()
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 1, defaultValue: '[]' })
+      await favBtn.click()
+      await expect(page.getByText('Photo added to favorites')).toBeVisible()
+      await checkNumberOfItemsInLocalStorage({ key: KEY, page, expected: 1, defaultValue: '[]' })
 
-        await favoriteButton.click()
-
-        notification = page.getByText('Фото удалено из избранного')
-        await expect(notification).toBeVisible()
-        await checkNumberOfItemsInLocalStorage({ key: 'favorites', page, expected: 0, defaultValue: '[]' })
-      }
+      await favBtn.click()
+      await expect(page.getByText('Photo removed from favorites')).toBeVisible()
+      await checkNumberOfItemsInLocalStorage({ key: KEY, page, expected: 0, defaultValue: '[]' })
     })
 
     test('should download photo on click', async ({ page, isMobile }) => {
-      if (isMobile) {
+      if (isMobile)
         test.skip()
-      }
-      else {
-        await page.route('**/*', route => route.continue())
-        await searchByNatureTerm(page)
 
-        await page.getByTestId('photo-card').first().hover()
+      await page.route('**/*', r => r.continue())
+      await searchByNatureTerm(page)
 
-        const downloadButton = page.getByTestId('download-photo-btn').first()
+      const card = page.getByTestId('photo-card').first()
+      await card.hover()
 
-        await downloadButton.click()
-
-        const notification = page.getByText('Не удалось начать загрузку фотографии')
-        await expect(notification).not.toBeVisible()
-      }
+      await card.getByTestId('download-photo-btn').click()
+      await expect(page.getByText('Error while downloading photo')).toBeHidden()
     })
 
     test('should change page on click', async ({ page }) => {
       await searchByNatureTerm(page)
-
-      const page2 = page.getByText('2', { exact: true })
-      await page2.click()
-
-      await expect(page).toHaveURL('/search?q=nature&p=2')
+      await page.getByText('2', { exact: true }).click()
+      const url = new URL(page.url())
+      expect(url.pathname).toBe('/search')
+      expect(url.searchParams.get('q')).toBe('nature')
+      expect(url.searchParams.get('page')).toBe('2')
     })
 
     test('should redirect to photo page on click', async ({ page }) => {
       await searchByNatureTerm(page)
-
-      const photoCards = page.getByTestId('photo-card')
-      await photoCards.first().click()
-
-      await expect(page).toHaveURL('/cssvEZacHvQ')
+      const firstId = searchPhotosNature.results[0].id
+      await page.getByTestId('photo-card').first().click()
+      await expect(page).toHaveURL(new RegExp(`/${firstId}$`))
     })
 
     test('should show affix when we scroll and hide when we\'re at the top', async ({ page }) => {
       await searchByNatureTerm(page)
-
-      await page.evaluate(() => {
-        window.scrollTo(0, 500)
-      })
-
-      const affixElement = page.getByTestId('affix')
-
-      await expect(affixElement).toBeVisible()
-      await affixElement.click()
-      await expect(affixElement).not.toBeVisible()
+      await page.evaluate(() => window.scrollTo(0, 500))
+      const affix = page.getByTestId('affix')
+      await expect(affix).toBeVisible()
+      await affix.click()
+      await expect(affix).not.toBeVisible()
     })
   })
 
   test.describe('Failed loading search photos', () => {
     test.beforeEach(async ({ page }) => {
-      await page.route('https://api.unsplash.com/search/photos**', async (route) => {
-        await route.fulfill({
-          status: 403,
-          body: 'Rate Limit Exceeded',
-          contentType: 'application/json',
-        })
-      })
-
-      await page.goto('/search')
+      await page.route('https://api.unsplash.com/search/photos**', route =>
+        route.fulfill({ status: 403, body: 'Rate Limit Exceeded', contentType: 'application/json' }))
+      await page.goto('/search', { waitUntil: 'domcontentloaded' })
     })
 
     test('should notify on error when fetching search photos', async ({ page }) => {
-      await searchByNatureTerm(page)
-
-      await expect(page.getByText('Ошибка при загрузке фотографий')).toBeVisible()
+      const form = page.getByTestId('search-photos-form')
+      const input = form.getByPlaceholder('Search')
+      await input.fill('nature')
+      await input.press('Enter')
+      await expect(page.getByText('Failed search photos')).toBeVisible()
     })
   })
 
   test.describe('When there are no photos by the search query', () => {
     test.beforeEach(async ({ page }) => {
-      await page.route('https://api.unsplash.com/search/photos**', async (route) => {
-        await route.fulfill({
+      await page.route('https://api.unsplash.com/search/photos**', route =>
+        route.fulfill({
           status: 200,
-          body: '{"total": 0,"total_pages": 0,"results": []}',
+          body: '{"total":0,"total_pages":0,"results":[]}',
           contentType: 'application/json',
-        })
-      })
-
-      await page.goto('/search')
+        }))
+      await page.goto('/search', { waitUntil: 'domcontentloaded' })
     })
 
     test('should display no results text', async ({ page }) => {
-      await searchByNatureTerm(page)
-
-      const noResults = page.getByTestId('no-results')
-      await expect(noResults).toBeVisible()
+      const form = page.getByTestId('search-photos-form')
+      const input = form.getByPlaceholder('Search')
+      await input.fill('nature')
+      await input.press('Enter')
+      await expect(page.getByTestId('no-results')).toBeVisible()
     })
   })
 })
 
 async function searchByNatureTerm(page: Page) {
-  await page.getByTestId('search-photos-form').getByPlaceholder('Поиск').fill('nature')
-  await page.getByTestId('search-photos-form').getByRole('search').press('Enter')
+  const form = page.getByTestId('search-photos-form')
+  const input = form.getByPlaceholder('Search')
+  await input.fill('nature')
+  await input.press('Enter')
+  await page.getByTestId('photo-card').first().waitFor()
 }

@@ -21,8 +21,8 @@ const repo = useDependency(FAVORITES_REPO)
 const favorites = createFavoritesEntity({ repo })
 
 const favoritePhotos = favorites.items
-const currentPage = useRouteQuery('page', '1', { mode: 'push', transform: Number })
-const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationData(favoritePhotos, { currentPage, limit: BATCH })
+const qPage = useRouteQuery('page', 1, { mode: 'push', transform: Number })
+const { data: paginatedFavoritePhotos, totalPages } = usePaginationData(favoritePhotos, { currentPage: qPage, limit: BATCH })
 </script>
 
 <template>
@@ -53,11 +53,11 @@ const { data: paginatedFavoritePhotos, changePage, totalPages } = usePaginationD
       No photos added yet...
     </p>
     <TfPagination
-      v-if="totalPages > 0"
+      v-if="paginatedFavoritePhotos.length > 1"
       :total-pages="totalPages"
-      :page="currentPage"
+      :page="qPage"
       data-testid="pagination"
-      @change-page="changePage"
+      @change-page="(p) => qPage = p"
     />
     <TfAffix data-testid="affix" />
   </div>

@@ -139,27 +139,19 @@ watch(() => [props.autoHideInMs, props.shouldNotHideOnHover], () => {
   --leave-y: 0px;
 }
 
-[data-position^='top'] *-enter-from,
-[data-position^='top'] *-leave-to,
-[data-position^='top'] *-appear-from {
+[data-position^='top'] :where([class*='-enter-from'], [class*='-leave-to'], [class*='-appear-from']) {
   transform-origin: top center;
 }
 
-[data-position^='bottom'] *-enter-from,
-[data-position^='bottom'] *-leave-to,
-[data-position^='bottom'] *-appear-from {
+[data-position^='bottom'] :where([class*='-enter-from'], [class*='-leave-to'], [class*='-appear-from']) {
   transform-origin: bottom center;
 }
 
-[data-position$='left'] *-enter-from,
-[data-position$='left'] *-leave-to,
-[data-position$='left'] *-appear-from {
+[data-position$='left'] :where([class*='-enter-from'], [class*='-leave-to'], [class*='-appear-from']) {
   transform-origin: center left;
 }
 
-[data-position$='right'] *-enter-from,
-[data-position$='right'] *-leave-to,
-[data-position$='right'] *-appear-from {
+[data-position$='right'] :where([class*='-enter-from'], [class*='-leave-to'], [class*='-appear-from']) {
   transform-origin: center right;
 }
 

@@ -3,6 +3,7 @@ import type { GalleryItem } from '@tf-app/entities/gallery'
 
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
+import { routes } from '@tf-app/routing'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 
 defineProps<{ photo: GalleryItem }>()
@@ -12,7 +13,7 @@ defineProps<{ photo: GalleryItem }>()
   <article :class="classes.photoCard">
     <TfBlurhashImage
       :id="photo.id"
-      :blurhash="photo.blurHash"
+      :blurhash="photo.blurHash ?? null"
       :blurhash-width="440"
       :blurhash-height="440"
       :src="`${photo.urlRaw}&w=640&h=640&dpr=2&q=80`"
@@ -21,11 +22,11 @@ defineProps<{ photo: GalleryItem }>()
       sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
       :class="classes.photo"
     />
-    <RouterLink :to="`/${photo.id}`" :class="classes.photoLink" :title="photo.alt" />
+    <RouterLink :to="{ name: routes.photoPage.name, params: { id: photo.id } }" :class="classes.photoLink" :title="photo.alt" />
     <div :class="classes.overlay" aria-hidden="true" data-testid="photo-actions-overlay" />
     <div :class="classes.actions">
       <ToggleFavoritePhoto :photo="photo" />
-      <DownloadPhoto :src="photo.urlFull" :name="photo.id" />
+      <DownloadPhoto :src="photo.urlRaw ?? ''" :name="photo.id" />
     </div>
   </article>
 </template>

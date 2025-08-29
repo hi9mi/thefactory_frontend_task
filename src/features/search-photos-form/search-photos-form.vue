@@ -34,21 +34,21 @@ function onSubmit() {
           type="search"
           inputmode="text"
           name="search-photos"
-          placeholder="Поиск"
+          placeholder="Search"
           :class="classes.input"
           spellcheck="true"
-          aria-label="Поиск фотографий"
+          aria-label="Search photos"
         >
         <button
           :class="classes.iconButton"
           type="submit"
+          aria-label="Search submit"
         >
           <SearchIcon
             fill="none"
             width="23"
             height="23"
             :class="classes.icon"
-            aria-label="Поиск"
           />
         </button>
       </form>

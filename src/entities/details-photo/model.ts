@@ -15,67 +15,85 @@ export function createPhotoDetailsEntity(deps: { gateway: PhotoDetailsGateway, l
   })
 
   const byId: Record<string, Entry> = reactive({})
-  const inflight = new Map<string, Promise<unknown>>()
+  const inflight = new Map<string, Promise<unknown>>() // общие in-flight для ensure/prefetch
+
+  const prefetchTimers = new Map<string, number>()
+  const prefetchCtrls = new Map<string, AbortController>()
 
   const ensureEntry = (id: string): Entry =>
     (byId[id] ??= reactive<Entry>({ item: null, loading: false, error: null }))
 
+  async function fetchAndCache(id: string, init?: RequestInit) {
+    const item = await gateway.getById(id, init)
+    cache.set(id, item)
+    return item
+  }
+
+  function setInflight(id: string, promise: Promise<unknown>) {
+    inflight.set(id, promise.finally(() => inflight.delete(id)))
+  }
+
   async function ensure(id: string, init?: RequestInit) {
-    const e = ensureEntry(id)
+    const entry = ensureEntry(id)
 
     const hit = cache.get(id)
     if (hit) {
-      e.item = hit
-      e.loading = false
-      e.error = null
+      entry.item = hit
+      entry.loading = false
+      entry.error = null
       return hit
     }
 
     if (inflight.has(id)) {
       await inflight.get(id)
-      return e.item
+      const hit2 = cache.get(id)
+      if (hit2) {
+        entry.item = hit2
+        entry.loading = false
+        entry.error = null
+      }
+      return entry.item
     }
 
-    e.loading = true
-    e.error = null
+    entry.loading = true
+    entry.error = null
 
     const promise = (async () => {
       try {
-        const item = await gateway.getById(id, init)
-        cache.set(id, item)
-        e.item = item
+        const item = await fetchAndCache(id, init)
+        entry.item = item
       }
       catch (err: any) {
         if (isAbortError(err))
           return
         if (isHttpError(err)) {
           if (err.errors?.length)
-            e.error = err.errors.join(', ')
+            entry.error = err.errors.join(', ')
           else if (err.status === 401)
-            e.error = 'Invalid access token'
+            entry.error = 'Invalid access token'
           else if (err.status === 403)
-            e.error = 'Forbidden (check permissions/rate limit)'
+            entry.error = 'Forbidden (check permissions/rate limit)'
           else if (err.status === 404)
-            e.error = 'Not found'
+            entry.error = 'Not found'
           else if (err.status === 400)
-            e.error = 'Bad request'
+            entry.error = 'Bad request'
           else if (err.status >= 500)
-            e.error = 'Server error, try later'
+            entry.error = 'Server error, try later'
           if (err.rateLimit?.remaining === 0)
-            e.error = 'Rate limit exceeded, please try again later'
+            entry.error = 'Rate limit exceeded, please try again later'
         }
         else {
-          e.error = err?.message ?? 'Unknown error'
+          entry.error = err?.message ?? 'Unknown error'
         }
       }
       finally {
-        e.loading = false
+        entry.loading = false
       }
-    })().finally(() => inflight.delete(id))
+    })()
 
-    inflight.set(id, promise)
+    setInflight(id, promise)
     await promise
-    return e.item
+    return entry.item
   }
 
   async function reload(id: string, init?: RequestInit) {
@@ -89,11 +107,80 @@ export function createPhotoDetailsEntity(deps: { gateway: PhotoDetailsGateway, l
     return ensureEntry(id)
   }
 
+  function isCached(id: string) {
+    return cache.has(id)
+  }
+
+  function cancelPrefetch(id: string) {
+    const t = prefetchTimers.get(id)
+    if (t != null) {
+      clearTimeout(t)
+      prefetchTimers.delete(id)
+    }
+    const c = prefetchCtrls.get(id)
+    if (c) {
+      c.abort()
+      prefetchCtrls.delete(id)
+    }
+  }
+
+  function cancelAllPrefetch() {
+    for (const id of prefetchTimers.keys()) cancelPrefetch(id)
+    for (const id of prefetchCtrls.keys()) cancelPrefetch(id)
+  }
+
+  function prefetch(id: string, opts?: { delayMs?: number, signal?: AbortSignal }) {
+    if (isCached(id) || inflight.has(id))
+      return
+
+    const delay = opts?.delayMs ?? 150
+    const timer = window.setTimeout(() => {
+      if (isCached(id) || inflight.has(id)) {
+        prefetchTimers.delete(id)
+        return
+      }
+
+      const ctrl = new AbortController()
+      prefetchCtrls.set(id, ctrl)
+
+      const signal = opts?.signal
+      const onAbort = () => ctrl.abort()
+      signal?.addEventListener('abort', onAbort, { once: true })
+
+      const promise = (async () => {
+        try {
+          await fetchAndCache(id, { signal: ctrl.signal })
+        }
+        catch {
+        }
+        finally {
+          signal?.removeEventListener('abort', onAbort)
+          prefetchCtrls.delete(id)
+        }
+      })()
+
+      setInflight(id, promise)
+      prefetchTimers.delete(id)
+    }, delay)
+
+    prefetchTimers.set(id, timer)
+  }
+
   function clear() {
     for (const k of Object.keys(byId)) delete byId[k]
     inflight.clear()
+    cancelAllPrefetch()
     cache.clear()
   }
 
-  return { ensure, reload, getState, clear }
+  return {
+    ensure,
+    reload,
+    getState,
+    clear,
+    prefetch,
+    cancelPrefetch,
+    cancelAllPrefetch,
+    isCached,
+  }
 }

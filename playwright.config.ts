@@ -3,10 +3,10 @@ import 'dotenv/config'
 
 const CI = !!process.env.CI && process.env.CI !== '0'
 
-const BASE_URL = process.env.PW_BASE_URL ?? 'http://localhost:5173'
+const BASE_URL = process.env.PW_BASE_URL ?? 'http://localhost:3000'
 const { hostname, port } = new URL(BASE_URL)
 const PREVIEW_HOST = hostname || 'localhost'
-const PREVIEW_PORT = port || '5173'
+const PREVIEW_PORT = port || '3000'
 
 export default defineConfig({
   testDir: './tests/e2e',

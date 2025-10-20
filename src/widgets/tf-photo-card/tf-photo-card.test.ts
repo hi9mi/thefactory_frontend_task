@@ -1,3 +1,5 @@
+import { UNSPLASH_API_TOKEN } from '@tf-app/shared/api'
+import { TOKENS, useDependency } from '@tf-app/shared/libs'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import TfPhotoCard from './tf-photo-card.vue'
@@ -28,7 +30,7 @@ const TfBlurhashImageStub = {
 const RouterLinkStub = {
   name: 'RouterLink',
   props: ['to', 'title'],
-  template: `<a :data-to="to" :title="title"><slot/></a>`,
+  template: `<a :data-to="JSON.stringify(to)" :title="title"><slot/></a>`,
 }
 
 const ToggleFavoritePhotoStub = {
@@ -42,6 +44,17 @@ const DownloadPhotoStub = {
   props: ['src', 'name'],
   template: `<div data-stub="download" :data-src="src" :data-name="name"></div>`,
 }
+
+vi.mock('@tf-app/shared/libs', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tf-app/shared/libs')>()
+  return {
+    ...actual,
+    useDependency: vi.fn(),
+  }
+})
+
+const mockApi = { fetch: vi.fn() }
+const mockLru = { get: vi.fn(), set: vi.fn(), scope: vi.fn() }
 
 function makePhoto() {
   return {
@@ -88,6 +101,14 @@ describe('tf-photo-card widget', () => {
         removeEventListener: vi.fn().mockImplementation(() => {}),
       },
     }))
+
+    vi.mocked(useDependency).mockImplementation((token) => {
+      if (token === UNSPLASH_API_TOKEN)
+        return mockApi
+      if (token === TOKENS.LRUCache)
+        return mockLru
+      throw new Error(`Unknown token: ${String(token)}`)
+    })
   })
 
   afterEach(() => {
@@ -127,7 +148,11 @@ describe('tf-photo-card widget', () => {
     const wrapper = mountCmp(photo)
 
     const link = wrapper.get('a[data-to]')
-    expect(link.attributes('data-to')).toBe(`/${photo.id}`)
+
+    expect(JSON.parse(link.attributes('data-to') ?? '')).toStrictEqual({
+      name: 'photoPage',
+      params: { id: photo.id },
+    })
     expect(link.attributes('title')).toBe(photo.alt)
 
     wrapper.unmount()
@@ -147,7 +172,7 @@ describe('tf-photo-card widget', () => {
     expect(fav.attributes('data-photo-id')).toBe(photo.id)
 
     const dl = wrapper.get('[data-stub="download"]')
-    expect(dl.attributes('data-src')).toBe(photo.urlFull)
+    expect(dl.attributes('data-src')).toBe(photo.urlRaw)
     expect(dl.attributes('data-name')).toBe(photo.id)
 
     wrapper.unmount()

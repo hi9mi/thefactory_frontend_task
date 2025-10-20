@@ -32,7 +32,7 @@ function layoutSoon() {
 onMounted(async () => {
   await nextTick()
   const initialCount
-  = (props.loading ? props.skeletonCount : props.items.length) || props.initialItemsCount
+    = (props.loading ? props.skeletonCount : props.items.length) || props.initialItemsCount
 
   grid.value = new MagicGrid({
     container: containerRef.value!,

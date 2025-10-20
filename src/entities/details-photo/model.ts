@@ -15,7 +15,7 @@ export function createPhotoDetailsEntity(deps: { gateway: PhotoDetailsGateway, l
   })
 
   const byId: Record<string, Entry> = reactive({})
-  const inflight = new Map<string, Promise<unknown>>() // общие in-flight для ensure/prefetch
+  const inflight = new Map<string, Promise<unknown>>()
 
   const prefetchTimers = new Map<string, number>()
   const prefetchCtrls = new Map<string, AbortController>()

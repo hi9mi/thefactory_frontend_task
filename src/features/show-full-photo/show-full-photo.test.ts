@@ -7,9 +7,9 @@ vi.mock('@tf-app/routing', () => ({
   routes: { photoPage: { name: 'photo' } },
 }))
 
-const replaceMock = vi.fn()
+const pushMock = vi.fn()
 vi.mock('vue-router', () => ({
-  useRouter: () => ({ replace: replaceMock }),
+  useRouter: () => ({ push: pushMock }),
   useRoute: () => ({ params: { id: '42' } }),
 }))
 
@@ -22,7 +22,7 @@ describe('show-full-photo feature', () => {
 
   beforeEach(() => {
     vi.restoreAllMocks()
-    replaceMock.mockReset()
+    pushMock.mockReset()
 
     vi.spyOn(globalThis, 'scrollTo').mockImplementation(() => {})
   })
@@ -34,9 +34,9 @@ describe('show-full-photo feature', () => {
       // @ts-expect-error cleanup
       wrapper = undefined
     }
-    const leftover = document.getElementById('full-photo')
-    if (leftover && leftover.parentNode)
-      leftover.parentNode.removeChild(leftover)
+    const container = document.getElementById('full-photo')
+    if (container?.parentNode)
+      container.remove()
   })
 
   function mountCmp() {
@@ -69,12 +69,12 @@ describe('show-full-photo feature', () => {
     overlay.click()
     await nextTick()
 
-    expect(replaceMock).toHaveBeenCalledWith({
+    expect(pushMock).toHaveBeenCalledWith({
       name: 'photo',
       params: { id: '42' },
     })
     const emitted = wrapper.emitted('hideFullPhoto')
-    expect(emitted && emitted.length).toBe(1)
+    expect(emitted?.length).toBe(1)
   })
 
   it('should route back and emit on overlay Space keydown', async () => {
@@ -85,7 +85,7 @@ describe('show-full-photo feature', () => {
     overlay.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }))
     await nextTick()
 
-    expect(replaceMock).toHaveBeenCalledWith({
+    expect(pushMock).toHaveBeenCalledWith({
       name: 'photo',
       params: { id: '42' },
     })
@@ -99,7 +99,7 @@ describe('show-full-photo feature', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
     await nextTick()
 
-    expect(replaceMock).toHaveBeenCalledWith({
+    expect(pushMock).toHaveBeenCalledWith({
       name: 'photo',
       params: { id: '42' },
     })
@@ -116,7 +116,7 @@ describe('show-full-photo feature', () => {
     btn.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     await nextTick()
 
-    expect(replaceMock).toHaveBeenCalledWith({
+    expect(pushMock).toHaveBeenCalledWith({
       name: 'photo',
       params: { id: '42' },
     })

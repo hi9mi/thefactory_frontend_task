@@ -1,23 +1,30 @@
 import type { FavoritesRepo } from '@tf-app/entities/favorite-photos'
 import type { GalleryItem } from '@tf-app/entities/gallery'
-import type { Notifier } from '@tf-app/shared/di/tokens'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createToggleFavorite } from './model'
 
 const makeItem = (id = 'x', extra: Record<string, any> = {}): GalleryItem => ({ id, ...extra }) as GalleryItem
+
+vi.mock(import('@tf-app/shared/libs'), async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tf-app/shared/libs')>()
+  return {
+    ...actual,
+    useDependency: vi.fn(),
+  }
+})
 
 function makeRepo(hasInitially = false): FavoritesRepo {
   const set = new Set<string>(hasInitially ? ['x'] : [])
   return {
     items: { value: [] } as any,
     has: vi.fn((id: string) => set.has(id)),
-    add: vi.fn((item: any) => void set.add(item.id)),
-    remove: vi.fn((id: string) => void set.delete(id)),
-    clear: vi.fn(() => void set.clear()),
+    add: vi.fn((item: any) => set.add(item.id)),
+    remove: vi.fn((id: string) => set.delete(id)),
+    clear: vi.fn(() => set.clear()),
   }
 }
 
-function makeNotifier(): Notifier {
+function makeNotifier() {
   return {
     info: vi.fn(),
     success: vi.fn(),
@@ -28,7 +35,7 @@ function makeNotifier(): Notifier {
 
 describe('createToggleFavorite', () => {
   let repo: FavoritesRepo
-  let notify: Notifier
+  let notify: any
 
   beforeEach(() => {
     repo = makeRepo(false)
@@ -45,7 +52,7 @@ describe('createToggleFavorite', () => {
     expect(repo.has).toHaveBeenCalledWith('x')
     expect(repo.add).toHaveBeenCalledWith(item)
     expect(repo.remove).not.toHaveBeenCalled()
-    expect(notify.success).toHaveBeenCalledWith('Photo added to favorites')
+    expect(notify.success).toHaveBeenCalledWith('Photo added to favorites', 'Success')
     expect(notify.info).not.toHaveBeenCalled()
     expect(res).toBe(true)
   })
@@ -61,7 +68,7 @@ describe('createToggleFavorite', () => {
     expect(repo.has).toHaveBeenCalledWith('x')
     expect(repo.remove).toHaveBeenCalledWith('x')
     expect(repo.add).not.toHaveBeenCalled()
-    expect(notify.info).toHaveBeenCalledWith('Photo removed from favorites')
+    expect(notify.info).toHaveBeenCalledWith('Photo removed from favorites', 'Info')
     expect(notify.success).not.toHaveBeenCalled()
     expect(res).toBe(false)
   })

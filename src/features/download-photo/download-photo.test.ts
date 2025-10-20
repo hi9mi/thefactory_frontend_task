@@ -1,12 +1,17 @@
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
+import { useDependency } from '@tf-app/shared/libs'
+import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const notifier = { warning: vi.fn() }
-vi.mock('@tf-app/shared/di', () => ({
-  TOKENS: { Notifier: Symbol('Notifier') },
-  useDependency: () => notifier,
-}))
+vi.mock(import('@tf-app/shared/libs'), async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tf-app/shared/libs')>()
+  return {
+    ...actual,
+    useDependency: vi.fn(),
+  }
+})
 
 describe('download photo feature', () => {
   let wrapper: ReturnType<typeof mount<typeof DownloadPhoto>>
@@ -20,6 +25,12 @@ describe('download photo feature', () => {
     vi.stubGlobal('URL', {
       createObjectURL: vi.fn().mockReturnValue('blob:mock'),
       revokeObjectURL: vi.fn(),
+    })
+    vi.mocked(useDependency).mockImplementation((token) => {
+      if (token === NOTIFIER_TOKEN) {
+        return notifier
+      }
+      return {}
     })
 
     wrapper = mount(DownloadPhoto, {
@@ -64,7 +75,7 @@ describe('download photo feature', () => {
     await wrapper.vm.$nextTick()
 
     expect(createElSpy).toHaveBeenCalledWith('a')
-    const anchor = createElSpy.mock.results[0]!.value as HTMLAnchorElement
+    const anchor = createElSpy.mock.results[0].value as HTMLAnchorElement
     expect(anchor.download).toBe('test-name')
     expect(anchor.click).toHaveBeenCalled()
     expect(anchor.remove).toHaveBeenCalled()

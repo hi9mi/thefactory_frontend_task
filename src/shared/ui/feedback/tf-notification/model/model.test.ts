@@ -7,15 +7,19 @@ let restoreRandomUUID: (() => void) | null = null
 beforeEach(() => {
   setActivePinia(createPinia())
   vi.useFakeTimers()
-  const orig = globalThis.crypto as any
+  const orig = globalThis.crypto
   const hasRnd = orig && typeof orig.randomUUID === 'function'
   let seq = 0
   if (hasRnd) {
-    const spy = vi.spyOn(orig, 'randomUUID').mockImplementation(() => `id-${++seq}`)
+    const spy = vi.spyOn(orig, 'randomUUID').mockImplementation(() => {
+      ++seq
+      return `${seq.toString(16)}-${seq.toString(16)}-${seq.toString(16)}-${seq.toString(16)}-${seq.toString(16)}` as const
+    },
+    )
     restoreRandomUUID = () => spy.mockRestore()
   }
   else {
-    const fake = { ...(orig ?? {}), randomUUID: () => `id-${++seq}` }
+    const fake = { ...orig, randomUUID: () => `${seq.toString(16)}-${seq.toString(16)}-${seq.toString(16)}-${seq.toString(16)}-${seq.toString(16)}` as const }
     globalThis.crypto = fake
     restoreRandomUUID = () => {
       globalThis.crypto = orig
@@ -106,10 +110,10 @@ describe('useNotificationsStore', () => {
     const store = useNotificationsStore()
     store.configure({ autoHideInMs: 0 })
 
-    const id1 = store.success('ok', 't1', 0)
-    const id2 = store.error('bad', 't2', 0)
-    const id3 = store.info('note', 't3', 0)
-    const id4 = store.warning('warn', 't4', 0)
+    const id1 = store.push({ type: 'success', message: 'ok', title: 't1', timeoutMs: 0 })
+    const id2 = store.push({ type: 'error', message: 'boom', title: 't2', timeoutMs: 0 })
+    const id3 = store.push({ type: 'info', message: 'note', title: 't3', timeoutMs: 0 })
+    const id4 = store.push({ type: 'warning', message: 'warn', title: 't4', timeoutMs: 0 })
 
     expect(store.items).toHaveLength(4)
 

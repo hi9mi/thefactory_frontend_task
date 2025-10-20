@@ -1,32 +1,23 @@
+import { debounce, useDependency } from '@tf-app/shared/libs'
+import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import { mount } from '@vue/test-utils'
+
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick, reactive, ref } from 'vue'
 
-const notifier = { error: vi.fn(), info: vi.fn(), success: vi.fn(), warning: vi.fn() }
-vi.mock('@tf-app/shared/di', () => {
-  const TOKENS = {
-    UnsplashAPI: Symbol('UnsplashAPI'),
-    Notifier: Symbol('Notifier'),
-    LRUCache: Symbol('LRUCache'),
-  }
+import SearchPage from './search-page.vue'
+
+const notifierMock = { error: vi.fn(), info: vi.fn(), success: vi.fn(), warning: vi.fn() }
+const cancelDebounceMock = vi.fn()
+const debouncedMock = vi.fn()
+vi.mock(import('@tf-app/shared/libs'), async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tf-app/shared/libs')>()
   return {
-    TOKENS,
-    useDependency: (token: unknown) => (token === TOKENS.Notifier ? notifier : ({} as any)),
+    ...actual,
+    debounce: vi.fn(),
+    useDependency: vi.fn(),
   }
 })
-
-const cancelDebounce = vi.fn()
-const debouncedSpy = vi.fn()
-vi.mock('@tf-app/shared/libs', () => ({
-  debounce: (fn: (...a: any[]) => Promise<any>, _wait: number) => {
-    const wrapped = (...args: any[]) => {
-      debouncedSpy(...args)
-      return fn(...args)
-    }
-    return [wrapped, cancelDebounce] as const
-  },
-  generateId: () => {},
-}))
 
 const qRef = ref<string>('')
 const pageRef = ref<number>(1)
@@ -105,9 +96,6 @@ const TfPaginationStub = {
 
 const TfAffixStub = { name: 'TfAffix', template: `<div data-testid="affix"></div>` }
 
-// eslint-disable-next-line import/first
-import SearchPage from './search-page.vue'
-
 function mountPage() {
   return mount(SearchPage, {
     global: {
@@ -125,16 +113,29 @@ function mountPage() {
 
 describe('search page', () => {
   beforeEach(() => {
-    notifier.error.mockReset()
+    notifierMock.error.mockReset()
     searchMock.mockClear()
-    debouncedSpy.mockClear()
-    cancelDebounce.mockClear()
+    debouncedMock.mockClear()
+    cancelDebounceMock.mockClear()
     entry.items = []
     entry.loading = false
     entry.error = null
     qRef.value = ''
     pageRef.value = 1
     lastSignals.length = 0
+    vi.mocked(useDependency).mockImplementation((token) => {
+      if (token === NOTIFIER_TOKEN) {
+        return notifierMock
+      }
+      return {}
+    })
+    vi.mocked(debounce).mockImplementation((fn) => {
+      const wrapped = (...args: any[]) => {
+        debouncedMock(...args)
+        return fn(...args)
+      }
+      return [wrapped, cancelDebounceMock] as const
+    })
   })
 
   afterEach(() => {
@@ -163,7 +164,7 @@ describe('search page', () => {
     await nextTick() // trigger watch
     await nextTick()
 
-    expect(debouncedSpy).toHaveBeenCalledWith('cats', 1, expect.any(Object))
+    expect(debouncedMock).toHaveBeenCalledWith('cats', 1, expect.any(Object))
     expect(searchMock).toHaveBeenCalledWith(
       { query: 'cats', page: 1, perPage: 18 },
       expect.objectContaining({ signal: expect.any(AbortSignal) }),
@@ -227,7 +228,7 @@ describe('search page', () => {
     entry.error = 'Boom'
     await nextTick()
 
-    expect(notifier.error).toHaveBeenCalledWith('Boom', 'Failed search photos')
+    expect(notifierMock.error).toHaveBeenCalledWith('Boom', 'Failed search photos')
     wrapper.unmount()
   })
 })

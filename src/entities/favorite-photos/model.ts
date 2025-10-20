@@ -1,8 +1,9 @@
+import type { AppStorage } from '@tf-app/shared/libs'
 import type { Ref } from 'vue'
 // TODO: make local type
 import type { GalleryItem } from '../gallery'
-import { token } from '@tf-app/shared/di/container'
-import { computed, ref } from 'vue'
+import { token } from 'ditox'
+import { computed, ref, unref } from 'vue'
 
 export interface FavoritesRepo {
   items: Ref<GalleryItem[]>
@@ -12,54 +13,48 @@ export interface FavoritesRepo {
   clear: () => void
 }
 
-export const FAVORITES_REPO = token<FavoritesRepo>('FavoritesRepo')
+export const FAVORITES_REPO = token<FavoritesRepo>()
 
 const KEY = 'favorites:v1'
-function load(): GalleryItem[] {
-  try {
-    return JSON.parse(localStorage.getItem(KEY) ?? '[]') as GalleryItem[]
-  }
-  catch {
-    return []
-  }
-}
-function save(items: Ref<GalleryItem[]>) {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(items.value))
-  }
-  catch {}
-}
 
-export function createFavoritesRepoLS(): FavoritesRepo {
-  const items = ref<GalleryItem[]>(load())
+export function createFavoritesRepo(storage: AppStorage): FavoritesRepo {
+  const items = ref<GalleryItem[]>(storage.get(KEY) ?? [])
 
-  if (typeof window !== 'undefined') {
-    window.addEventListener('storage', (e) => {
-      if (e.key === KEY && e.storageArea === localStorage && e.newValue) {
+  const isLocalStorage = (kind: AppStorage['kind']): kind is 'localStorage' => kind === 'localStorage'
+  const kind = storage.kind
+
+  if (isLocalStorage(kind) && typeof globalThis.window !== 'undefined') {
+    globalThis.addEventListener('storage', (event) => {
+      if (event.key === KEY && event.storageArea === globalThis[kind] && event.newValue) {
         try {
-          items.value = JSON.parse(e.newValue) as GalleryItem[]
+          items.value = JSON.parse(event.newValue) as GalleryItem[]
         }
-        catch {}
+        catch (error) {
+          console.error('[Repo Error] parsing favorites', error)
+        }
       }
     })
   }
 
-  const has = (id: string) => items.value.some(x => x.id === id)
+  const has = (id: string) => items.value.some(item => item.id === id)
+
   const add = (item: GalleryItem) => {
     if (!has(item.id)) {
       items.value = [...items.value, item]
-      save(items)
+      storage.set(KEY, unref(items))
     }
   }
+
   const remove = (id: string) => {
     if (has(id)) {
-      items.value = items.value.filter(x => x.id !== id)
-      save(items)
+      items.value = items.value.filter(item => item.id !== id)
+      storage.set(KEY, unref(items))
     }
   }
+
   const clear = () => {
     items.value = []
-    save(items)
+    storage.set(KEY, unref(items))
   }
 
   return { items, has, add, remove, clear }

@@ -16,6 +16,9 @@ const DetailPhotoRoute: RouteRecordRaw = {
     components: {
       fullPhoto: () => import('@tf-app/features/show-full-photo/show-full-photo.vue'),
     },
+    meta: {
+      notPreserveScroll: true,
+    },
   }],
 }
 

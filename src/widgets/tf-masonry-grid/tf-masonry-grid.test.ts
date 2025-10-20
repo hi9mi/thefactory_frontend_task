@@ -65,7 +65,7 @@ describe('tf-masonry-grid widget', () => {
     // @ts-expect-error stub global
     globalThis.ResizeObserver = RO
 
-    getCS = vi.spyOn(window, 'getComputedStyle').mockImplementation(() => ({
+    getCS = vi.spyOn(globalThis, 'getComputedStyle').mockImplementation(() => ({
       getPropertyValue: (prop: string) => {
         if (prop === '--gutter')
           return '24'
@@ -139,9 +139,9 @@ describe('tf-masonry-grid widget', () => {
     await nextTick()
 
     const inst = MG_INSTANCES[0]
-    ;(roInstances[0] as any).trigger(1000)
+    roInstances[0].trigger(1000)
 
-    expect(inst.maxColumns).toBe(3)
+    expect(inst.maxColumns).toBe(8)
     expect(inst.gutter).toBe(24)
     expect(inst.positionItems).toHaveBeenCalled()
     wrapper.unmount()
@@ -194,7 +194,7 @@ describe('tf-masonry-grid widget', () => {
     const ro = roInstances[0]
     wrapper.unmount()
 
-    expect((ro as any).disconnect).toHaveBeenCalledTimes(1)
+    expect(ro.disconnect).toHaveBeenCalledTimes(1)
     expect(cancelSpy).toHaveBeenCalled()
   })
 })

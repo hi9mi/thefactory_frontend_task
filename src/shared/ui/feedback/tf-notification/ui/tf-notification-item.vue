@@ -46,7 +46,7 @@ function onRemove() {
       @focus="onEnter"
       @blur="onLeave"
     >
-      <XMarkIcon width="16" height="16" aria-label="Скрыть уведомление" />
+      <XMarkIcon width="16" height="16" aria-label="Close notification" />
     </button>
   </li>
 </template>

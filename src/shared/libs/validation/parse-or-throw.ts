@@ -1,7 +1,7 @@
-import type { ZodType } from 'zod'
+import type { ZodMiniType } from 'zod/mini'
 
 export function parseOrThrow<T>(
-  schema: ZodType,
+  schema: ZodMiniType,
   data: unknown,
   label = 'Validation error',
 ): T {

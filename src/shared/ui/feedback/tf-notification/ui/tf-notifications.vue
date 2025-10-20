@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<{
   gap: 12,
   zIndex: 100,
   transition: 'fade',
-  autoHideInMs: 5000,
+  autoHideInMs: 3500,
   shouldNotHideOnHover: true,
 })
 
@@ -28,7 +28,7 @@ const { items } = storeToRefs(store)
 
 watch(() => [props.autoHideInMs, props.shouldNotHideOnHover], () => {
   store.configure({
-    autoHideInMs: props.autoHideInMs ?? 5000,
+    autoHideInMs: props.autoHideInMs ?? 3500,
     hoverPause: props.shouldNotHideOnHover ?? true,
   })
 }, { immediate: true })

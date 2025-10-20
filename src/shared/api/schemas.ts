@@ -1,10 +1,10 @@
-import { z } from 'zod'
+import * as z from 'zod/mini'
 
 export const UnsplashPhotoSchema = z.object({
-  alt_description: z.string().nullable(),
+  alt_description: z.nullable(z.string()),
   id: z.string(),
-  blur_hash: z.string().nullable(),
-  color: z.string().optional(),
+  blur_hash: z.nullable(z.string()),
+  color: z.optional(z.string()),
   links: z.object({
     download: z.url(),
     download_location: z.url(),
@@ -16,7 +16,7 @@ export const UnsplashPhotoSchema = z.object({
     raw: z.url(),
     regular: z.url(),
     small: z.url(),
-    small_s3: z.url().optional(),
+    small_s3: z.optional(z.url()),
     thumb: z.url(),
   }),
   user: z.object({
@@ -28,14 +28,14 @@ export const UnsplashPhotoSchema = z.object({
       small: z.url(),
     }),
   }),
-  width: z.number().int().positive(),
-  height: z.number().int().positive(),
+  width: z.number().check(z.int(), z.positive()),
+  height: z.number().check(z.int(), z.positive()),
 })
 
 export const UnsplashSearchSchema = z.object({
   results: z.array(UnsplashPhotoSchema),
-  total: z.number().int().nonnegative(),
-  total_pages: z.number().int().nonnegative(),
+  total: z.number().check(z.nonnegative()),
+  total_pages: z.number().check(z.nonnegative()),
 })
 
 export type UnsplashPhotoDTO = z.infer<typeof UnsplashPhotoSchema>

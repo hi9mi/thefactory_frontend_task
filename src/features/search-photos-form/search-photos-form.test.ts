@@ -75,7 +75,7 @@ describe('search-photos-form feature', () => {
 
     expect(form.attributes('role')).toBe('search')
     expect(input.attributes('type')).toBe('search')
-    expect(input.attributes('aria-label')).toBe('Поиск фотографий')
+    expect(input.attributes('aria-label')).toBe('Search photos')
     expect(button.exists()).toBe(true)
   })
 

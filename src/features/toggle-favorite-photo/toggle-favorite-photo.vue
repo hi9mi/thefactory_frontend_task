@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import type { GalleryItem } from '@tf-app/entities/gallery'
-
 import { FAVORITES_REPO } from '@tf-app/entities/favorite-photos'
-import { TOKENS, useDependency } from '@tf-app/shared/di'
+import { useDependency } from '@tf-app/shared/libs'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
-
+import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import TfTooltip from '@tf-app/shared/ui/overlays/tf-tooltip/tf-tooltip.vue'
 import { computed } from 'vue'
 import HeartIcon from '~icons/tf-icons/heart'
@@ -14,7 +13,7 @@ const props = defineProps<{
   photo: GalleryItem
 }>()
 const repo = useDependency(FAVORITES_REPO)
-const notify = useDependency(TOKENS.Notifier)
+const notify = useDependency(NOTIFIER_TOKEN)
 const toggleFav = createToggleFavorite({ repo, notify })
 
 const isFavoritePhoto = computed(() => repo.items.value.some(f => f.id === props.photo.id))

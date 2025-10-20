@@ -11,9 +11,6 @@ const repo = {
   remove: () => {},
   clear: () => {},
 }
-vi.mock('@tf-app/shared/di', () => ({
-  useDependency: () => repo,
-}))
 
 vi.mock('@tf-app/shared/libs', () => ({
   usePaginationData: (sourceRef: any, opts: { currentPage: any, limit: number }) => {
@@ -32,6 +29,7 @@ vi.mock('@tf-app/shared/libs', () => ({
     return { data, totalPages, changePage }
   },
   generateId: () => 'p1',
+  useDependency: () => repo,
 }))
 
 const pageRef = ref<number | string>(1)

@@ -1,5 +1,7 @@
-import type { AppConfig } from '@tf-app/shared/libs'
+import type { AppConfig } from '@tf-app/shared/config'
 import type { UnsplashPhotoDTO, UnsplashSearchDTO } from './schemas'
+import { token } from 'ditox'
+import * as z from 'zod/mini'
 import { getJson } from './http'
 import {
   UnsplashPhotoSchema,
@@ -11,7 +13,7 @@ export interface UnsplashAPI {
   getPhotos: (params: { query: string, page: number, perPage: number }, init?: RequestInit) => Promise<UnsplashSearchDTO>
   getDetailsPhoto: (id: string, init?: RequestInit) => Promise<UnsplashPhotoDTO>
 }
-
+// TODO: refactor
 function mergeHeaders(a?: HeadersInit, b?: HeadersInit): Headers {
   const h = new Headers(a ?? {})
   const add = (src?: HeadersInit) => {
@@ -46,7 +48,7 @@ export function createUnsplashApi(cfg: AppConfig): UnsplashAPI {
       getJson(
         `${BASE}/photos/random?count=${count}`,
         withInit(baseInit, init),
-        UnsplashPhotoSchema.array(),
+        z.array(UnsplashPhotoSchema),
         'Unsplash.random',
       ),
 
@@ -67,3 +69,5 @@ export function createUnsplashApi(cfg: AppConfig): UnsplashAPI {
       ),
   }
 }
+
+export const UNSPLASH_API_TOKEN = token<UnsplashAPI>()

@@ -1,5 +1,7 @@
 import type { FavoritesRepo } from '@tf-app/entities/favorite-photos'
-import type { Notifier } from '@tf-app/shared/di/tokens'
+import type { Notifier } from '@tf-app/shared/ui/feedback/tf-notification'
+import { useDependency } from '@tf-app/shared/libs'
+import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick, ref } from 'vue'
@@ -9,15 +11,6 @@ const injections: { repo: FavoritesRepo | null, notifier: Notifier | null } = {
   repo: null,
   notifier: null,
 }
-
-vi.mock('@tf-app/shared/di', () => {
-  const TOKENS = { Notifier: Symbol('Notifier') }
-  return {
-    TOKENS,
-    useDependency: (token: unknown) =>
-      token === TOKENS.Notifier ? injections.notifier : injections.repo,
-  }
-})
 
 const TfTooltipStub = {
   name: 'TfTooltip',
@@ -67,8 +60,18 @@ function makeNotifier(): Notifier {
     success: vi.fn(),
     warning: vi.fn(),
     error: vi.fn(),
-  } as any
+    dismiss: vi.fn(),
+    clear: vi.fn(),
+  }
 }
+
+vi.mock('@tf-app/shared/libs', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tf-app/shared/libs')>()
+  return {
+    ...actual,
+    useDependency: vi.fn(),
+  }
+})
 
 function mountCmp(photoId = 'p1', initialFavs: string[] = []) {
   injections.repo = makeRepo(initialFavs)
@@ -84,12 +87,17 @@ function mountCmp(photoId = 'p1', initialFavs: string[] = []) {
       },
     },
   })
-  return { wrapper, repo: injections.repo!, notify: injections.notifier! }
+  return { wrapper, repo: injections.repo, notify: injections.notifier }
 }
 
 describe('toggle-favorite-photo feature', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
+    vi.mocked(useDependency).mockImplementation((token) => {
+      if (token === NOTIFIER_TOKEN)
+        return injections.notifier
+      return injections.repo
+    })
   })
   afterEach(() => {
     vi.clearAllMocks()
@@ -113,7 +121,7 @@ describe('toggle-favorite-photo feature', () => {
 
     expect(repo.add).toHaveBeenCalledWith({ id: 'p1' })
     expect(repo.remove).not.toHaveBeenCalled()
-    expect(notify.success).toHaveBeenCalledWith('Photo added to favorites')
+    expect(notify.success).toHaveBeenCalledWith('Photo added to favorites', 'Success')
     expect(tooltip.attributes('data-label')).toBe('Remove from favorites')
   })
 
@@ -128,7 +136,7 @@ describe('toggle-favorite-photo feature', () => {
 
     expect(repo.remove).toHaveBeenCalledWith('p2')
     expect(repo.add).not.toHaveBeenCalled()
-    expect(notify.info).toHaveBeenCalledWith('Photo removed from favorites')
+    expect(notify.info).toHaveBeenCalledWith('Photo removed from favorites', 'Info')
     expect(tooltip.attributes('data-label')).toBe('Add to favorites')
   })
 })

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { createGalleryEntity, createGalleryGateway } from '@tf-app/entities/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
-import { TOKENS, useDependency } from '@tf-app/shared/di'
-import { debounce } from '@tf-app/shared/libs'
+import { UNSPLASH_API_TOKEN } from '@tf-app/shared/api'
+import { debounce, TOKENS, useDependency } from '@tf-app/shared/libs'
+import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import TfMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { useRouteQuery } from '@vueuse/router'
@@ -17,8 +18,8 @@ const TfPagination = defineAsyncComponent(() =>
 
 const BATCH = 18
 
-const api = useDependency(TOKENS.UnsplashAPI)
-const notify = useDependency(TOKENS.Notifier)
+const api = useDependency(UNSPLASH_API_TOKEN)
+const notify = useDependency(NOTIFIER_TOKEN)
 const lru = useDependency(TOKENS.LRUCache)
 const gallery = createGalleryEntity({ gateway: createGalleryGateway(api), lru })
 

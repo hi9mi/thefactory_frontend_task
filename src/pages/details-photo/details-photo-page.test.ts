@@ -1,6 +1,10 @@
+import { useDependency } from '@tf-app/shared/libs'
+import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import { mount } from '@vue/test-utils'
+
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick, reactive } from 'vue'
+import DetailsPhotoPage from './details-photo-page.vue'
 
 vi.mock('@tf-app/routing', () => ({
   routes: {
@@ -9,19 +13,6 @@ vi.mock('@tf-app/routing', () => ({
 }))
 
 const notifierMock = { error: vi.fn(), info: vi.fn(), success: vi.fn(), warning: vi.fn() }
-vi.mock('@tf-app/shared/di', () => ({
-  TOKENS: { UnsplashAPI: Symbol('UnsplashAPI'), Notifier: Symbol('Notifier'), LRUCache: Symbol('LRUCache') },
-  useDependency: (token: any) => {
-    if (String(token).includes('Notifier'))
-      return notifierMock
-    if (String(token).includes('UnsplashAPI'))
-      return {} as any
-    if (String(token).includes('LRUCache'))
-      return {} as any
-    return {} as any
-  },
-}))
-
 const pushMock = vi.fn()
 const replaceMock = vi.fn()
 const routeState = reactive({ params: { id: 'p1' }, path: '/photo/p1' })
@@ -30,13 +21,18 @@ vi.mock('vue-router', () => ({
   useRoute: () => routeState,
 }))
 
-vi.mock('@tf-app/shared/libs', () => ({
-  computeRelativeBrightness: () => 0,
-  hexToRgb: () => ({ r: 0, g: 0, b: 0 }),
-  generateId: () => 'p1',
-}))
+vi.mock(import('@tf-app/shared/libs'), async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tf-app/shared/libs')>()
+  return {
+    ...actual,
+    computeRelativeBrightness: () => 0,
+    hexToRgb: () => ({ r: 0, g: 0, b: 0 }),
+    generateId: () => 'p1',
+    useDependency: vi.fn(),
+  }
+})
 
-interface Entry { item: any | null, loading: boolean, error: string | null }
+interface Entry { item: any, loading: boolean, error: string | null }
 const entry: Entry = reactive({ item: null, loading: true, error: null })
 const ensureMock = vi.fn<any>()
 const getStateMock = vi.fn((_: string) => entry)
@@ -57,9 +53,6 @@ const ToggleFavoritePhotoStub = { props: ['photo'], template: `<div data-stub="t
 const DownloadPhotoStub = { props: ['src', 'name', 'withText'], template: `<div data-stub="download" :data-src="src" :data-name="name"/>` }
 const RouterLinkStub = { props: ['to', 'title'], template: `<a :data-to="typeof to==='string'?to:to?.path" :title="title"><slot/></a>` }
 const RouterViewStub = { template: `<div data-stub="router-view"><slot :Component="null"/></div>` }
-
-// eslint-disable-next-line
-import DetailsPhotoPage from './details-photo-page.vue'
 
 function mountPage() {
   return mount(DetailsPhotoPage, {
@@ -105,6 +98,11 @@ describe('details-photo page', () => {
         removeEventListener: vi.fn().mockImplementation(() => {}),
       },
     }))
+    vi.mocked(useDependency).mockImplementation((token) => {
+      if (token === NOTIFIER_TOKEN)
+        return notifierMock
+      return {}
+    })
   })
 
   afterEach(() => {

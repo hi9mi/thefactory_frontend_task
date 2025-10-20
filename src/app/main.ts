@@ -11,5 +11,5 @@ function main() {
   })
 
   app.isReady.then(() => app.mount('#app'))
-  app.isReady.catch(error => console.error(error))
+  app.isReady.catch(error => console.error('[App Error] Router initialization failed: ', error))
 }

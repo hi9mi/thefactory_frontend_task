@@ -1,17 +1,18 @@
+import { useDependency } from '@tf-app/shared/libs'
+import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import { mount } from '@vue/test-utils'
+
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick, ref } from 'vue'
 
-const notifier = { error: vi.fn(), info: vi.fn(), success: vi.fn(), warning: vi.fn() }
-vi.mock('@tf-app/shared/di', () => {
-  const TOKENS = {
-    UnsplashAPI: Symbol('UnsplashAPI'),
-    Notifier: Symbol('Notifier'),
-    LRUCache: Symbol('LRUCache'),
-  }
+import GalleryPage from './gallery-page.vue'
+
+const notifierMock = { error: vi.fn(), info: vi.fn(), success: vi.fn(), warning: vi.fn() }
+vi.mock(import('@tf-app/shared/libs'), async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tf-app/shared/libs')>()
   return {
-    TOKENS,
-    useDependency: (token: unknown) => (token === TOKENS.Notifier ? notifier : ({} as any)),
+    ...actual,
+    useDependency: vi.fn(),
   }
 })
 
@@ -47,9 +48,6 @@ const TfAffixStub = {
   template: `<div data-testid="affix"></div>`,
 }
 
-// eslint-disable-next-line import/first
-import GalleryPage from './gallery-page.vue'
-
 function mountPage() {
   return mount(GalleryPage, {
     global: {
@@ -70,7 +68,7 @@ describe('gallery page', () => {
     galleryState.randomLoading.value = false
     galleryState.randomError.value = null
     galleryState.ensureRandom.mockReset()
-    notifier.error.mockReset()
+    notifierMock.error.mockReset()
 
     vi.mock('@tf-app/shared/ui/data-display/tf-blurhash-image/decode', () => ({
       decodeWorker: {
@@ -88,6 +86,12 @@ describe('gallery page', () => {
         removeEventListener: vi.fn().mockImplementation(() => {}),
       },
     }))
+    vi.mocked(useDependency).mockImplementation((token) => {
+      if (token === NOTIFIER_TOKEN) {
+        return notifierMock
+      }
+      return {}
+    })
   })
 
   afterEach(() => {
@@ -99,7 +103,7 @@ describe('gallery page', () => {
     await nextTick()
 
     expect(galleryState.ensureRandom).toHaveBeenCalledTimes(1)
-    const [count, init] = galleryState.ensureRandom.mock.calls[0]!
+    const [count, init] = galleryState.ensureRandom.mock.calls[0]
     expect(count).toBe(18)
     expect((init as any)?.signal).toBeInstanceOf(AbortSignal)
 
@@ -127,7 +131,7 @@ describe('gallery page', () => {
     galleryState.randomError.value = 'Boom'
     await nextTick()
 
-    expect(notifier.error).toHaveBeenCalledWith('Boom', 'Failed load photos')
+    expect(notifierMock.error).toHaveBeenCalledWith('Boom', 'Failed load photos')
     wrapper.unmount()
   })
 

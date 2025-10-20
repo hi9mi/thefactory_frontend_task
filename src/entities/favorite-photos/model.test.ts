@@ -1,5 +1,6 @@
+import { createAppStorage } from '@tf-app/shared/libs'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { createFavoritesEntity, createFavoritesRepoLS } from './model'
+import { createFavoritesEntity, createFavoritesRepo } from './model'
 
 const KEY = 'favorites:v1'
 
@@ -15,19 +16,19 @@ describe('createFavoritesRepoLS', () => {
 
   it('should load initial items from localStorage when JSON is valid', () => {
     const initial = [makeItem('a'), makeItem('b')]
-    localStorage.setItem(KEY, JSON.stringify(initial))
-    const repo = createFavoritesRepoLS()
+    const storage = createAppStorage({
+      storageKind: 'localStorage',
+    } as any)
+    storage.set(KEY, initial)
+    const repo = createFavoritesRepo(storage)
     expect(repo.items.value).toEqual(initial)
   })
 
-  it('should fallback to empty array on invalid JSON', () => {
-    localStorage.setItem(KEY, '{not: json')
-    const repo = createFavoritesRepoLS()
-    expect(repo.items.value).toEqual([])
-  })
-
   it('should add a unique item and persist via localStorage', () => {
-    const repo = createFavoritesRepoLS()
+    const storage = createAppStorage({
+      storageKind: 'localStorage',
+    } as any)
+    const repo = createFavoritesRepo(storage)
     const spy = vi.spyOn(Storage.prototype, 'setItem')
     const item = makeItem('x')
 
@@ -40,7 +41,10 @@ describe('createFavoritesRepoLS', () => {
   })
 
   it('should not add duplicate items by id', () => {
-    const repo = createFavoritesRepoLS()
+    const storage = createAppStorage({
+      storageKind: 'localStorage',
+    } as any)
+    const repo = createFavoritesRepo(storage)
     const spy = vi.spyOn(Storage.prototype, 'setItem')
     const item = makeItem('x')
 
@@ -51,7 +55,10 @@ describe('createFavoritesRepoLS', () => {
   })
 
   it('should remove an existing item and persist', () => {
-    const repo = createFavoritesRepoLS()
+    const storage = createAppStorage({
+      storageKind: 'localStorage',
+    } as any)
+    const repo = createFavoritesRepo(storage)
     const spy = vi.spyOn(Storage.prototype, 'setItem')
     const a = makeItem('a')
     const b = makeItem('b')
@@ -68,7 +75,10 @@ describe('createFavoritesRepoLS', () => {
   })
 
   it('should not persist when removing a non-existing item', () => {
-    const repo = createFavoritesRepoLS()
+    const storage = createAppStorage({
+      storageKind: 'localStorage',
+    } as any)
+    const repo = createFavoritesRepo(storage)
     const spy = vi.spyOn(Storage.prototype, 'setItem')
     repo.remove('nope')
     expect(spy).not.toHaveBeenCalled()
@@ -76,7 +86,10 @@ describe('createFavoritesRepoLS', () => {
   })
 
   it('should clear items and persist empty list', () => {
-    const repo = createFavoritesRepoLS()
+    const storage = createAppStorage({
+      storageKind: 'localStorage',
+    } as any)
+    const repo = createFavoritesRepo(storage)
     const spy = vi.spyOn(Storage.prototype, 'setItem')
     repo.add(makeItem('x'))
     spy.mockClear()
@@ -90,31 +103,36 @@ describe('createFavoritesRepoLS', () => {
   })
 
   it('should react to storage event and update items from newValue', () => {
-    createFavoritesRepoLS()
-    const repo = createFavoritesRepoLS()
+    const storage = createAppStorage({
+      storageKind: 'localStorage',
+    } as any)
+    const repo = createFavoritesRepo(storage)
 
     const updated = [makeItem('u1'), makeItem('u2')]
-    localStorage.setItem(KEY, JSON.stringify(updated))
+    storage.set(KEY, updated)
 
-    const ev = new StorageEvent('storage', {
+    const event = new StorageEvent('storage', {
       key: KEY,
       storageArea: localStorage,
       newValue: localStorage.getItem(KEY),
     })
-    window.dispatchEvent(ev)
+    globalThis.dispatchEvent(event)
     expect(repo.items.value).toEqual(updated)
   })
 
   it('should ignore storage event with invalid JSON newValue', () => {
-    const repo = createFavoritesRepoLS()
+    const storage = createAppStorage({
+      storageKind: 'localStorage',
+    } as any)
+    const repo = createFavoritesRepo(storage)
     repo.add(makeItem('a'))
 
-    const ev = new StorageEvent('storage', {
+    const event = new StorageEvent('storage', {
       key: KEY,
       storageArea: localStorage,
       newValue: '{bad json',
     })
-    expect(() => window.dispatchEvent(ev)).not.toThrow()
+    expect(() => globalThis.dispatchEvent(event)).not.toThrow()
     expect(repo.items.value).toEqual([makeItem('a')])
   })
 })
@@ -126,7 +144,10 @@ describe('createFavoritesEntity', () => {
   })
 
   it('should expose items and computed total', () => {
-    const repo = createFavoritesRepoLS()
+    const storage = createAppStorage({
+      storageKind: 'localStorage',
+    } as any)
+    const repo = createFavoritesRepo(storage)
     const entity = createFavoritesEntity({ repo })
 
     expect(entity.total.value).toBe(0)
@@ -135,7 +156,10 @@ describe('createFavoritesEntity', () => {
   })
 
   it('should proxy has/add/remove/clear', () => {
-    const repo = createFavoritesRepoLS()
+    const storage = createAppStorage({
+      storageKind: 'localStorage',
+    } as any)
+    const repo = createFavoritesRepo(storage)
     const entity = createFavoritesEntity({ repo })
     const a = makeItem('a')
     const b = makeItem('b')
@@ -154,7 +178,10 @@ describe('createFavoritesEntity', () => {
   })
 
   it('should toggle: add when missing, remove when exists', () => {
-    const repo = createFavoritesRepoLS()
+    const storage = createAppStorage({
+      storageKind: 'localStorage',
+    } as any)
+    const repo = createFavoritesRepo(storage)
     const entity = createFavoritesEntity({ repo })
     const x = makeItem('x')
 

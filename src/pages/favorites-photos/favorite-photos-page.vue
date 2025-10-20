@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { createFavoritesEntity, FAVORITES_REPO } from '@tf-app/entities/favorite-photos'
-import { useDependency } from '@tf-app/shared/di'
-import { usePaginationData } from '@tf-app/shared/libs'
+import { useDependency, usePaginationData } from '@tf-app/shared/libs'
 import TfMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
 
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
@@ -53,7 +52,7 @@ const { data: paginatedFavoritePhotos, totalPages } = usePaginationData(favorite
       No photos added yet...
     </p>
     <TfPagination
-      v-if="paginatedFavoritePhotos.length > 1"
+      v-if="paginatedFavoritePhotos.length >= 1"
       :total-pages="totalPages"
       :page="qPage"
       data-testid="pagination"

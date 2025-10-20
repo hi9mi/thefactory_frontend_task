@@ -136,6 +136,7 @@ export default defineConfig(({ mode }) => {
           'tf-icons': FileSystemIconLoader('./src/shared/ui/assets/icons'),
         },
       }),
+      // vueDevTools(),
     ],
     resolve: {
       alias: {

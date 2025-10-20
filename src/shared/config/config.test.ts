@@ -1,12 +1,18 @@
-import type { AppConfig } from './schema'
+import type { AppConfig } from './config'
 import { describe, expect, it } from 'vitest'
-import { createAppConfigFromEnv } from './schema'
+import { createAppConfigFromEnv } from './config'
 
 function makeEnv(overrides: Partial<ImportMetaEnv> = {}): ImportMetaEnv {
   return {
     VITE_UNSPLASH_API_URL: 'https://api.unsplash.com',
     VITE_UNSPLASH_CLIENT_ID: 'test-client-id',
     MODE: 'development',
+    VITE_BASE_URL: '/',
+    DEV: true,
+    PROD: false,
+    SSR: false,
+    BASE_URL: '/',
+    VITE_STORAGE_KIND: 'memoryStorage',
     ...overrides,
   } as unknown as ImportMetaEnv
 }
@@ -23,6 +29,12 @@ describe('config schema: createAppConfigFromEnv', () => {
       unsplashBaseUrl: 'https://example.com',
       unsplashClientId: 'abc123',
       mode: 'production',
+      viteBaseUrl: '/',
+      dev: true,
+      prod: false,
+      ssr: false,
+      baseUrl: '/',
+      storageKind: 'memoryStorage',
     }
     expect(cfg).toEqual(expected)
   })

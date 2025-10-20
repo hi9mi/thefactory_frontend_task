@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type { Placement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
 
-import { generateId } from '@tf-app/shared/libs'
 import { computeCoordsFromPlacement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
-import { reactive, ref, shallowRef, watch } from 'vue'
+import { reactive, ref, shallowRef, useId, watch } from 'vue'
 
 const props = withDefaults(defineProps<{
   id?: string
@@ -12,10 +11,11 @@ const props = withDefaults(defineProps<{
   offset?: number
   multiline?: boolean
 }>(), {
-  id: generateId('tooltip'),
   position: 'top',
   offset: 10,
 })
+
+const id = props.id ?? useId()
 
 const TOOLTIPS_CONTAINER_ID = '__TOOLTIPS_CONTAINER__'
 if (!document.getElementById(TOOLTIPS_CONTAINER_ID)) {

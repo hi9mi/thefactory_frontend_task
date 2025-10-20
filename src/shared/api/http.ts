@@ -1,4 +1,4 @@
-import type { ZodType } from 'zod'
+import type { ZodMiniType } from 'zod/mini'
 import { parseOrThrow } from '@tf-app/shared/libs'
 import { HttpError } from './errors'
 
@@ -45,7 +45,7 @@ async function toHttpError(res: Response): Promise<HttpError> {
 export async function getJson<T>(
   input: RequestInfo,
   init?: RequestInit,
-  schema?: ZodType,
+  schema?: ZodMiniType,
   label?: string,
 ): Promise<T> {
   const res = await fetch(input, init)

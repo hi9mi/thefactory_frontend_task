@@ -32,3 +32,4 @@ coverage
 /playwright/.cache/
 .env
 .continueignore
+.zed

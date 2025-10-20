@@ -59,7 +59,7 @@ function handleOverlayKeyDown(event: KeyboardEvent) {
 
 function hideFullPhoto() {
   emit('hideFullPhoto')
-  router.replace({
+  router.push({
     name: routes.photoPage.name,
     params: {
       id: route.params.id,

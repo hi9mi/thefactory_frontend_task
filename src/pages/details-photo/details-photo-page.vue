@@ -4,18 +4,19 @@ import { createPhotoDetailsEntity, createPhotoDetailsGateway } from '@tf-app/ent
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import { routes } from '@tf-app/routing'
-import { TOKENS, useDependency } from '@tf-app/shared/di'
-import { computeRelativeBrightness, hexToRgb } from '@tf-app/shared/libs'
+import { UNSPLASH_API_TOKEN } from '@tf-app/shared/api'
+import { computeRelativeBrightness, hexToRgb, TOKENS, useDependency } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
+import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 
 import { computed, shallowRef, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import FullScreenIcon from '~icons/tf-icons/full-screen'
 
-const api = useDependency(TOKENS.UnsplashAPI)
-const notify = useDependency(TOKENS.Notifier)
+const api = useDependency(UNSPLASH_API_TOKEN)
+const notify = useDependency(NOTIFIER_TOKEN)
 const lru = useDependency(TOKENS.LRUCache)
 const details = createPhotoDetailsEntity({ gateway: createPhotoDetailsGateway(api), lru })
 

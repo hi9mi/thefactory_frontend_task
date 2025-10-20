@@ -2,13 +2,15 @@
 import { createGalleryEntity, createGalleryGateway } from '@tf-app/entities/gallery'
 
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
-import { TOKENS, useDependency } from '@tf-app/shared/di'
+import { UNSPLASH_API_TOKEN } from '@tf-app/shared/api'
+import { TOKENS, useDependency } from '@tf-app/shared/libs'
+import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import TMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { defineAsyncComponent, onMounted, onScopeDispose, shallowRef, watch } from 'vue'
 
-const api = useDependency(TOKENS.UnsplashAPI)
-const notify = useDependency(TOKENS.Notifier)
+const api = useDependency(UNSPLASH_API_TOKEN)
+const notify = useDependency(NOTIFIER_TOKEN)
 const lru = useDependency(TOKENS.LRUCache)
 const gallery = createGalleryEntity({ gateway: createGalleryGateway(api), lru })
 const { random, randomLoading, randomError } = gallery

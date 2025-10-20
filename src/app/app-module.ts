@@ -1,26 +1,25 @@
-import type { DependencyModule } from '@tf-app/shared/di'
-import type { Router } from 'vue-router'
-import { createFavoritesRepoLS, FAVORITES_REPO } from '@tf-app/entities/favorite-photos'
-import { createUnsplashApi } from '@tf-app/shared/api'
-import { TOKENS } from '@tf-app/shared/di'
-import { createAppConfigFromEnv, createLRUCacheManager } from '@tf-app/shared/libs'
-import { useNotificationsStore } from '@tf-app/shared/ui/feedback/tf-notification/model'
+import type { AppRouter } from '@tf-app/routing'
+import type { AppConfig } from '@tf-app/shared/config'
+import type { Container } from 'ditox'
+import { createFavoritesRepo, FAVORITES_REPO } from '@tf-app/entities/favorite-photos'
+import { ROUTER_TOKEN } from '@tf-app/routing'
+import { createUnsplashApi, UNSPLASH_API_TOKEN } from '@tf-app/shared/api'
+import { APP_CONFIG_TOKEN } from '@tf-app/shared/config'
+import { APP_STORAGE_TOKEN, createAppStorage, createLRUCacheManager, TOKENS } from '@tf-app/shared/libs'
+import { createNotifier, NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
+import { injectable } from 'ditox'
 
-export function appModule(p: { router: Router, baseUrl: string }): DependencyModule {
-  return (di) => {
-    const cfg = createAppConfigFromEnv(import.meta.env)
-    di.set(TOKENS.Router, p.router)
-
-    di.set(TOKENS.Notifier, {
-      success: (m: string, t?: string) => useNotificationsStore().success(m, t),
-      error: (m: string, t?: string) => useNotificationsStore().error(m, t),
-      info: (m: string, t?: string) => useNotificationsStore().info(m, t),
-      warning: (m: string, t?: string) => useNotificationsStore().warning(m, t),
-    })
-
-    di.set(TOKENS.UnsplashAPI, createUnsplashApi(cfg))
-
-    di.set(FAVORITES_REPO, createFavoritesRepoLS())
-    di.set(TOKENS.LRUCache, createLRUCacheManager())
-  }
+export function appModule(container: Container, params: {
+  config: AppConfig
+  router: AppRouter
+}) {
+  container.bindValue(APP_CONFIG_TOKEN, params.config)
+  // TODO: think about Navigation Module
+  // container.bindFactory(NAV_TOKEN, injectable(createNavigation, ROUTER_TOKEN))
+  container.bindValue(ROUTER_TOKEN, params.router)
+  container.bindFactory(NOTIFIER_TOKEN, injectable(createNotifier))
+  container.bindFactory(UNSPLASH_API_TOKEN, injectable(createUnsplashApi, APP_CONFIG_TOKEN), { scope: 'singleton' })
+  container.bindValue(TOKENS.LRUCache, createLRUCacheManager())
+  container.bindFactory(APP_STORAGE_TOKEN, injectable(createAppStorage, APP_CONFIG_TOKEN))
+  container.bindFactory(FAVORITES_REPO, injectable(createFavoritesRepo, APP_STORAGE_TOKEN))
 }

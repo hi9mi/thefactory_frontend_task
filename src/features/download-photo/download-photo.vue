@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { TOKENS, useDependency } from '@tf-app/shared/di'
+import { useDependency } from '@tf-app/shared/libs'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
+import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 
 import DownloadIcon from '~icons/tf-icons/download'
 
@@ -10,7 +11,7 @@ const props = defineProps<{
   withText?: boolean
 }>()
 
-const notifier = useDependency(TOKENS.Notifier)
+const notifier = useDependency(NOTIFIER_TOKEN)
 
 async function downloadPhoto() {
   try {

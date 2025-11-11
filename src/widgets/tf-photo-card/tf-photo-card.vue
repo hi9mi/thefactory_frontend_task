@@ -1,25 +1,11 @@
 <script setup lang="ts">
 import type { GalleryItem } from '@tf-app/entities/gallery'
-import { createPhotoDetailsEntity, createPhotoDetailsGateway } from '@tf-app/entities/details-photo'
+
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
-import { routes } from '@tf-app/routing'
-import { UNSPLASH_API_TOKEN } from '@tf-app/shared/api'
-import { TOKENS, useDependency } from '@tf-app/shared/libs'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 
-const props = defineProps<{ photo: GalleryItem }>()
-
-const api = useDependency(UNSPLASH_API_TOKEN)
-const lru = useDependency(TOKENS.LRUCache)
-const details = createPhotoDetailsEntity({ gateway: createPhotoDetailsGateway(api), lru })
-
-function startPrefetch() {
-  details.prefetch(props.photo.id, { delayMs: 500 })
-}
-function cancelPrefetch() {
-  details.cancelPrefetch(props.photo.id)
-}
+defineProps<{ photo: GalleryItem }>()
 </script>
 
 <template>
@@ -38,13 +24,9 @@ function cancelPrefetch() {
       :class="classes.photo"
     />
     <RouterLink
-      :to="{ name: routes.photoPage.name, params: { id: photo.id } }"
+      :to="`/photo/${photo.id}`"
       :class="classes.photoLink"
       :title="photo.alt"
-      @mouseenter="startPrefetch"
-      @mouseleave="cancelPrefetch"
-      @focusin="startPrefetch"
-      @focusout="cancelPrefetch"
     />
     <div :class="classes.overlay" aria-hidden="true" data-testid="photo-actions-overlay" />
     <div :class="classes.actions">

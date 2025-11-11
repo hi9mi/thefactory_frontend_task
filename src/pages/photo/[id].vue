@@ -1,30 +1,31 @@
 <script setup lang="ts">
-import { createPhotoDetailsEntity, createPhotoDetailsGateway } from '@tf-app/entities/details-photo'
-
+import type { DetailsPhoto } from '@tf-app/entities/details-photo'
+import type QuickLRU from 'quick-lru'
+import { createPhotoDetailsGateway, createPhotoDetailsStore } from '@tf-app/entities/details-photo'
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
+import ShowFullPhoto from '@tf-app/features/show-full-photo/show-full-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
-import { routes } from '@tf-app/routing'
 import { UNSPLASH_API_TOKEN } from '@tf-app/shared/api'
-import { computeRelativeBrightness, hexToRgb, TOKENS, useDependency } from '@tf-app/shared/libs'
+import { CACHE_TOKEN, computeRelativeBrightness, hexToRgb, useDependency } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
 import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
-
 import { computed, shallowRef, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import FullScreenIcon from '~icons/tf-icons/full-screen'
 
 const api = useDependency(UNSPLASH_API_TOKEN)
 const notify = useDependency(NOTIFIER_TOKEN)
-const lru = useDependency(TOKENS.LRUCache)
-const details = createPhotoDetailsEntity({ gateway: createPhotoDetailsGateway(api), lru })
+
+const cache = useDependency(CACHE_TOKEN) as QuickLRU<string, DetailsPhoto>
+const useDetailsStore = createPhotoDetailsStore('details', { cache, gateway: createPhotoDetailsGateway(api) })
+const detailsStore = useDetailsStore()
 
 const router = useRouter()
-const route = useRoute()
-const id = computed(() => String(route.params.id ?? ''))
+const route = useRoute('/photo/[id]')
+const id = computed(() => route.params.id)
 
-const entry = computed(() => details.getState(id.value))
 const controller = shallowRef<AbortController | null>(null)
 
 watch(id, (_val, _oldVal, onCleanup) => {
@@ -34,26 +35,34 @@ watch(id, (_val, _oldVal, onCleanup) => {
   const c = new AbortController()
   controller.value = c
 
-  details.ensure(_val, { signal: c.signal })
+  detailsStore.fetch(_val, { signal: c.signal })
 
   onCleanup(() => c.abort())
 }, { immediate: true })
 
 const previewButtonStyles = computed(() => {
   const def = { '--full-screen-icon-color': '#ffffff', '--full-screen-icon-filter': 'url("#blackShadow")' }
-  if (!entry.value.item?.color)
+  const color = detailsStore.item?.color
+  if (!color)
     return def
-  const { r, g, b } = hexToRgb(entry.value.item.color)
+  const { r, g, b } = hexToRgb(color)
   const brightness = computeRelativeBrightness(r, g, b)
   return brightness < 128
     ? { '--full-screen-icon-color': '#ffffff', '--full-screen-icon-filter': 'url("#blackShadow")' }
     : { '--full-screen-icon-color': '#000000', '--full-screen-icon-filter': 'url("#whiteShadow")' }
 })
 
+const isFullScreen = computed(() => route.query.full === 'true')
+
 function handleShowFullPhoto() {
-  router.push({ name: routes.photoPage.children.fullPhoto.name })
+  router.push({
+    query: {
+      ...route.query,
+      full: 'true',
+    },
+  })
 }
-watch(() => entry.value.error, (err) => {
+watch(() => detailsStore.error, (err) => {
   if (err)
     notify.error(err, 'Failed loading photo')
 })
@@ -61,11 +70,11 @@ watch(() => entry.value.error, (err) => {
 
 <template>
   <div :class="classes.wrapper">
-    <template v-if="!entry.loading && entry.item">
+    <template v-if="!detailsStore.loading && detailsStore.item">
       <img
         :class="classes.photoBg"
-        :src="`${entry.item.urlRaw}&w=320&h=320&dpr=1&q=80`"
-        :srcset="`${entry.item.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${entry.item.urlRaw}&w=640&h=640&dpr=2&q=80 640w, ${entry.item.urlRaw}&w=1024&h=1024&dpr=3&q=80 1024w`"
+        :src="`${detailsStore.item.urlRaw}&w=320&h=320&dpr=1&q=80`"
+        :srcset="`${detailsStore.item.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${detailsStore.item.urlRaw}&w=640&h=640&dpr=2&q=80 640w, ${detailsStore.item.urlRaw}&w=1024&h=1024&dpr=3&q=80 1024w`"
         sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
         alt=""
         role="presentation"
@@ -77,38 +86,38 @@ watch(() => entry.value.error, (err) => {
           <div :class="classes.userDetails">
             <img
               :class="classes.userProfileImg"
-              :src="entry.item.authorAvatar"
-              :alt="entry.item.author"
+              :src="detailsStore.item.authorAvatar"
+              :alt="detailsStore.item.author"
             >
             <div :class="classes.userBio">
               <p :class="classes.userName" data-testid="user-name">
-                {{ entry.item.author }}
+                {{ detailsStore.item.author }}
               </p>
               <p :class="classes.userNickname" data-testid="user-nickname">
-                @{{ entry.item.authorUsername }}
+                @{{ detailsStore.item.authorUsername }}
               </p>
             </div>
           </div>
           <div :class="classes.photoActions">
-            <ToggleFavoritePhoto :photo="entry.item" />
+            <ToggleFavoritePhoto :photo="detailsStore.item" />
             <DownloadPhoto
-              :src="entry.item.urlRaw"
+              :src="detailsStore.item.urlRaw"
               :with-text="true"
-              :name="entry.item.id"
+              :name="detailsStore.item.id"
             />
           </div>
         </div>
         <div :class="classes.photoWrapper">
           <TfBlurhashImage
-            :id="entry.item.id"
+            :id="detailsStore.item.id"
             :blurhash-width="740"
             :blurhash-height="740"
-            :blurhash="entry.item.blurHash"
-            :src="`${entry.item.urlRaw}&w=740&h=740&dpr=1&q=80`"
-            :srcset="`${entry.item.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${entry.item.urlRaw}&w=740&h=740&dpr=1&q=80 740w, ${entry.item.urlRaw}&w=1440&h=1440&dpr=1&q=80 1440w`"
+            :blurhash="detailsStore.item.blurHash"
+            :src="`${detailsStore.item.urlRaw}&w=740&h=740&dpr=1&q=80`"
+            :srcset="`${detailsStore.item.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${detailsStore.item.urlRaw}&w=740&h=740&dpr=1&q=80 740w, ${detailsStore.item.urlRaw}&w=1440&h=1440&dpr=1&q=80 1440w`"
             sizes="(max-width: 560px) 320px, (max-width: 960px) 740px, 1440px"
             :class="classes.photo"
-            :alt="entry.item.alt ?? 'Photo'"
+            :alt="detailsStore.item.alt ?? 'Photo'"
           />
           <TfActionButton
             type="button"
@@ -128,17 +137,16 @@ watch(() => entry.value.error, (err) => {
         </div>
       </div>
     </template>
-    <TfLoader v-else-if="entry.loading" data-testid="loader" />
+    <TfLoader v-else-if="detailsStore.loading" data-testid="loader" />
   </div>
-  <RouterView v-slot="{ Component }" :name="routes.photoPage.children.fullPhoto.name">
-    <component
-      :is="Component"
-      v-if="entry.item"
-      :src="entry.item.urlRaw"
-      :description="entry.item.alt"
-      data-testid="full-photo"
-    />
-  </RouterView>
+  <!-- <KeepAlive> -->
+  <ShowFullPhoto
+    v-if="isFullScreen && detailsStore.item"
+    :src="detailsStore.item.urlRaw"
+    :description="detailsStore.item.alt ?? 'Alternate text for the photo'"
+    data-testid="full-photo"
+  />
+  <!-- </KeepAlive> -->
 </template>
 
 <style module="classes">

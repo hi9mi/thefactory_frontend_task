@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { createGalleryEntity, createGalleryGateway } from '@tf-app/entities/gallery'
+import type { GallerySearchResult } from '@tf-app/entities/gallery'
+import type QuickLRU from 'quick-lru'
+import { createGalleryGateway, createGalleryStore } from '@tf-app/entities/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import { UNSPLASH_API_TOKEN } from '@tf-app/shared/api'
-import { debounce, TOKENS, useDependency } from '@tf-app/shared/libs'
+import { CACHE_TOKEN, debounce, useDependency } from '@tf-app/shared/libs'
 import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import TfMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
@@ -17,11 +19,12 @@ const TfPagination = defineAsyncComponent(() =>
 )
 
 const BATCH = 18
+const cache = useDependency(CACHE_TOKEN) as QuickLRU<string, GallerySearchResult>
 
 const api = useDependency(UNSPLASH_API_TOKEN)
 const notify = useDependency(NOTIFIER_TOKEN)
-const lru = useDependency(TOKENS.LRUCache)
-const gallery = createGalleryEntity({ gateway: createGalleryGateway(api), lru })
+const useGalleryStore = createGalleryStore('gallery:store', { cache, gateway: createGalleryGateway(api) })
+const galleryStore = useGalleryStore()
 
 const q = useRouteQuery<string>('q', '', { mode: 'replace' })
 const page = useRouteQuery('page', '1', { mode: 'push', transform: Number })
@@ -33,7 +36,7 @@ watch(q, (newQ, oldQ) => {
 }, { flush: 'sync' })
 
 const [debouncedSearch, cancelDebounce] = debounce((query: string, pageNum: number, init?: RequestInit) => {
-  return gallery
+  return galleryStore
     .search({ query, page: pageNum, perPage: BATCH }, init)
     .finally(() => {
       isDebouncing.value = false
@@ -62,14 +65,13 @@ watch([q, page], (_vals, _old, onCleanup) => {
   })
 }, { immediate: true })
 
-const entry = computed(() => gallery.getSearchState(q.value, page.value))
-const busy = computed(() => entry.value.loading || isDebouncing.value)
-const totalPages = computed(() => gallery.getTotalPages(q.value))
-const showGrid = computed(() => busy.value || entry.value.items.length > 0)
-const hasNoResults = computed(() => !busy.value && entry.value.items.length === 0)
+// const entry = computed(() => gallery.getSearchState(q.value, page.value))
+const busy = computed(() => galleryStore.loading || isDebouncing.value)
+const showGrid = computed(() => busy.value || galleryStore.items.length > 0)
+const hasNoResults = computed(() => !busy.value && galleryStore.items.length === 0)
 const isSearchEmpty = computed(() => !busy.value && q.value.trim() === '')
 
-watch(() => entry.value.error, (err) => {
+watch(() => galleryStore.error, (err) => {
   if (err)
     notify.error(err, 'Failed search photos')
 })
@@ -81,8 +83,8 @@ watch(() => entry.value.error, (err) => {
   <div class="container" :class="classes.galleryContainer">
     <TfMasonryGrid
       v-if="showGrid"
-      :items="entry.items"
-      :loading="entry.loading || busy"
+      :items="galleryStore.items"
+      :loading="galleryStore.loading || busy"
       :skeleton-count="BATCH"
       :initial-items-count="BATCH"
       :max-cols="6"
@@ -96,10 +98,10 @@ watch(() => entry.value.error, (err) => {
       </template>
     </TfMasonryGrid>
     <TfPagination
-      v-if="entry.items.length"
-      :total-pages="totalPages"
+      v-if="galleryStore.items.length"
+      :total-pages="galleryStore.totalPages"
       :page="page"
-      :disabled="entry.loading"
+      :disabled="galleryStore.loading"
       data-testid="pagination"
       @change-page="(p) => page = p"
     />

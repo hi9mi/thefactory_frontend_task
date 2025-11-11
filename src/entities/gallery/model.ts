@@ -1,189 +1,195 @@
-import type { LRUCacheManager } from '@tf-app/shared/libs/cache/manager'
-import type { GalleryGateway, GalleryItem } from './gateway'
-import { isAbortError, isHttpError } from '@tf-app/shared/api'
-import { computed, reactive, ref } from 'vue'
+import type { HttpError } from '@tf-app/shared/api'
+import type QuickLRU from 'quick-lru'
+import type { GalleryGateway, GalleryItem, GallerySearchResult } from './gateway'
+import { isHttpError } from '@tf-app/shared/api'
+import { defineStore } from 'pinia'
+import { computed, reactive } from 'vue'
 
-interface SearchEntry { items: GalleryItem[], loading: boolean, error: string | null }
+const normalizeQuery = (q: string) => q.trim().toLowerCase().replace(/\s+/g, ' ')
 
-const keyOf = (q: string, p: number) => `${q.trim()}::${p}`
+const galleryKey = (count: number) => `gallery:count=${count}`
+const searchKey = (q: string, p: number) => `search:q=${normalizeQuery(q)}::page=${p}`
 
-export function createGalleryEntity(deps: { gateway: GalleryGateway, lru: LRUCacheManager }) {
-  const { gateway, lru } = deps
+const ERROR_MESSAGES: Record<number, string> = {
+  400: 'Bad Request',
+  401: 'Invalid access token',
+  403: 'Forbidden (check permissions/rate limit)',
+  404: 'Not Found',
+  500: 'Server error, try later',
+  502: 'Bad Gateway',
+  503: 'Service Unavailable',
+  504: 'Gateway Timeout',
+}
 
-  const listCache = lru.scope<string, GalleryItem[]>('gallery:list', {
-    max: 100,
-    ttl: 10 * 60_000,
-    serializeKey: k => k,
-  })
-  const totalsCache = lru.scope<string, number>('gallery:total', {
-    max: 200,
-    ttl: 10 * 60_000,
-    serializeKey: q => q.trim(),
-  })
-  const randomCache = lru.scope<string, GalleryItem[]>('gallery:random', {
-    max: 5,
-    ttl: 10 * 60_000,
-    serializeKey: k => k,
-  })
+function normalizeHttpError(e: HttpError) {
+  if (e.rateLimit?.remaining === 0) {
+    return 'Rate limit exceeded'
+  }
+  return e.errors?.join(', ') ?? ERROR_MESSAGES[e.status] ?? (e.status >= 500 ? 'Server error, try later' : 'Unknown HTTP error')
+}
+// TODO: refactor
+export function createGalleryRandomStore(key: string, deps: {
+  gateway: GalleryGateway
+  cache: QuickLRU<string, GalleryItem[]>
+}) {
+  return defineStore(key, () => {
+    const { gateway, cache } = deps
 
-  const random = ref<GalleryItem[]>([])
-  const randomLoading = ref(false)
-  const randomError = ref<string | null>(null)
+    const galleryState = reactive<{
+      items: GalleryItem[]
+      loading: boolean
+      error: string | null
+    }>({
+      items: [],
+      loading: false,
+      error: null,
+    })
 
-  const entries: Record<string, SearchEntry> = reactive({})
-  const inflight = new Map<string, Promise<unknown>>()
+    const inflightRequests = new Map<string, Promise<GalleryItem[]>>()
 
-  const ensureEntry = (q: string, p: number): SearchEntry =>
-    (entries[keyOf(q, p)] ??= reactive<SearchEntry>({ items: [], loading: false, error: null }))
+    async function fetchPhotos(count = 18, init?: RequestInit) {
+      const cacheKey = galleryKey(count)
+      const hit = cache.get(cacheKey)
 
-  async function ensureRandom(count = 18, init?: RequestInit) {
-    const cacheKey = String(count)
-    const hit = randomCache.get(cacheKey)
-    if (hit && hit.length >= count) {
-      random.value = hit
-      return hit
-    }
-
-    const inflightKey = `random:${count}`
-    if (inflight.has(inflightKey)) {
-      await inflight.get(inflightKey)
-      return random.value
-    }
-
-    randomLoading.value = true
-    randomError.value = null
-
-    const promise = (async () => {
-      try {
-        const items = await gateway.random(count, init)
-        randomCache.set(cacheKey, items)
-        random.value = items
+      if (hit) {
+        galleryState.items = hit
+        galleryState.loading = false
+        galleryState.error = null
+        return
       }
-      catch (e: any) {
-        if (isAbortError(e))
-          return
-        if (isHttpError(e)) {
-          if (e.errors?.length)
-            randomError.value = e.errors.join(', ')
-          else if (e.status === 401)
-            randomError.value = 'Invalid access token'
-          else if (e.status === 403)
-            randomError.value = 'Forbidden (check permissions/rate limit)'
-          else if (e.status === 404)
-            randomError.value = 'Not found'
-          else if (e.status === 400)
-            randomError.value = 'Bad request'
-          else if (e.status >= 500)
-            randomError.value = 'Server error, try later'
-          if (e.rateLimit?.remaining === 0)
-            randomError.value = 'Rate limit exceeded, please try again later'
-        }
-        else {
-          randomError.value = e?.message ?? 'Unknown error'
+
+      if (inflightRequests.has(cacheKey)) {
+        await inflightRequests.get(cacheKey)
+        return
+      }
+
+      galleryState.loading = true
+      galleryState.error = null
+
+      const request = gateway.random(count, init)
+      inflightRequests.set(cacheKey, request)
+
+      try {
+        const items = await request
+        galleryState.items = items
+        galleryState.error = null
+        cache.set(cacheKey, items)
+      }
+      catch (error) {
+        if (isHttpError(error)) {
+          galleryState.error = normalizeHttpError(error)
         }
       }
       finally {
-        randomLoading.value = false
+        inflightRequests.delete(cacheKey)
+        galleryState.loading = false
       }
-    })().finally(() => inflight.delete(inflightKey))
-
-    inflight.set(inflightKey, promise)
-    await promise
-    return random.value
-  }
-
-  async function reloadRandom(count = 9, init?: RequestInit) {
-    randomCache.delete(String(count))
-    random.value = []
-    return ensureRandom(count, init)
-  }
-
-  async function search(
-    { query, page, perPage }: { query: string, page: number, perPage: number },
-    init?: RequestInit,
-  ) {
-    const q = (query ?? '').trim()
-    if (!q)
-      return []
-
-    const cacheKey = keyOf(q, page)
-    const entry = ensureEntry(q, page)
-
-    const hit = listCache.get(cacheKey)
-    if (hit) {
-      entry.items = hit
-      entry.loading = false
-      entry.error = null
-      return hit
     }
 
-    if (inflight.has(cacheKey)) {
-      await inflight.get(cacheKey)
-      return entry.items
+    const items = computed(() => galleryState.items)
+    const loading = computed(() => galleryState.loading)
+    const error = computed(() => galleryState.error)
+
+    return {
+      fetchPhotos,
+      items,
+      loading,
+      error,
     }
+  })
+}
 
-    entry.loading = true
-    entry.error = null
+export function createGalleryStore(key: string, deps: {
+  gateway: GalleryGateway
+  cache: QuickLRU<string, GallerySearchResult>
+}) {
+  return defineStore(key, () => {
+    const { gateway, cache } = deps
 
-    const promise = (async () => {
+    const galleryState = reactive<{
+      items: GalleryItem[]
+      totalPages: number
+      total: number
+      loading: boolean
+      error: string | null
+    }>({
+      items: [],
+      totalPages: 0,
+      total: 0,
+      loading: false,
+      error: null,
+    })
+
+    const inflightRequests = new Map<string, Promise<GallerySearchResult>>()
+
+    async function search(
+      { query, page, perPage }: { query: string, page: number, perPage: number },
+      init?: RequestInit,
+    ) {
+      const q = (query ?? '').trim()
+      if (!q.length) {
+        galleryState.items = []
+        galleryState.error = null
+        galleryState.loading = false
+        galleryState.total = 0
+        galleryState.totalPages = 0
+        return
+      }
+
+      const cacheKey = searchKey(q, page)
+
+      const hit = cache.get(cacheKey)
+      if (hit) {
+        galleryState.items = hit.items
+        galleryState.loading = false
+        galleryState.total = hit.total
+        galleryState.totalPages = hit.totalPages
+        galleryState.error = null
+        return
+      }
+
+      if (inflightRequests.has(cacheKey)) {
+        await inflightRequests.get(cacheKey)
+        return
+      }
+
+      galleryState.loading = true
+      galleryState.error = null
+
+      const request = gateway.search({ query, page, perPage }, init)
+      inflightRequests.set(cacheKey, request)
+
       try {
-        const { items, totalPages } = await gateway.search({ query, page, perPage }, init)
-        listCache.set(cacheKey, items)
-        totalsCache.set(q, totalPages)
-        entry.items = items
+        const data = await request
+        cache.set(cacheKey, data)
+        galleryState.items = data.items
+        galleryState.total = data.total
+        galleryState.totalPages = data.totalPages
       }
-      catch (e: any) {
-        if (isAbortError(e))
-          return
-        if (isHttpError(e)) {
-          if (e.errors?.length)
-            entry.error = e.errors.join(', ')
-          else if (e.status === 401)
-            entry.error = 'Invalid access token'
-          else if (e.status === 403)
-            entry.error = 'Forbidden (check permissions/rate limit)'
-          else if (e.status === 404)
-            entry.error = 'Not found'
-          else if (e.status === 400)
-            entry.error = 'Bad request'
-          else if (e.status >= 500)
-            entry.error = 'Server error, try later'
-          if (e.rateLimit?.remaining === 0)
-            entry.error = 'Rate limit exceeded, please try again later'
-        }
-        else {
-          entry.error = e?.message ?? 'Unknown error'
+      catch (error) {
+        if (isHttpError(error)) {
+          galleryState.error = normalizeHttpError(error)
         }
       }
       finally {
-        entry.loading = false
+        inflightRequests.delete(cacheKey)
+        galleryState.loading = false
       }
-    })().finally(() => inflight.delete(cacheKey))
+    }
 
-    inflight.set(cacheKey, promise)
-    await promise
-    return entry.items
-  }
+    const items = computed(() => galleryState.items)
+    const loading = computed(() => galleryState.loading)
+    const error = computed(() => galleryState.error)
+    const totalPages = computed(() => galleryState.totalPages)
+    const total = computed(() => galleryState.total)
 
-  function getSearchState(query: string, page: number) {
-    return ensureEntry(query, page)
-  }
-
-  function getTotalPages(query: string) {
-    return totalsCache.get(query.trim()) ?? 0
-  }
-
-  const randomLoaded = computed(() => random.value.length > 0 && !randomLoading.value)
-
-  return {
-    random,
-    randomLoading,
-    randomError,
-    randomLoaded,
-    ensureRandom,
-    reloadRandom,
-    search,
-    getSearchState,
-    getTotalPages,
-  }
+    return {
+      items,
+      loading,
+      error,
+      totalPages,
+      total,
+      search,
+    }
+  })
 }

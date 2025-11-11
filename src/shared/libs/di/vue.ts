@@ -1,7 +1,7 @@
 import type { Container, Token } from 'ditox'
 import type { App, InjectionKey } from 'vue'
 import { createContainer } from 'ditox'
-import { inject, onUnmounted, provide } from 'vue'
+import { defineAsyncComponent, defineComponent, h, inject, onUnmounted, provide } from 'vue'
 
 const DiKey: InjectionKey<Container> = Symbol('Di')
 
@@ -20,16 +20,16 @@ export function useDi() {
   return container
 }
 
-export function useDependency<T>(token: Token<T>): T {
-  const container = useDi()
-  const value = container.resolve<T>(token)
+export function useDependency<T>(token: Token<T>, container?: Container): T {
+  const c = container ?? useDi()
+  const value = c.resolve<T>(token)
 
   return value
 }
 
-export function useOptionalDependency<T>(token: Token<T>): T | undefined {
-  const container = useDi()
-  const value = container.get<T>(token)
+export function useOptionalDependency<T>(token: Token<T>, container?: Container): T | undefined {
+  const c = container ?? useDi()
+  const value = c.get<T>(token)
 
   return value
 }
@@ -41,6 +41,7 @@ export function provideScopedDI(overrides?: (container: Container) => void) {
   overrides?.(child)
   provide(DiKey, child)
   onUnmounted(() => child.removeAll())
+  return child
 }
 
 export function provideIsolatedDI(binder?: (container: Container) => void) {
@@ -49,4 +50,20 @@ export function provideIsolatedDI(binder?: (container: Container) => void) {
   binder?.(isolated)
   provide(DiKey, isolated)
   onUnmounted(() => isolated.removeAll())
+}
+
+export function withDiScope<TComp = any>(
+  loader: () => Promise<{ default: TComp }>,
+  bind?: (c: Container) => void,
+) {
+  const AsyncInner = defineAsyncComponent(loader)
+
+  return defineComponent({
+    name: 'WithDiScope',
+    setup(_, { attrs, slots }) {
+      provideScopedDI(bind)
+
+      return () => h(AsyncInner, attrs, slots)
+    },
+  })
 }

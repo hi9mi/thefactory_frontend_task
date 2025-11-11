@@ -35,6 +35,7 @@
     "magic-grid": "^3.4.7",
     "nprogress": "^0.2.0",
     "pinia": "^3.0.3",
+    "quick-lru": "^7.3.0",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3",
     "zod": "^4.1.12"
@@ -66,6 +67,7 @@
     "stylelint-config-standard": "^39.0.1",
     "typescript": "^5.9.3",
     "unplugin-icons": "^22.4.2",
+    "unplugin-vue-router": "^0.16.1",
     "vite": "^7.1.10",
     "vite-plugin-html": "^3.2.2",
     "vite-plugin-pwa": "^1.1.0",

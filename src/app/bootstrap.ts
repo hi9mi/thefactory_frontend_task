@@ -1,4 +1,3 @@
-import { routesMap } from '@tf-app/pages'
 import { createAppConfigFromEnv } from '@tf-app/shared/config'
 import { createDiPlugin } from '@tf-app/shared/libs'
 import { createContainer } from 'ditox'
@@ -21,11 +20,11 @@ export function bootstrap({ baseUrl, performance }: Params) {
     const app = createVueApp(TfApp)
     app.config.performance = performance
     initWith.pinia(app)
-    const router = initWith.router({ app, routesMap, baseUrl })
+    const router = initWith.router({ app, baseUrl })
     initWith.nprogress(router)
 
     const rootContainer = createContainer()
-    appModule(rootContainer, { config, router })
+    appModule(rootContainer, { config })
 
     app.use(createDiPlugin(rootContainer))
 

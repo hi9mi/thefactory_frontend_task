@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { HttpError } from './errors'
+import { HttpError } from './error'
 import { getJson } from './http'
 
 afterEach(() => {

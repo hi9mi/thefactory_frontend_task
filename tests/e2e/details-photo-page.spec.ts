@@ -21,7 +21,7 @@ test.describe('Details Photo Page', () => {
       })
     })
 
-    await page.goto(`/${photoObj.id}`)
+    await page.goto(`/photo/${photoObj.id}`)
     await page.getByTestId('user-name').waitFor()
   })
 
@@ -40,18 +40,18 @@ test.describe('Details Photo Page', () => {
     await page.getByTestId('preview-btn').click()
 
     await expect(page.getByTestId('full-photo')).toBeVisible()
-    await expect(page).toHaveURL(/\/v9NklNa26GU\/full$/)
+    await expect(page).toHaveURL(/\/photo\/v9NklNa26GU\?full=true/)
   })
 
   test('closes full photo view and returns to details', async ({ page }) => {
     await page.getByTestId('preview-btn').click()
     await expect(page.getByTestId('full-photo')).toBeVisible()
-    await expect(page).toHaveURL(/\/v9NklNa26GU\/full$/)
+    await expect(page).toHaveURL(/\/photo\/v9NklNa26GU\?full=true/)
 
     await page.getByTestId('close-preview-btn').click()
 
     await expect(page.getByTestId('full-photo')).toBeHidden()
-    await expect(page).toHaveURL(/\/v9NklNa26GU/)
+    await expect(page).toHaveURL(/\/photo\/v9NklNa26GU/)
   })
 
   test('adds photo to favorites', async ({ page }) => {

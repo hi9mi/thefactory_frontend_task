@@ -39,7 +39,7 @@ export class HttpError extends Error {
     this.bodySnippet = params.bodySnippet
     this.rateLimit = params.rateLimit
     if (params.cause !== undefined)
-      (this as any).cause = params.cause
+      this.cause = params.cause
   }
 }
 

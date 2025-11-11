@@ -1,4 +1,4 @@
-export * from './cache/manager'
+export * from './cache'
 export * from './colors/compute-relative-brightness'
 export * from './colors/hex-to-rgb'
 export * from './di'

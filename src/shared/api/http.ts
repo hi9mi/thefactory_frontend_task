@@ -1,6 +1,6 @@
 import type { ZodMiniType } from 'zod/mini'
 import { parseOrThrow } from '@tf-app/shared/libs'
-import { HttpError } from './errors'
+import { HttpError } from './error'
 
 function parseIntOrUndef(s?: string | null) {
   if (!s)

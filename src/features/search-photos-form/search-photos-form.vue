@@ -12,7 +12,7 @@ const router = useRouter()
 
 function onSubmit() {
   if (props.mode === 'navigate') {
-    router.push({ name: 'search', query: { q: searchTerm.value, page: 1 } })
+    router.push({ name: '/search/', query: { q: searchTerm.value, page: 1 } })
   }
   else {
     emit('submit', searchTerm.value)

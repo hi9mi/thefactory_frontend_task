@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import ToggleTheme from '@tf-app/features/toggle-theme/toggle-theme.vue'
-import { routes } from '@tf-app/routing'
 
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
@@ -10,7 +9,7 @@ import SearchIcon from '~icons/tf-icons/search'
 
 const route = useRoute()
 const showSearchIcon = computed(() => {
-  return route.path !== routes.search.path
+  return route.path !== '/favorites'
 })
 </script>
 
@@ -18,8 +17,8 @@ const showSearchIcon = computed(() => {
   <header :class="classes.header">
     <div class="container" :class="classes.headerWrapper">
       <RouterLink
-        :to="routes.gallery.path"
-        title="На главную"
+        to="/"
+        title="Home"
       >
         <img
           src="/img/logo.png"
@@ -32,28 +31,28 @@ const showSearchIcon = computed(() => {
         <nav :class="classes.links">
           <RouterLink
             v-if="showSearchIcon"
-            :to="routes.search.path"
+            to="/search"
             :class="classes.link"
           >
             <SearchIcon
               fill="none"
               width="23"
               height="23"
-              aria-label="Поиск"
+              aria-label="Search"
             />
-            <span :class="classes.linkText">Поиск</span>
+            <span :class="classes.linkText">Search</span>
           </RouterLink>
           <RouterLink
-            :to="routes.favorites.path"
+            to="/favorites"
             :class="classes.link"
           >
             <HeartIcon
               fill="none"
               width="23"
               height="21"
-              aria-label="Избранное"
+              aria-label="Favorites"
             />
-            <span :class="classes.linkText">Избранное</span>
+            <span :class="classes.linkText">Favorites</span>
           </RouterLink>
         </nav>
         <ToggleTheme />

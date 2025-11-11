@@ -1,38 +1,33 @@
 <script setup lang="ts">
-import { createGalleryEntity, createGalleryGateway } from '@tf-app/entities/gallery'
-
+import type { GalleryItem } from '@tf-app/entities/gallery'
+import type QuickLRU from 'quick-lru'
+import { createGalleryGateway, createGalleryRandomStore } from '@tf-app/entities/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import { UNSPLASH_API_TOKEN } from '@tf-app/shared/api'
-import { TOKENS, useDependency } from '@tf-app/shared/libs'
+import { CACHE_TOKEN, useDependency } from '@tf-app/shared/libs'
 import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import TMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
-import { defineAsyncComponent, onMounted, onScopeDispose, shallowRef, watch } from 'vue'
-
-const api = useDependency(UNSPLASH_API_TOKEN)
-const notify = useDependency(NOTIFIER_TOKEN)
-const lru = useDependency(TOKENS.LRUCache)
-const gallery = createGalleryEntity({ gateway: createGalleryGateway(api), lru })
-const { random, randomLoading, randomError } = gallery
-const controller = shallowRef<AbortController | null>(null)
+import { defineAsyncComponent, onMounted, watch } from 'vue'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
 )
 
+const cache = useDependency(CACHE_TOKEN) as QuickLRU<string, GalleryItem[]>
+const api = useDependency(UNSPLASH_API_TOKEN)
+const notify = useDependency(NOTIFIER_TOKEN)
+
+const useGalleryRandomStore = createGalleryRandomStore('random:store', { cache, gateway: createGalleryGateway(api) })
+const galleryRandomStore = useGalleryRandomStore()
+
 const BATCH = 18
 
 onMounted(() => {
-  controller.value?.abort()
-  controller.value = new AbortController()
-  gallery.ensureRandom(BATCH, { signal: controller.value.signal })
+  galleryRandomStore.fetchPhotos(BATCH)
 })
 
-onScopeDispose(() => {
-  controller.value?.abort()
-})
-
-watch(randomError, (err) => {
+watch(() => galleryRandomStore.error, (err) => {
   if (err)
     notify.error(err, 'Failed load photos')
 })
@@ -42,8 +37,8 @@ watch(randomError, (err) => {
   <SearchPhotosForm data-testid="search-photos-form" mode="navigate" />
   <div class="container" :class="classes.galleryContainer">
     <TMasonryGrid
-      :items="random"
-      :loading="randomLoading"
+      :items="galleryRandomStore.items"
+      :loading="galleryRandomStore.loading"
       :skeleton-count="BATCH"
       :initial-items-count="BATCH"
       :max-cols="6"

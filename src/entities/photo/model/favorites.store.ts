@@ -1,5 +1,4 @@
-// TODO: make local type
-import type { GalleryItem } from '../gallery'
+import type { PhotoListItem } from './types'
 import { useLocalStorage } from '@vueuse/core'
 import { token } from 'ditox'
 import { defineStore } from 'pinia'
@@ -7,20 +6,20 @@ import { computed } from 'vue'
 
 const KEY = 'favorites:v1'
 
-export type FavoritesStore = ReturnType<ReturnType<typeof createFavoritesStore>>
+type FavoritePhotosStore = ReturnType<ReturnType<typeof createFavoritePhotosStore>>
 
-export const FAVORITES_STORE_TOKEN = token<FavoritesStore>('favorites-store')
+export const FAVORITE_PHOTO_STORE_TOKEN = token<FavoritePhotosStore>('favorite-photos-store')
 
-export function createFavoritesStore(key: string) {
+export function createFavoritePhotosStore(key: string) {
   return defineStore(key, () => {
-    const items = useLocalStorage<GalleryItem[]>(KEY, [], {
+    const items = useLocalStorage<PhotoListItem[]>(KEY, [], {
       listenToStorageChanges: true,
     })
     const itemsIds = computed(() => items.value.map(item => item.id))
 
     const has = (id: string) => itemsIds.value.includes(id)
 
-    const add = (item: GalleryItem) => {
+    const add = (item: PhotoListItem) => {
       if (!has(item.id)) {
         items.value.push(item)
         return 'added' as const
@@ -42,7 +41,7 @@ export function createFavoritesStore(key: string) {
       return 'cleared' as const
     }
 
-    const toggle = (item: GalleryItem) => {
+    const toggle = (item: PhotoListItem) => {
       return has(item.id) ? remove(item.id) : add(item)
     }
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FAVORITES_STORE_TOKEN } from '@tf-app/entities/favorite-photos'
+import { FAVORITE_PHOTO_STORE_TOKEN } from '@tf-app/entities/photo'
 import { useDependency, usePaginationData } from '@tf-app/shared/libs'
 import TfMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
@@ -15,7 +15,7 @@ const TfPagination = defineAsyncComponent(() =>
 
 const BATCH = 18
 
-const favoritesStore = useDependency(FAVORITES_STORE_TOKEN)
+const favoritesStore = useDependency(FAVORITE_PHOTO_STORE_TOKEN)
 const qPage = useRouteQuery('page', 1, { mode: 'push', transform: Number })
 const { data: paginatedFavoritePhotos, totalPages } = usePaginationData(() => favoritesStore.items, { currentPage: qPage, limit: BATCH })
 </script>

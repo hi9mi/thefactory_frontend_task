@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import type { GalleryItem } from '@tf-app/entities/gallery'
+import type { PhotoListItem } from '@tf-app/entities/photo'
 import TfSkeleton from '@tf-app/shared/ui/feedback/tf-skeleton/tf-skeleton.vue'
 import MagicGrid from 'magic-grid'
 import { nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 
 const props = withDefaults(defineProps<{
-  items: GalleryItem[]
+  items: PhotoListItem[]
   loading?: boolean
   skeletonCount?: number
   gutter?: number
   maxCols?: number
   initialItemsCount?: number
-  getAspectRatio?: (item: GalleryItem) => number | undefined
+  getAspectRatio?: (item: PhotoListItem) => number | undefined
 }>(), {
   skeletonCount: 9,
   gutter: 20,

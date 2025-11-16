@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GALLERY_SEARCH_STORE_TOKEN } from '@tf-app/entities/gallery'
+import { SEARCH_RESULT_STORE_TOKEN } from '@tf-app/entities/photo'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import { debounce, useDependency } from '@tf-app/shared/libs'
 import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
@@ -18,7 +18,7 @@ const TfPagination = defineAsyncComponent(() =>
 const BATCH = 18
 
 const notify = useDependency(NOTIFIER_TOKEN)
-const gallerySearchStore = useDependency(GALLERY_SEARCH_STORE_TOKEN)
+const gallerySearchStore = useDependency(SEARCH_RESULT_STORE_TOKEN)
 
 const q = useRouteQuery<string>('q', '', { mode: 'replace' })
 const page = useRouteQuery('page', '1', { mode: 'push', transform: Number })
@@ -60,8 +60,8 @@ watch([q, page], (_vals, _old, onCleanup) => {
 }, { immediate: true })
 
 const busy = computed(() => gallerySearchStore.loading || isDebouncing.value)
-const showGrid = computed(() => busy.value || gallerySearchStore.items.length > 0)
-const hasNoResults = computed(() => !busy.value && gallerySearchStore.items.length === 0)
+const showGrid = computed(() => busy.value || gallerySearchStore.items.items.length > 0)
+const hasNoResults = computed(() => !busy.value && gallerySearchStore.items.items.length === 0)
 const isSearchEmpty = computed(() => !busy.value && q.value.trim() === '')
 
 watch(() => gallerySearchStore.error, (err) => {
@@ -76,7 +76,7 @@ watch(() => gallerySearchStore.error, (err) => {
   <div class="container" :class="classes.galleryContainer">
     <TfMasonryGrid
       v-if="showGrid"
-      :items="gallerySearchStore.items"
+      :items="gallerySearchStore.items.items"
       :loading="gallerySearchStore.loading || busy"
       :skeleton-count="BATCH"
       :initial-items-count="BATCH"
@@ -91,8 +91,8 @@ watch(() => gallerySearchStore.error, (err) => {
       </template>
     </TfMasonryGrid>
     <TfPagination
-      v-if="gallerySearchStore.items.length"
-      :total-pages="gallerySearchStore.totalPages"
+      v-if="gallerySearchStore.items.items.length"
+      :total-pages="gallerySearchStore.items.totalPages"
       :page="page"
       :disabled="gallerySearchStore.loading"
       data-testid="pagination"

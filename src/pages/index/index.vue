@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GALLERY_RANDOM_STORE_TOKEN } from '@tf-app/entities/gallery'
+import { RANDOM_FEED_STORE_TOKEN } from '@tf-app/entities/photo'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import { useDependency } from '@tf-app/shared/libs'
 import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
@@ -12,7 +12,7 @@ const TfAffix = defineAsyncComponent(() =>
 )
 
 const notify = useDependency(NOTIFIER_TOKEN)
-const galleryRandomStore = useDependency(GALLERY_RANDOM_STORE_TOKEN)
+const galleryRandomStore = useDependency(RANDOM_FEED_STORE_TOKEN)
 
 const BATCH = 18
 

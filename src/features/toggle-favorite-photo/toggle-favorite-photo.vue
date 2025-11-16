@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { GalleryItem } from '@tf-app/entities/gallery'
-import { FAVORITES_STORE_TOKEN } from '@tf-app/entities/favorite-photos'
-
+import type { PhotoListItem } from '@tf-app/entities/photo'
+import { FAVORITE_PHOTO_STORE_TOKEN } from '@tf-app/entities/photo'
 import { useDependency } from '@tf-app/shared/libs'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
 import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
@@ -10,12 +9,12 @@ import { computed } from 'vue'
 import HeartIcon from '~icons/tf-icons/heart'
 
 const props = defineProps<{
-  photo: GalleryItem
+  photo: PhotoListItem
 }>()
-const favoritesStore = useDependency(FAVORITES_STORE_TOKEN)
+const favoritesStore = useDependency(FAVORITE_PHOTO_STORE_TOKEN)
 const notify = useDependency(NOTIFIER_TOKEN)
 
-async function toggle(photo: GalleryItem) {
+async function toggle(photo: PhotoListItem) {
   const result = favoritesStore.toggle(photo)
   if (result === 'added') {
     notify.success('Photo added to favorites', 'Success')

@@ -1,11 +1,29 @@
 <script setup lang="ts">
-import type { GalleryItem } from '@tf-app/entities/gallery'
-
+import type { PhotoListItem } from '@tf-app/entities/photo'
+import { PHOTO_DETAILS_STORE_TOKEN } from '@tf-app/entities/photo'
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
+import { useDependency } from '@tf-app/shared/libs'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
+import { onBeforeUnmount, ref } from 'vue'
 
-defineProps<{ photo: GalleryItem }>()
+const props = defineProps<{ photo: PhotoListItem }>()
+const timerId = ref<ReturnType<typeof setTimeout>>()
+const photoDetailsStore = useDependency(PHOTO_DETAILS_STORE_TOKEN)
+
+function startPrefetch() {
+  timerId.value = setTimeout(() => {
+    photoDetailsStore.prefetch(props.photo.id)
+  }, 300)
+}
+
+function cancelPrefetch() {
+  clearTimeout(timerId.value)
+}
+
+onBeforeUnmount(() => {
+  clearTimeout(timerId.value)
+})
 </script>
 
 <template>
@@ -27,6 +45,10 @@ defineProps<{ photo: GalleryItem }>()
       :to="`/photo/${photo.id}`"
       :class="classes.photoLink"
       :title="photo.alt"
+      @mouseenter="startPrefetch"
+      @mouseleave="cancelPrefetch"
+      @focusin="startPrefetch"
+      @focusout="cancelPrefetch"
     />
     <div :class="classes.overlay" aria-hidden="true" data-testid="photo-actions-overlay" />
     <div :class="classes.actions">

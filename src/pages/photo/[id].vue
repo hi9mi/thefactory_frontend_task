@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DETAILS_STORE_TOKEN } from '@tf-app/entities/details-photo'
+import { PHOTO_DETAILS_STORE_TOKEN } from '@tf-app/entities/photo'
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ShowFullPhoto from '@tf-app/features/show-full-photo/show-full-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
@@ -13,7 +13,7 @@ import { useRoute, useRouter } from 'vue-router'
 import FullScreenIcon from '~icons/tf-icons/full-screen'
 
 const notify = useDependency(NOTIFIER_TOKEN)
-const detailsStore = useDependency(DETAILS_STORE_TOKEN)
+const detailsStore = useDependency(PHOTO_DETAILS_STORE_TOKEN)
 
 const router = useRouter()
 const route = useRoute('/photo/[id]')

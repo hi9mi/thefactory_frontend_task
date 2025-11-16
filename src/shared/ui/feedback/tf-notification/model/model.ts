@@ -111,4 +111,4 @@ export function createNotifier(pinia?: Pinia): Notifier {
   }
 }
 
-export const NOTIFIER_TOKEN = token<Notifier>()
+export const NOTIFIER_TOKEN = token<Notifier>('NOTIFIER_TOKEN')

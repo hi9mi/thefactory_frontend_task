@@ -70,4 +70,4 @@ export function createUnsplashApi(cfg: AppConfig): UnsplashAPI {
   }
 }
 
-export const UNSPLASH_API_TOKEN = token<UnsplashAPI>()
+export const UNSPLASH_API_TOKEN = token<UnsplashAPI>('UnsplashAPI')

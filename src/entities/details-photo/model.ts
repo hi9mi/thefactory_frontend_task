@@ -5,6 +5,10 @@ import { token } from 'ditox'
 import { defineStore } from 'pinia'
 import { computed, reactive } from 'vue'
 
+type DetailsStore = ReturnType<ReturnType<typeof createPhotoDetailsStore>>
+
+export const DETAILS_STORE_TOKEN = token<DetailsStore>('DetailsStore')
+
 // TODO: refactor
 export function createPhotoDetailsStore(key: string, deps: { gateway: PhotoDetailsGateway, cache: QuickLRU<string, DetailsPhoto> }) {
   return defineStore(key, () => {
@@ -108,5 +112,3 @@ export function createPhotoDetailsStore(key: string, deps: { gateway: PhotoDetai
     }
   })
 }
-
-export const DETAILS_PHOTO_ENTITY_TOKEN = token<ReturnType<ReturnType<typeof createPhotoDetailsStore>>>()

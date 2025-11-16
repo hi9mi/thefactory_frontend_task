@@ -153,7 +153,6 @@ export default defineConfig(({ mode }) => {
           manualChunks: {
             ethers: ['magic-grid', 'nprogress', 'ditox', 'blurhash'],
             zod: ['zod'],
-            focusTrap: ['focus-trap'],
             router: ['vue-router'],
             pinia: ['pinia'],
             vue: ['vue'],

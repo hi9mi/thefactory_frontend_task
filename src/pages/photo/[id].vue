@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import type { DetailsPhoto } from '@tf-app/entities/details-photo'
-import type QuickLRU from 'quick-lru'
-import { createPhotoDetailsGateway, createPhotoDetailsStore } from '@tf-app/entities/details-photo'
+import { DETAILS_STORE_TOKEN } from '@tf-app/entities/details-photo'
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ShowFullPhoto from '@tf-app/features/show-full-photo/show-full-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
-import { UNSPLASH_API_TOKEN } from '@tf-app/shared/api'
-import { CACHE_TOKEN, computeRelativeBrightness, hexToRgb, useDependency } from '@tf-app/shared/libs'
+import { computeRelativeBrightness, hexToRgb, useDependency } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
@@ -15,12 +12,8 @@ import { computed, shallowRef, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import FullScreenIcon from '~icons/tf-icons/full-screen'
 
-const api = useDependency(UNSPLASH_API_TOKEN)
 const notify = useDependency(NOTIFIER_TOKEN)
-
-const cache = useDependency(CACHE_TOKEN) as QuickLRU<string, DetailsPhoto>
-const useDetailsStore = createPhotoDetailsStore('details', { cache, gateway: createPhotoDetailsGateway(api) })
-const detailsStore = useDetailsStore()
+const detailsStore = useDependency(DETAILS_STORE_TOKEN)
 
 const router = useRouter()
 const route = useRoute('/photo/[id]')

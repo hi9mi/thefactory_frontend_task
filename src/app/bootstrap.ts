@@ -3,7 +3,7 @@ import { createDiPlugin } from '@tf-app/shared/libs'
 import { createContainer } from 'ditox'
 import { createApp as createVueApp } from 'vue'
 import { appModule } from './app-module'
-import { initWith } from './init-with'
+import { initPlugins } from './init-plugins'
 import TfApp from './tf-app.vue'
 import './styles/index.css'
 
@@ -19,19 +19,14 @@ export function bootstrap({ baseUrl, performance }: Params) {
 
     const app = createVueApp(TfApp)
     app.config.performance = performance
-    initWith.pinia(app)
-    const router = initWith.router({ app, baseUrl })
-    initWith.nprogress(router)
+    const { router } = initPlugins({ app, baseUrl, config })
 
     const rootContainer = createContainer()
     appModule(rootContainer, { config })
 
     app.use(createDiPlugin(rootContainer))
 
-    const isReady = router.isReady()
-    const mount = app.mount
-
-    return { isReady, mount }
+    return { isReady: router.isReady(), mount: (el: string | Element) => app.mount(el) }
   }
   catch (error) {
     console.error('[Error] Failed to create app config:', error)

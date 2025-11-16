@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import type { GalleryItem } from '@tf-app/entities/gallery'
-import type QuickLRU from 'quick-lru'
-import { createGalleryGateway, createGalleryRandomStore } from '@tf-app/entities/gallery'
+import { GALLERY_RANDOM_STORE_TOKEN } from '@tf-app/entities/gallery'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
-import { UNSPLASH_API_TOKEN } from '@tf-app/shared/api'
-import { CACHE_TOKEN, useDependency } from '@tf-app/shared/libs'
+import { useDependency } from '@tf-app/shared/libs'
 import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import TMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
@@ -14,12 +11,8 @@ const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
 )
 
-const cache = useDependency(CACHE_TOKEN) as QuickLRU<string, GalleryItem[]>
-const api = useDependency(UNSPLASH_API_TOKEN)
 const notify = useDependency(NOTIFIER_TOKEN)
-
-const useGalleryRandomStore = createGalleryRandomStore('random:store', { cache, gateway: createGalleryGateway(api) })
-const galleryRandomStore = useGalleryRandomStore()
+const galleryRandomStore = useDependency(GALLERY_RANDOM_STORE_TOKEN)
 
 const BATCH = 18
 

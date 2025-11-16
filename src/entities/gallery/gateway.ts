@@ -60,7 +60,7 @@ export function createGalleryGateway(api: UnsplashAPI): GalleryGateway {
     },
     async search({ query, page, perPage }, init) {
       const res = await api.getPhotos({ query, page, perPage }, init)
-      return mapSearch(res as any)
+      return mapSearch(res)
     },
   }
 }

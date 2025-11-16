@@ -6,4 +6,4 @@ export function createLRUCache<K, V>(options: Options<K, V>) {
   return new QuickLRU<K, V>(options)
 }
 
-export const CACHE_TOKEN = token<QuickLRU<string, unknown>>()
+export const CACHE_TOKEN = token<QuickLRU<string, unknown>>('CACHE_TOKEN')

@@ -1,22 +1,31 @@
 <script setup lang="ts">
 import type { GalleryItem } from '@tf-app/entities/gallery'
-import { FAVORITES_REPO } from '@tf-app/entities/favorite-photos'
+import { FAVORITES_STORE_TOKEN } from '@tf-app/entities/favorite-photos'
+
 import { useDependency } from '@tf-app/shared/libs'
 import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
 import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import TfTooltip from '@tf-app/shared/ui/overlays/tf-tooltip/tf-tooltip.vue'
 import { computed } from 'vue'
 import HeartIcon from '~icons/tf-icons/heart'
-import { createToggleFavorite } from './model'
 
 const props = defineProps<{
   photo: GalleryItem
 }>()
-const repo = useDependency(FAVORITES_REPO)
+const favoritesStore = useDependency(FAVORITES_STORE_TOKEN)
 const notify = useDependency(NOTIFIER_TOKEN)
-const toggleFav = createToggleFavorite({ repo, notify })
 
-const isFavoritePhoto = computed(() => repo.items.value.some(f => f.id === props.photo.id))
+async function toggle(photo: GalleryItem) {
+  const result = favoritesStore.toggle(photo)
+  if (result === 'added') {
+    notify.success('Photo added to favorites', 'Success')
+  }
+  else if (result === 'removed') {
+    notify.info('Photo removed from favorites', 'Info')
+  }
+}
+
+const isFavoritePhoto = computed(() => favoritesStore.items.some(f => f.id === props.photo.id))
 const tooltipLabel = computed(() => isFavoritePhoto.value ? 'Remove from favorites' : 'Add to favorites')
 </script>
 
@@ -29,7 +38,7 @@ const tooltipLabel = computed(() => isFavoritePhoto.value ? 'Remove from favorit
         bg-color="white"
         type="button"
         :aria-labelledby="labelledby"
-        @click="toggleFav.toggle(photo)"
+        @click="toggle(photo)"
         @mouseenter="onMouseEnter"
         @mouseleave="onMouseLeave"
         @focus="onFocus"

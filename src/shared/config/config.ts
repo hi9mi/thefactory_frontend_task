@@ -53,4 +53,4 @@ export function createAppConfigFromEnv(env: ImportMetaEnv): AppConfig {
   }
 }
 
-export const APP_CONFIG_TOKEN = token<AppConfig>()
+export const APP_CONFIG_TOKEN = token<AppConfig>('AppConfig')

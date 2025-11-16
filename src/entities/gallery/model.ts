@@ -2,10 +2,11 @@ import type { HttpError } from '@tf-app/shared/api'
 import type QuickLRU from 'quick-lru'
 import type { GalleryGateway, GalleryItem, GallerySearchResult } from './gateway'
 import { isHttpError } from '@tf-app/shared/api'
+import { token } from 'ditox'
 import { defineStore } from 'pinia'
 import { computed, reactive } from 'vue'
 
-const normalizeQuery = (q: string) => q.trim().toLowerCase().replace(/\s+/g, ' ')
+const normalizeQuery = (q: string) => q.trim().toLowerCase().replaceAll(/\s+/g, ' ')
 
 const galleryKey = (count: number) => `gallery:count=${count}`
 const searchKey = (q: string, p: number) => `search:q=${normalizeQuery(q)}::page=${p}`
@@ -27,6 +28,10 @@ function normalizeHttpError(e: HttpError) {
   }
   return e.errors?.join(', ') ?? ERROR_MESSAGES[e.status] ?? (e.status >= 500 ? 'Server error, try later' : 'Unknown HTTP error')
 }
+
+type GalleryRandomStore = ReturnType<ReturnType<typeof createGalleryRandomStore>>
+
+export const GALLERY_RANDOM_STORE_TOKEN = token<GalleryRandomStore>('GalleryRandomStore')
 // TODO: refactor
 export function createGalleryRandomStore(key: string, deps: {
   gateway: GalleryGateway
@@ -98,6 +103,10 @@ export function createGalleryRandomStore(key: string, deps: {
     }
   })
 }
+
+type GallerySearchStore = ReturnType<ReturnType<typeof createGalleryStore>>
+
+export const GALLERY_SEARCH_STORE_TOKEN = token<GallerySearchStore>('GallerySearchStore')
 
 export function createGalleryStore(key: string, deps: {
   gateway: GalleryGateway

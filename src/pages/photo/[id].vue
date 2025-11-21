@@ -17,11 +17,10 @@ const detailsStore = useDependency(PHOTO_DETAILS_STORE_TOKEN)
 
 const router = useRouter()
 const route = useRoute('/photo/[id]')
-const id = computed(() => route.params.id)
 
 const controller = shallowRef<AbortController | null>(null)
 
-watch(id, (_val, _oldVal, onCleanup) => {
+watch(() => route.params.id, (_val, _oldVal, onCleanup) => {
   if (!_val)
     return
   controller.value?.abort()
@@ -132,14 +131,12 @@ watch(() => detailsStore.error, (err) => {
     </template>
     <TfLoader v-else-if="detailsStore.loading" data-testid="loader" />
   </div>
-  <!-- <KeepAlive> -->
   <ShowFullPhoto
     v-if="isFullScreen && detailsStore.item"
     :src="detailsStore.item.urlRaw"
     :description="detailsStore.item.alt ?? 'Alternate text for the photo'"
     data-testid="full-photo"
   />
-  <!-- </KeepAlive> -->
 </template>
 
 <style module="classes">

@@ -1,24 +1,20 @@
+import type { AppConfig } from '@tf-app/shared/config'
 import type { App } from 'vue'
 import { createAppRouter } from '@tf-app/routing'
-import NProgress from 'nprogress'
+import { setupGuards } from '@tf-app/routing/guards'
 
 interface Params {
   app: App
   baseUrl: string
+  config: AppConfig
 }
 
-export function initRouter({ app, baseUrl }: Params) {
+export function initRouter({ app, baseUrl, config }: Params) {
   const router = createAppRouter(baseUrl)
 
-  app.use(router)
+  setupGuards(router, { config })
 
-  router.beforeEach((to, from) => {
-    if (to.path !== from.path)
-      NProgress.start()
-  })
-  router.afterEach(() => {
-    NProgress.done()
-  })
+  app.use(router)
 
   return router
 }

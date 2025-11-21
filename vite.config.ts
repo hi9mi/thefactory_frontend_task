@@ -7,6 +7,7 @@ import Icons from 'unplugin-icons/vite'
 import VueRouter from 'unplugin-vue-router/vite'
 import { defineConfig, loadEnv } from 'vite'
 import { createHtmlPlugin } from 'vite-plugin-html'
+import { VitePWA } from 'vite-plugin-pwa'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import webfontDownload from 'vite-plugin-webfont-dl'
 import { APP_INFO, META_TAGS } from './meta'
@@ -77,59 +78,59 @@ export default defineConfig(({ mode }) => {
           },
         },
       }),
-      // VitePWA({
-      //   useCredentials: true,
-      //   mode: mode as 'production' | 'development',
-      //   base: '/',
-      //   manifest: {
-      //     name: APP_INFO.name,
-      //     short_name: APP_INFO.name,
-      //     description: APP_INFO.shortDescription,
-      //     start_url: '/?source=pwa',
-      //     id: '/?source=pwa',
-      //     background_color: APP_INFO.app.background,
-      //     theme_color: APP_INFO.app.background,
-      //     icons: [
-      //       {
-      //         src: 'pwa-64x64.png',
-      //         sizes: '64x64',
-      //         type: 'image/png',
-      //       },
-      //       {
-      //         src: 'pwa-192x192.png',
-      //         sizes: '192x192',
-      //         type: 'image/png',
-      //       },
-      //       {
-      //         src: 'pwa-512x512.png',
-      //         sizes: '512x512',
-      //         type: 'image/png',
-      //         purpose: 'any',
-      //       },
-      //       {
-      //         src: 'maskable-icon-512x512.png',
-      //         sizes: '512x512',
-      //         type: 'image/png',
-      //         purpose: 'maskable',
-      //       },
-      //     ],
-      //   },
-      //   includeAssets: ['img/*.png', 'img/*.jpg'],
-      //   registerType: 'prompt',
-      //   workbox: {
-      //     cleanupOutdatedCaches: true,
-      //     maximumFileSizeToCacheInBytes: 4194304,
-      //     navigateFallbackDenylist: [
-      //       /robots.txt/,
-      //     ],
-      //   },
-      //   devOptions: {
-      //     enabled: mode === 'development',
-      //     type: 'module',
-      //     navigateFallback: 'index.html',
-      //     suppressWarnings: true,
-      //   },
-      // }),
+      VitePWA({
+        useCredentials: true,
+        mode: mode as 'production' | 'development',
+        base: '/',
+        manifest: {
+          name: APP_INFO.name,
+          short_name: APP_INFO.name,
+          description: APP_INFO.shortDescription,
+          start_url: '/?source=pwa',
+          id: '/?source=pwa',
+          background_color: APP_INFO.app.background,
+          theme_color: APP_INFO.app.background,
+          icons: [
+            {
+              src: 'pwa-64x64.png',
+              sizes: '64x64',
+              type: 'image/png',
+            },
+            {
+              src: 'pwa-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: 'pwa-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any',
+            },
+            {
+              src: 'maskable-icon-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable',
+            },
+          ],
+        },
+        includeAssets: ['img/*.png', 'img/*.jpg'],
+        registerType: 'prompt',
+        workbox: {
+          cleanupOutdatedCaches: true,
+          maximumFileSizeToCacheInBytes: 4194304,
+          navigateFallbackDenylist: [
+            /robots.txt/,
+          ],
+        },
+        devOptions: {
+          enabled: mode === 'development',
+          type: 'module',
+          navigateFallback: 'index.html',
+          suppressWarnings: true,
+        },
+      }),
       Icons({
         compiler: 'vue3',
         customCollections: {

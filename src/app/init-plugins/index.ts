@@ -5,9 +5,9 @@ import { initRouter } from './init-router'
 
 interface Params { app: App, config: AppConfig, baseUrl: string }
 
-export function initPlugins({ app, baseUrl }: Params) {
+export function initPlugins({ app, baseUrl, config }: Params) {
   initPinia(app)
-  const router = initRouter({ app, baseUrl })
+  const router = initRouter({ app, baseUrl, config })
 
   return { router }
 }

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import '../../../app/styles/index.css'
 </script>
 
 <template>
@@ -9,11 +10,11 @@
 
 <style scoped>
 .wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-content: center;
   width: 100%;
-  height: clamp(500px, 100%, 100%);
+  max-height: 100%;
+  min-height: 500px;
   padding: 20px;
   overflow: auto;
 }

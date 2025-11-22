@@ -19,7 +19,10 @@ const state = reactive({
       </TfActionButton>
 
       <template #controls>
-        <HstCheckbox v-model="state.disabled" title="Disabled" />
+        <HstCheckbox
+          v-model="state.disabled"
+          title="Disabled"
+        />
       </template>
     </Variant>
   </Story>

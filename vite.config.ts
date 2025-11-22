@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => {
         },
         logoHref: 'https://thefactory-frontend-task.vercel.app/',
         favicon: 'favicon.ico',
-        defaultColorScheme: 'light',
+        defaultColorScheme: 'auto',
       },
       viteIgnorePlugins: ['vite-plugin-pwa:dev-sw', 'vite-plugin-pwa:build', 'vite-plugin-pwa:info', 'vite-plugin-pwa', 'vite:html'],
     },

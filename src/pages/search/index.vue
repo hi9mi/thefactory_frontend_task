@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { SEARCH_RESULT_STORE_TOKEN } from '@tf-app/entities/photo'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
-import { debounce, useDependency } from '@tf-app/shared/libs'
+import { useDependency } from '@tf-app/shared/libs'
 import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import TfMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { useRouteQuery } from '@vueuse/router'
-import { computed, defineAsyncComponent, ref, shallowRef, watch } from 'vue'
+import { computed, defineAsyncComponent, onMounted, watch } from 'vue'
 
 const TfAffix = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/overlays/tf-affix/tf-affix.vue'),
@@ -22,47 +22,28 @@ const gallerySearchStore = useDependency(SEARCH_RESULT_STORE_TOKEN)
 
 const q = useRouteQuery<string>('q', '', { mode: 'replace' })
 const page = useRouteQuery('page', '1', { mode: 'push', transform: Number })
-const isDebouncing = ref(false)
 
-watch(q, (newQ, oldQ) => {
-  if (newQ !== oldQ && page.value !== 1)
-    page.value = 1
-}, { flush: 'sync' })
-
-const [debouncedSearch, cancelDebounce] = debounce((query: string, pageNum: number, init?: RequestInit) => {
-  return gallerySearchStore
-    .search({ query, page: pageNum, perPage: BATCH }, init)
-    .finally(() => {
-      isDebouncing.value = false
-    })
-}, 500)
-const controller = shallowRef<AbortController | null>(null)
-
-watch([q, page], (_vals, _old, onCleanup) => {
-  const query = q.value.trim()
-  if (!query) {
-    cancelDebounce()
-    isDebouncing.value = false
+async function onSubmit(query: string) {
+  if (!query.trim())
     return
-  }
 
-  controller.value?.abort()
-  const c = new AbortController()
-  controller.value = c
+  page.value = 1
+  gallerySearchStore.search({ query, page: 1, perPage: BATCH })
+}
 
-  isDebouncing.value = true
-  debouncedSearch(query, page.value, { signal: c.signal })
+watch(page, () => {
+  if (q.value.trim())
+    gallerySearchStore.search({ query: q.value, page: page.value, perPage: BATCH })
+})
 
-  onCleanup(() => {
-    c.abort()
-    cancelDebounce()
-  })
-}, { immediate: true })
+onMounted(() => {
+  if (q.value.trim())
+    gallerySearchStore.search({ query: q.value, page: page.value, perPage: BATCH })
+})
 
-const busy = computed(() => gallerySearchStore.loading || isDebouncing.value)
-const showGrid = computed(() => busy.value || gallerySearchStore.items.items.length > 0)
-const hasNoResults = computed(() => !busy.value && gallerySearchStore.items.items.length === 0)
-const isSearchEmpty = computed(() => !busy.value && q.value.trim() === '')
+const showGrid = computed(() => gallerySearchStore.loading || gallerySearchStore.items.items.length > 0)
+const hasNoResults = computed(() => gallerySearchStore.items.items.length === 0)
+const isSearchEmpty = computed(() => hasNoResults.value && q.value.trim() === '')
 
 watch(() => gallerySearchStore.error, (err) => {
   if (err)
@@ -71,13 +52,13 @@ watch(() => gallerySearchStore.error, (err) => {
 </script>
 
 <template>
-  <SearchPhotosForm v-model="q" data-testid="search-photos-form" mode="inline" />
+  <SearchPhotosForm v-model="q" data-testid="search-photos-form" mode="inline" @submit="onSubmit" />
 
   <div class="container" :class="classes.galleryContainer">
     <TfMasonryGrid
       v-if="showGrid"
       :items="gallerySearchStore.items.items"
-      :loading="gallerySearchStore.loading || busy"
+      :loading="gallerySearchStore.loading"
       :skeleton-count="BATCH"
       :initial-items-count="BATCH"
       :max-cols="6"
@@ -98,9 +79,8 @@ watch(() => gallerySearchStore.error, (err) => {
       data-testid="pagination"
       @change-page="(p) => page = p"
     />
-
     <div
-      v-if="!busy"
+      v-if="!gallerySearchStore.loading"
     >
       <p
         v-if="isSearchEmpty"

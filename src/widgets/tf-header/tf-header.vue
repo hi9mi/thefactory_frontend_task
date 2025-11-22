@@ -9,7 +9,7 @@ import SearchIcon from '~icons/tf-icons/search'
 
 const route = useRoute()
 const showSearchIcon = computed(() => {
-  return route.path !== '/favorites'
+  return route.path !== '/search'
 })
 </script>
 

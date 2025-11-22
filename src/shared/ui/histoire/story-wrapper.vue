@@ -2,9 +2,7 @@
 </script>
 
 <template>
-  <div
-    class="wrapper"
-  >
+  <div class="wrapper">
     <slot />
   </div>
 </template>
@@ -15,8 +13,8 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-height: 100%;
-  height: 500px;
+  height: clamp(500px, 100%, 100%);
   padding: 20px;
+  overflow: auto;
 }
 </style>

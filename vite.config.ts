@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 /// <reference types="histoire" />
 import path from 'node:path'
+import { HstVue } from '@histoire/plugin-vue'
 import vue from '@vitejs/plugin-vue'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import Icons from 'unplugin-icons/vite'
@@ -26,22 +27,22 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
     },
     base: process.env.HISTOIRE_BASE || '/',
-    // histoire: {
-    //   plugins: [HstVue()],
-    //   setupFile: '/src/histoire.setup.ts',
-    //   theme: {
-    //     title: 'The factory',
-    //     logo: {
-    //       light: './src/shared/ui/assets/logo.png',
-    //       dark: './src/shared/ui/assets/logo.png',
-    //       square: './src/shared/ui/assets/logo.png',
-    //     },
-    //     logoHref: 'https://thefactory-frontend-task.vercel.app/',
-    //     favicon: 'favicon.ico',
-    //     defaultColorScheme: 'light',
-    //   },
-    //   viteIgnorePlugins: ['vite-plugin-pwa:dev-sw', 'vite-plugin-pwa:build', 'vite-plugin-pwa:info', 'vite-plugin-pwa', 'vite:html'],
-    // },
+    histoire: {
+      plugins: [HstVue()],
+      setupFile: '/src/histoire.setup.ts',
+      theme: {
+        title: 'The factory',
+        logo: {
+          light: './src/shared/ui/assets/logo.png',
+          dark: './src/shared/ui/assets/logo.png',
+          square: './src/shared/ui/assets/logo.png',
+        },
+        logoHref: 'https://thefactory-frontend-task.vercel.app/',
+        favicon: 'favicon.ico',
+        defaultColorScheme: 'light',
+      },
+      viteIgnorePlugins: ['vite-plugin-pwa:dev-sw', 'vite-plugin-pwa:build', 'vite-plugin-pwa:info', 'vite-plugin-pwa', 'vite:html'],
+    },
     test: {
       environment: 'jsdom',
       css: {

@@ -3,7 +3,7 @@ import { SEARCH_RESULT_STORE_TOKEN } from '@tf-app/entities/photo'
 import SearchPhotosForm from '@tf-app/features/search-photos-form/search-photos-form.vue'
 import { useDependency } from '@tf-app/shared/libs'
 import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
-import TfMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
+import TfSkeleton from '@tf-app/shared/ui/feedback/tf-skeleton/tf-skeleton.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, defineAsyncComponent, onMounted, watch } from 'vue'
@@ -15,7 +15,7 @@ const TfPagination = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/navigation/tf-pagination/tf-pagination.vue'),
 )
 
-const BATCH = 18
+const BATCH = 30
 
 const notify = useDependency(NOTIFIER_TOKEN)
 const gallerySearchStore = useDependency(SEARCH_RESULT_STORE_TOKEN)
@@ -41,7 +41,7 @@ onMounted(() => {
     gallerySearchStore.search({ query: q.value, page: page.value, perPage: BATCH })
 })
 
-const showGrid = computed(() => gallerySearchStore.loading || gallerySearchStore.items.items.length > 0)
+const showGrid = computed(() => !gallerySearchStore.loading && gallerySearchStore.items.items.length > 0)
 const hasNoResults = computed(() => gallerySearchStore.items.items.length === 0)
 const isSearchEmpty = computed(() => hasNoResults.value && q.value.trim() === '')
 
@@ -55,22 +55,19 @@ watch(() => gallerySearchStore.error, (err) => {
   <SearchPhotosForm v-model="q" data-testid="search-photos-form" mode="inline" @submit="onSubmit" />
 
   <div class="container" :class="classes.galleryContainer">
-    <TfMasonryGrid
-      v-if="showGrid"
-      :items="gallerySearchStore.items.items"
-      :loading="gallerySearchStore.loading"
-      :skeleton-count="BATCH"
-      :initial-items-count="BATCH"
-      :max-cols="6"
-      :get-aspect-ratio="(p) => (p.w && p.h ? p.w / p.h : undefined)"
-    >
-      <template #default="{ item }">
+    <div class="gallery-grid">
+      <template v-if="showGrid">
         <TfPhotoCard
-          data-testid="photo-card"
+          v-for="item in gallerySearchStore.items.items"
+          :key="item.id"
           :photo="item"
+          data-testid="photo-card"
         />
       </template>
-    </TfMasonryGrid>
+      <template v-else-if="gallerySearchStore.loading">
+        <TfSkeleton v-for="i in BATCH" :key="i" width="440px" :aspect-ratio="1" />
+      </template>
+    </div>
     <TfPagination
       v-if="gallerySearchStore.items.items.length"
       :total-pages="gallerySearchStore.items.totalPages"
@@ -104,6 +101,7 @@ watch(() => gallerySearchStore.error, (err) => {
 <style module="classes">
 .galleryContainer {
   container: gallery / inline-size;
+  padding-bottom: 40px;
 }
 
 .galleryEmpty {

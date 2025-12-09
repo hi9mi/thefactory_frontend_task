@@ -8,12 +8,14 @@ const props = withDefaults(defineProps<{
   height?: CSSProperties['height']
   maxWidth?: CSSProperties['maxWidth']
   radius?: CSSProperties['borderRadius']
+  aspectRatio?: CSSProperties['aspectRatio']
 }>(), {
   type: 'block',
   width: '100%',
   maxWidth: '100%',
   height: 'auto',
   radius: 'var(--border-radius-small)',
+  aspectRatio: undefined,
 })
 const element = computed(() => props.type === 'block' ? 'div' : 'span')
 
@@ -22,6 +24,7 @@ const styleObject = computed(() => ({
   height: convertValueToPx(props.height),
   maxWidth: convertValueToPx(props.maxWidth),
   borderRadius: convertValueToPx(props.radius),
+  aspectRatio: props.aspectRatio,
 }))
 
 function convertValueToPx(value: string | number) {
@@ -45,6 +48,10 @@ function convertValueToPx(value: string | number) {
 .skeleton.inline {
   display: inline-block;
   line-height: 1;
+}
+
+.skeleton.block {
+  display: block;
 }
 
 .skeleton::after {

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { FAVORITE_PHOTO_STORE_TOKEN } from '@tf-app/entities/photo'
 import { useDependency, usePaginationData } from '@tf-app/shared/libs'
-import TfMasonryGrid from '@tf-app/widgets/tf-masonry-grid/tf-masonry-grid.vue'
 import TfPhotoCard from '@tf-app/widgets/tf-photo-card/tf-photo-card.vue'
 import { useRouteQuery } from '@vueuse/router'
 import { defineAsyncComponent } from 'vue'
@@ -13,7 +12,7 @@ const TfPagination = defineAsyncComponent(() =>
   import('@tf-app/shared/ui/navigation/tf-pagination/tf-pagination.vue'),
 )
 
-const BATCH = 18
+const BATCH = 30
 
 const favoritesStore = useDependency(FAVORITE_PHOTO_STORE_TOKEN)
 const qPage = useRouteQuery('page', 1, { mode: 'push', transform: Number })
@@ -25,21 +24,11 @@ const { data: paginatedFavoritePhotos, totalPages } = usePaginationData(() => fa
     <h1 :class="classes.title">
       Favorites
     </h1>
-    <TfMasonryGrid
-      :items="paginatedFavoritePhotos"
-      :loading="false"
-      :skeleton-count="BATCH"
-      :initial-items-count="BATCH"
-      :max-cols="6"
-      :get-aspect-ratio="(p) => (p.w && p.h ? p.w / p.h : undefined)"
-    >
-      <template #default="{ item }">
-        <TfPhotoCard
-          data-testid="photo-card"
-          :photo="item"
-        />
+    <div class="gallery-grid">
+      <template v-if="paginatedFavoritePhotos.length > 0">
+        <TfPhotoCard v-for="item in paginatedFavoritePhotos" :key="item.id" :photo="item" data-testid="photo-card" />
       </template>
-    </TfMasonryGrid>
+    </div>
     <p
       v-if="paginatedFavoritePhotos.length < 1"
       :class="classes.favoritesEmpty"
@@ -68,31 +57,11 @@ const { data: paginatedFavoritePhotos, totalPages } = usePaginationData(() => fa
 
 .container {
   container: gallery / inline-size;
+  padding-bottom: 40px;
 }
 
 .favoritesEmpty {
   font-size: 18px;
   text-align: center;
-}
-
-@container gallery (max-width: 1024px) {
-  .title {
-    font-size: 64px;
-    margin: 80px 0;
-  }
-}
-
-@container gallery (max-width: 760px) {
-  .title {
-    font-size: 56px;
-    margin: 70px 0;
-  }
-}
-
-@container gallery (max-width: 560px) {
-  .title {
-    font-size: 36px;
-    margin: 50px 0;
-  }
 }
 </style>

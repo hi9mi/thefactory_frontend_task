@@ -49,4 +49,4 @@ jobs:
         run: npx vercel build --prod --token $VERCEL_TOKEN
 
       - name: Vercel deploy (prebuilt)
-        run: npx vercel deploy --prebuilt --prod --scope hi9mi --token $VERCEL_TOKEN
+        run: npx vercel deploy --prebuilt --prod --scope hi9mis-projects --token $VERCEL_TOKEN

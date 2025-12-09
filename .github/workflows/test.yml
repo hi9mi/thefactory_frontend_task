@@ -10,10 +10,6 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
 
-    env:
-      VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
-      VITE_STORAGE_KIND: ${{ secrets.VITE_STORAGE_KIND }}
-
     steps:
       - uses: actions/checkout@v4
 
@@ -76,6 +72,8 @@ jobs:
           DEBUG: pw:browser,pw:api
           VITE_UNSPLASH_CLIENT_ID: ${{ secrets.UNSPLASH_CLIENT_ID }}
           VITE_UNSPLASH_API_URL: ${{ secrets.UNSPLASH_API_URL }}
+          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+          VITE_STORAGE_KIND: ${{ secrets.VITE_STORAGE_KIND }}
         run: npm run test:e2e
 
       - uses: actions/upload-artifact@v4

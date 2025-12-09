@@ -43,7 +43,7 @@ jobs:
         run: npx vercel whoami --token $VERCEL_TOKEN
 
       - name: Vercel pull
-        run: npx vercel pull --yes --environment=production --scope hi9mi --token $VERCEL_TOKEN
+        run: npx vercel pull --yes --environment=production --scope hi9mis-projects --token $VERCEL_TOKEN
 
       - name: Vercel build
         run: npx vercel build --prod --token $VERCEL_TOKEN

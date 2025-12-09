@@ -10,6 +10,10 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
 
+    env:
+      VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+      VITE_STORAGE_KIND: ${{ secrets.VITE_STORAGE_KIND }}
+
     steps:
       - uses: actions/checkout@v4
 

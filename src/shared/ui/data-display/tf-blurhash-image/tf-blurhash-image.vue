@@ -52,7 +52,7 @@ function handleBlurhashImage(event: MessageEvent<{ payload: { bitmap: ImageBitma
 </script>
 
 <template>
-  <canvas v-if="loading" ref="canvasElement" :class="$classes.blur" />
+  <canvas v-if="loading" ref="canvasElement" :class="$classes.blur" v-bind="$attrs" />
   <img
     v-show="!loading"
     :src="src"

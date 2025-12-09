@@ -5,11 +5,21 @@ import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import { useDependency } from '@tf-app/shared/libs'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
-import { onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 
 const props = defineProps<{ photo: PhotoListItem }>()
 const timerId = ref<ReturnType<typeof setTimeout>>()
 const photoDetailsStore = useDependency(PHOTO_DETAILS_STORE_TOKEN)
+
+const srcset = computed(() => {
+  const base = props.photo.urlRaw
+  return [
+    `${base}&w=440&h=440&q=80 440w`,
+    `${base}&w=880&h=880&q=80 880w`,
+    `${base}&w=1320&h=1320&q=75 1320w`,
+  ].join(', ')
+})
+const sizes = '(max-width: 600px) 100vw, (max-width: 900px) 50vw, (max-width: 1200px) 33vw, min(440px, 25vw)'
 
 function startPrefetch() {
   timerId.value = setTimeout(() => {
@@ -29,17 +39,23 @@ onBeforeUnmount(() => {
 <template>
   <article
     :class="classes.photoCard"
+    :style="{
+      '--bg-image': `url(${photo.urlSmall})`,
+    }"
   >
     <TfBlurhashImage
       :id="photo.id"
       :blurhash="photo.blurHash ?? null"
       :blurhash-width="440"
       :blurhash-height="440"
-      :src="`${photo.urlRaw}&w=640&h=640&dpr=2&q=80`"
+      :src="`${photo.urlRaw}&w=440&h=440&q=80`"
       :alt="photo.alt"
-      :srcset="`${photo.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${photo.urlRaw}&w=640&h=640&dpr=2&q=80 640w, ${photo.urlRaw}&w=1024&h=1024&dpr=3&q=80 1024w`"
-      sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
+      :srcset="srcset"
+      :sizes="sizes"
       :class="classes.photo"
+      :width="440"
+      :height="440"
+      fetchpriority="high"
     />
     <RouterLink
       :to="`/photo/${photo.id}`"
@@ -61,12 +77,12 @@ onBeforeUnmount(() => {
 <style module="classes">
 .photoCard {
   position: relative;
-  display: flex;
-  flex-direction: column;
   border-radius: var(--border-radius-small);
   z-index: 1;
-  height: 100%;
-  width: 100%;
+  display: grid;
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
 }
 
 .overlay {
@@ -103,6 +119,11 @@ onBeforeUnmount(() => {
 .photo {
   border-radius: var(--border-radius-small);
   height: 100%;
+  object-fit: contain;
+  width: 100%;
+  height: unset;
+  aspect-ratio: 1;
+  backdrop-filter: blur(8px) brightness(0.8) contrast(0.7);
 }
 
 .photoCard > .photoLink::before {

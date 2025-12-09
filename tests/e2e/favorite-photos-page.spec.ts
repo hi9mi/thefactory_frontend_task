@@ -16,7 +16,7 @@ test.describe('Favorites Photos Page', () => {
   const newValue = JSON.parse(newValueStr) as Array<{ id: string }>
   const a = randomPhotos.concat(newValue)
   const LS_KEY = 'favorites:v1'
-  const BATCH = 18
+  const BATCH = 30
 
   test.beforeEach(async ({ page, context }) => {
     await context.addInitScript(({ key, value }) => {

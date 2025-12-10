@@ -3,10 +3,10 @@
   "type": "module",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "npm@11.6.3",
+  "packageManager": "npm@11.7.0",
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=24.11.1",
+    "npm": ">=11.7.0"
   },
   "scripts": {
     "dev": "vite",
@@ -27,8 +27,8 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@vueuse/core": "^14.0.0",
-    "@vueuse/router": "^14.0.0",
+    "@vueuse/core": "^14.1.0",
+    "@vueuse/router": "^14.1.0",
     "blurhash": "^2.0.5",
     "ditox": "^3.1.0",
     "focus-trap": "^7.6.6",
@@ -36,44 +36,44 @@
     "nprogress": "^0.2.0",
     "pinia": "^3.0.4",
     "quick-lru": "^7.3.0",
-    "vue": "^3.5.24",
+    "vue": "^3.5.25",
     "vue-router": "^4.6.3",
-    "zod": "^4.1.12"
+    "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.2.0",
+    "@antfu/eslint-config": "^6.5.1",
     "@histoire/plugin-vue": "^1.0.0-alpha.5",
     "@pinia/testing": "^1.0.3",
-    "@playwright/test": "^1.56.1",
-    "@types/node": "^24.10.1",
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^24.10.2",
     "@types/nprogress": "^0.2.3",
     "@vite-pwa/assets-generator": "^1.0.2",
     "@vitejs/plugin-vue": "^6.0.2",
-    "@vitest/coverage-v8": "^4.0.13",
+    "@vitest/coverage-v8": "^4.0.15",
     "@vue/test-utils": "^2.4.6",
     "dotenv": "^17.2.3",
     "eslint": "^9.39.1",
-    "eslint-plugin-format": "^1.0.2",
+    "eslint-plugin-format": "^1.1.0",
     "eslint-plugin-vuejs-accessibility": "^2.4.1",
-    "happy-dom": "^20.0.10",
+    "happy-dom": "^20.0.11",
     "histoire": "^1.0.0-alpha.5",
     "lint-staged": "^16.2.7",
     "postcss": "^8.5.6",
     "postcss-html": "^1.8.0",
     "simple-git-hooks": "^2.13.1",
-    "stylelint": "^16.26.0",
+    "stylelint": "^16.26.1",
     "stylelint-config-recommended-vue": "^1.6.1",
     "stylelint-config-standard": "^39.0.1",
     "typescript": "^5.9.3",
     "unplugin-icons": "^22.5.0",
-    "unplugin-vue-router": "^0.17.1",
-    "vite": "^7.2.4",
+    "unplugin-vue-router": "^0.19.0",
+    "vite": "^7.2.7",
     "vite-plugin-html": "^3.2.2",
-    "vite-plugin-pwa": "^1.1.0",
+    "vite-plugin-pwa": "^1.2.0",
     "vite-plugin-vue-devtools": "^8.0.5",
     "vite-plugin-webfont-dl": "^3.11.1",
-    "vitest": "^4.0.13",
-    "vue-tsc": "^3.1.4"
+    "vitest": "^4.0.15",
+    "vue-tsc": "^3.1.8"
   },
   "overrides": {
     "stylelint": "$stylelint"

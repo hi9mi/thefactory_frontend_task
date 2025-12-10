@@ -14,6 +14,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TEAM: ${{ secrets.VERCEL_TEAM }}
 
     steps:
       - uses: actions/checkout@v4
@@ -27,10 +28,10 @@ jobs:
         run: npm ci
 
       - name: Vercel pull
-        run: npx vercel pull --yes --environment=production --scope hi9mis-projects --token $VERCEL_TOKEN
+        run: npx vercel pull --yes --environment=production --scope $VERCEL_TEAM --token $VERCEL_TOKEN
 
       - name: Vercel build
         run: npx vercel build --prod --token $VERCEL_TOKEN
 
       - name: Vercel deploy (prebuilt)
-        run: npx vercel deploy --prebuilt --prod --scope hi9mis-projects --token $VERCEL_TOKEN
+        run: npx vercel deploy --prebuilt --prod --scope $VERCEL_TEAM --token $VERCEL_TOKEN

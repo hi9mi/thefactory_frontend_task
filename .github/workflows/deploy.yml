@@ -14,7 +14,6 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      VERCEL_TEAM_EMAIL: ${{ secrets.VERCEL_TEAM_EMAIL }}
 
     steps:
       - uses: actions/checkout@v4
@@ -24,23 +23,8 @@ jobs:
           node-version: '24'
           cache: npm
 
-      - run: npm ci
-
-      - name: Prepare Vercel git metadata
-        shell: bash
-        run: |
-          echo "VERCEL_GIT_COMMIT_AUTHOR_LOGIN=hi9mi" >> $GITHUB_ENV
-          echo "VERCEL_GIT_COMMIT_AUTHOR_NAME=hi9mi" >> $GITHUB_ENV
-          echo "VERCEL_GIT_COMMIT_AUTHOR_EMAIL=${VERCEL_TEAM_EMAIL}" >> $GITHUB_ENV
-          echo "VERCEL_GIT_REPO_OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
-          echo "VERCEL_GIT_REPO_SLUG=${{ github.event.repository.name }}" >> $GITHUB_ENV
-          echo "VERCEL_GIT_COMMIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
-          MSG="${{ github.event.head_commit.message }}"
-          if [ -z "$MSG" ]; then MSG="CI deploy from GitHub Actions"; fi
-          echo "VERCEL_GIT_COMMIT_MESSAGE=$MSG" >> $GITHUB_ENV
-
-      - name: Vercel whoami (debug)
-        run: npx vercel whoami --token $VERCEL_TOKEN
+      - name: Install dependencies
+        run: npm ci
 
       - name: Vercel pull
         run: npx vercel pull --yes --environment=production --scope hi9mis-projects --token $VERCEL_TOKEN

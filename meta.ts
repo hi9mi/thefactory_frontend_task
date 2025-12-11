@@ -11,6 +11,7 @@ export const APP_INFO = {
     darkThemeColor: '#242424',
     primaryColor: '#fff200',
   },
+  version: '1.0.0',
 } as const
 
 export const META_TAGS = [

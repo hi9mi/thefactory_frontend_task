@@ -1,5 +1,6 @@
 import { createAppConfigFromEnv } from '@tf-app/shared/config'
 import { createDiPlugin } from '@tf-app/shared/libs'
+import { LOGGER_TOKEN } from '@tf-app/shared/libs/logger/logger'
 import { createContainer } from 'ditox'
 import { createApp as createVueApp } from 'vue'
 import { appModule } from './app-module'
@@ -19,14 +20,36 @@ export function bootstrap({ baseUrl, performance }: Params) {
 
     const app = createVueApp(TfApp)
     app.config.performance = performance
-    const { router } = initPlugins({ app, baseUrl, config })
 
     const rootContainer = createContainer()
-    appModule(rootContainer, { config })
 
+    appModule(rootContainer, { config })
+    const rootLogger = rootContainer.resolve(LOGGER_TOKEN)
+
+    const logger = rootContainer.resolve(LOGGER_TOKEN).child('bootstrap')
+
+    const { router } = initPlugins({ app, baseUrl, config, logger: rootLogger })
+    logger.info('app info', {
+      __APP_VERSION__,
+      __BUILD_TIME__,
+    })
     app.use(createDiPlugin(rootContainer))
 
-    return { isReady: router.isReady(), mount: (el: string | Element) => app.mount(el) }
+    logger.info('Test info')
+    logger.warn('Test warn')
+    logger.error('Test error')
+
+    return {
+      isReady: router.isReady(),
+      mount: (el: string | Element) => {
+        const mountTimer = logger.timer('mount')
+        const vm = app.mount(el)
+        mountTimer.end()
+        logger.info('app mounted', { el: typeof el === 'string' ? el : '#el' })
+
+        return vm
+      },
+    }
   }
   catch (error) {
     console.error('[Error] Failed to create app config:', error)

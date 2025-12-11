@@ -116,7 +116,7 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
-        includeAssets: ['img/*.png', 'img/*.jpg'],
+        includeAssets: ['**/*.{png,jpg,webp,avif}'],
         registerType: 'prompt',
         workbox: {
           cleanupOutdatedCaches: true,
@@ -144,21 +144,34 @@ export default defineConfig(({ mode }) => {
         '@tf-app': path.resolve(__dirname, './src'),
       },
     },
-
+    optimizeDeps: {
+      include: ['vue', 'vue-router', 'pinia', '@vueuse/core'],
+    },
+    define: {
+      __APP_VERSION__: JSON.stringify(APP_INFO.version),
+      __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+    },
     build: {
-      target: 'es2021',
+      target: 'es2022',
       minify: true,
       assetsDir: 'app',
       emptyOutDir: true,
       rollupOptions: {
         output: {
-          manualChunks: {
-            ethers: ['magic-grid', 'nprogress', 'ditox', 'blurhash'],
-            zod: ['zod'],
-            router: ['vue-router'],
-            pinia: ['pinia'],
-            vue: ['vue'],
-            vueuse: ['@vueuse/core', '@vueuse/router'],
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('vue-router'))
+                return 'router'
+              if (id.includes('pinia'))
+                return 'pinia'
+              if (id.includes('@vueuse'))
+                return 'vueuse'
+              if (id.includes('zod'))
+                return 'zod'
+              if (id.includes('vue'))
+                return 'vue'
+              return 'vendor'
+            }
           },
         },
       },

@@ -26,7 +26,7 @@ export default antfu({
     'no-restricted-globals': 'off',
   },
 }, {
-  files: ['./src/shared/libs/logger/logger.ts'],
+  files: ['./src/shared/libs/logger/*.ts'],
   rules: {
     'no-console': 'off',
   },

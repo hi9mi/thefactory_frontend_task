@@ -15,7 +15,11 @@ export function setupGuards(router: Router, options: GuardsOptions) {
 
   if (config.dev) {
     router.beforeEach((to, from) => {
-      logger.child('Router').info(`${from.path} → ${to.path}`)
+      logger.child('Router').info({
+        title: 'Navigating',
+        msg: `Navigating from ${from.path} to ${to.path}`,
+        data: { from, to },
+      })
     })
   }
 

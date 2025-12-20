@@ -17,7 +17,7 @@ export function loggerProvider(container: Container, opts?: {
   container.bindFactory(LOGGER_TOKEN, injectable(config => createLogger({
     baseName: opts?.name ?? 'TheFactory',
     baseLevel: level,
-    baseMeta: {
+    rootContext: {
       version: __APP_VERSION__,
       build: __BUILD_TIME__,
     },

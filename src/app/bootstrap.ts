@@ -1,6 +1,5 @@
 import { createAppConfigFromEnv } from '@tf-app/shared/config'
-import { createDiPlugin } from '@tf-app/shared/libs'
-import { LOGGER_TOKEN } from '@tf-app/shared/libs/logger/logger'
+import { createDiPlugin, LOGGER_TOKEN } from '@tf-app/shared/libs'
 import { createContainer } from 'ditox'
 import { createApp as createVueApp } from 'vue'
 import { appModule } from './app-module'
@@ -17,7 +16,6 @@ interface Params {
 export function bootstrap({ baseUrl, performance }: Params) {
   try {
     const config = createAppConfigFromEnv(import.meta.env)
-
     const app = createVueApp(TfApp)
     app.config.performance = performance
 
@@ -25,27 +23,50 @@ export function bootstrap({ baseUrl, performance }: Params) {
 
     appModule(rootContainer, { config })
     const rootLogger = rootContainer.resolve(LOGGER_TOKEN)
-
-    const logger = rootContainer.resolve(LOGGER_TOKEN).child('bootstrap')
+    const bootstrapLogger = rootLogger.child('Bootstrap')
 
     const { router } = initPlugins({ app, baseUrl, config, logger: rootLogger })
-    logger.info('app info', {
-      __APP_VERSION__,
-      __BUILD_TIME__,
+    bootstrapLogger.info({
+      title: 'AppInfo',
+      msg: `App version ${__APP_VERSION__} built on ${__BUILD_TIME__}`,
     })
     app.use(createDiPlugin(rootContainer))
 
-    logger.info('Test info')
-    logger.warn('Test warn')
-    logger.error('Test error')
+    globalThis.addEventListener('unhandledrejection', (event) => {
+      event.preventDefault()
+      bootstrapLogger.error({
+        title: 'UnhandledRejection',
+        msg: 'UnhandledRejection',
+        error: event.reason,
+      })
+    })
+
+    bootstrapLogger.info({
+      title: 'App config',
+      msg: 'App config',
+      data: config,
+    })
+    bootstrapLogger.warn({
+      title: 'App config',
+      msg: 'App config',
+      data: config,
+    })
+    bootstrapLogger.error({
+      title: 'App config',
+      msg: 'App config',
+      error: new Error('App config'),
+    })
 
     return {
       isReady: router.isReady(),
-      mount: (el: string | Element) => {
-        const mountTimer = logger.timer('mount')
-        const vm = app.mount(el)
+      mount: (id: string) => {
+        const mountTimer = bootstrapLogger.timer('mount')
+        const vm = app.mount(id)
         mountTimer.end()
-        logger.info('app mounted', { el: typeof el === 'string' ? el : '#el' })
+        bootstrapLogger.info({
+          title: 'AppMounted',
+          msg: `App mounted to element with id ${id}`,
+        })
 
         return vm
       },

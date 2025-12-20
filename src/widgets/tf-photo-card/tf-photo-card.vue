@@ -34,6 +34,9 @@ function cancelPrefetch() {
 onBeforeUnmount(() => {
   clearTimeout(timerId.value)
 })
+// TODO: move photo card to entities/photo/ui/photo-card/photo-card.vue
+// add slot for actions
+// make prop loading and create photo card skeleton
 </script>
 
 <template>

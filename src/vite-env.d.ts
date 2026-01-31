@@ -2,7 +2,6 @@
 /// <reference types="vite-plugin-pwa/info" />
 /// <reference types="vite-plugin-pwa/vue" />
 /// <reference types="@histoire/plugin-vue/components" />
-/// <reference types="unplugin-vue-router/client" />
 
 interface ImportMetaEnv {
   readonly VITE_UNSPLASH_API_URL: string

@@ -5,12 +5,12 @@ import { HstVue } from '@histoire/plugin-vue'
 import vue from '@vitejs/plugin-vue'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import Icons from 'unplugin-icons/vite'
-import VueRouter from 'unplugin-vue-router/vite'
 import { defineConfig, loadEnv } from 'vite'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import { VitePWA } from 'vite-plugin-pwa'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import webfontDownload from 'vite-plugin-webfont-dl'
+import VueRouter from 'vue-router/vite'
 import { APP_INFO, META_TAGS } from './meta'
 
 // https://vitejs.dev/config/
@@ -66,7 +66,9 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       vueDevTools(),
-      VueRouter(),
+      VueRouter({
+        dts: 'src/route-map.d.ts',
+      }),
       vue(),
       webfontDownload(),
       createHtmlPlugin({

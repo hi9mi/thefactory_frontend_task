@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type { PhotoListItem } from '@tf-app/entities/photo'
 import { PHOTO_DETAILS_STORE_TOKEN } from '@tf-app/entities/photo'
-import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
-import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import { useDependency } from '@tf-app/shared/libs'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
+import TfSkeleton from '@tf-app/shared/ui/feedback/tf-skeleton/tf-skeleton.vue'
 import { computed, onBeforeUnmount, ref } from 'vue'
 
-const props = defineProps<{ photo: PhotoListItem }>()
+const props = defineProps<{
+  photo: PhotoListItem
+  loading?: boolean
+}>()
 const timerId = ref<ReturnType<typeof setTimeout>>()
 const photoDetailsStore = useDependency(PHOTO_DETAILS_STORE_TOKEN)
 
@@ -38,6 +40,7 @@ onBeforeUnmount(() => {
 
 <template>
   <article
+    v-if="!loading"
     :class="classes.photoCard"
     :style="{
       '--bg-image': `url(${photo.urlSmall})`,
@@ -68,10 +71,10 @@ onBeforeUnmount(() => {
     />
     <div :class="classes.overlay" aria-hidden="true" data-testid="photo-actions-overlay" />
     <div :class="classes.actions">
-      <ToggleFavoritePhoto :photo="photo" />
-      <DownloadPhoto :src="photo.urlRaw ?? ''" :name="photo.id" />
+      <slot name="actions" v-bind="photo" />
     </div>
   </article>
+  <TfSkeleton v-else :aspect-ratio="1" />
 </template>
 
 <style module="classes">
@@ -101,6 +104,7 @@ onBeforeUnmount(() => {
   display: flex;
   gap: 20px;
   align-items: center;
+  pointer-events: none;
 }
 
 .photoLink:focus-visible::before {
@@ -118,7 +122,6 @@ onBeforeUnmount(() => {
 
 .photo {
   border-radius: var(--border-radius-small);
-  height: 100%;
   object-fit: contain;
   width: 100%;
   height: unset;
@@ -150,13 +153,6 @@ onBeforeUnmount(() => {
   visibility: visible;
 }
 
-.overlay {
-  pointer-events: none;
-}
-
-.actions {
-  pointer-events: none;
-}
 .photoCard:hover .actions,
 .photoCard:focus-within .actions {
   pointer-events: auto;

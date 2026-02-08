@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import ToggleTheme from '@tf-app/features/toggle-theme/toggle-theme.vue'
+import { useTheme } from '@tf-app/shared/libs/vue/theme/use-theme'
+import ToggleTheme from '@tf-app/shared/ui/buttons/toggle-theme/toggle-theme.vue'
 
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
@@ -8,6 +9,13 @@ import HeartIcon from '~icons/tf-icons/heart'
 import SearchIcon from '~icons/tf-icons/search'
 
 const route = useRoute()
+const { isDark, toggle } = useTheme({
+  selector: 'html',
+  attribute: 'class',
+  valueDark: 'dark',
+  valueLight: 'light',
+})
+
 const showSearchIcon = computed(() => {
   return route.path !== '/search'
 })
@@ -55,7 +63,7 @@ const showSearchIcon = computed(() => {
             <span :class="classes.linkText">Favorites</span>
           </RouterLink>
         </nav>
-        <ToggleTheme />
+        <ToggleTheme :is-dark="isDark" @toggle="toggle" />
       </div>
     </div>
   </header>

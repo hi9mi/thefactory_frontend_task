@@ -54,5 +54,6 @@ watch(needRefresh, () => {
     :auto-hide-in-ms="5000"
     :should-not-hide-on-hover="true"
     :has-remove-button="true"
+    transition="flip"
   />
 </template>

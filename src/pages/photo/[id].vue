@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { PHOTO_DETAILS_STORE_TOKEN } from '@tf-app/entities/photo'
 import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
-import ShowFullPhoto from '@tf-app/features/show-full-photo/show-full-photo.vue'
+import FullscreenPhoto from '@tf-app/features/fullscreen-photo/fullscreen-photo.vue'
 import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
 import { computeRelativeBrightness, hexToRgb, useDependency } from '@tf-app/shared/libs'
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
 import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
+import TfImage from '@tf-app/shared/ui/data-display/tf-image/tf-image.vue'
 import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
 import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
 import { computed, shallowRef, watch } from 'vue'
@@ -63,7 +64,7 @@ watch(() => detailsStore.error, (err) => {
 <template>
   <div :class="classes.wrapper">
     <template v-if="!detailsStore.loading && detailsStore.item">
-      <img
+      <TfImage
         :class="classes.photoBg"
         :src="`${detailsStore.item.urlRaw}&w=320&h=320&dpr=1&q=80`"
         :srcset="`${detailsStore.item.urlRaw}&w=320&h=320&dpr=1&q=80 320w, ${detailsStore.item.urlRaw}&w=640&h=640&dpr=2&q=80 640w, ${detailsStore.item.urlRaw}&w=1024&h=1024&dpr=3&q=80 1024w`"
@@ -71,7 +72,7 @@ watch(() => detailsStore.error, (err) => {
         alt=""
         role="presentation"
         data-testid="photo-bg"
-      >
+      />
       <div :class="classes.backdrop" />
       <div class="container" :class="classes.container">
         <div :class="classes.photoHeader">
@@ -131,10 +132,11 @@ watch(() => detailsStore.error, (err) => {
     </template>
     <TfLoader v-else-if="detailsStore.loading" data-testid="loader" />
   </div>
-  <ShowFullPhoto
-    v-if="isFullScreen && detailsStore.item"
+  <FullscreenPhoto
+    v-if="detailsStore.item"
+    :open="isFullScreen"
     :src="detailsStore.item.urlRaw"
-    :description="detailsStore.item.alt ?? 'Alternate text for the photo'"
+    :alt="detailsStore.item.alt ?? 'Alternate text for the photo'"
     data-testid="full-photo"
   />
 </template>

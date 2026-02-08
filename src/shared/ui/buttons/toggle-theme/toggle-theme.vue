@@ -1,27 +1,24 @@
 <script setup lang="ts">
-import { useDark, useToggle } from '@vueuse/core'
-
 import SunAndMoonIcon from '~icons/tf-icons/sun-and-moon'
 
-const isDarkTheme = useDark({
-  selector: 'html',
-  attribute: 'class',
-  valueDark: 'dark',
-  valueLight: 'light',
-})
-const toggleDark = useToggle(isDarkTheme)
+defineProps<{
+  isDark: boolean
+}>()
+defineEmits<{
+  toggle: [value?: boolean]
+}>()
 </script>
 
 <template>
   <button
     id="toggle-theme-btn"
-    :aria-label="isDarkTheme ? 'Toggle Dark theme' : 'Toggle Light theme'"
+    :aria-label="isDark ? 'Toggle Dark theme' : 'Toggle Light theme'"
     title="Toggles light & dark theme"
     aria-live="polite"
     type="button"
     :class="classes.button"
     data-testid="toggle-theme-btn"
-    @click="toggleDark()"
+    @click="$emit('toggle')"
   >
     <SunAndMoonIcon :class="classes.sunAndMoon" data-animated />
   </button>

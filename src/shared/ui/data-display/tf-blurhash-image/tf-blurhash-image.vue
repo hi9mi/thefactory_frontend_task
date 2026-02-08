@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import TfImage from '@tf-app/shared/ui/data-display/tf-image/tf-image.vue'
 import { computed, onBeforeUnmount, onMounted, ref, useCssModule } from 'vue'
-
 import { decodeWorker } from './decode'
 
 defineOptions({
@@ -53,16 +53,17 @@ function handleBlurhashImage(event: MessageEvent<{ payload: { bitmap: ImageBitma
 
 <template>
   <canvas v-if="loading" ref="canvasElement" :class="$classes.blur" v-bind="$attrs" />
-  <img
+  <TfImage
     v-show="!loading"
     :src="src"
     :srcset="srcset"
     :sizes="sizes"
-    :alt="alt"
+    :alt="alt || ''"
     :class="imageClasses"
     v-bind="$attrs"
+    loading="eager"
     @load="onLoadImage"
-  >
+  />
 </template>
 
 <style module="classes">

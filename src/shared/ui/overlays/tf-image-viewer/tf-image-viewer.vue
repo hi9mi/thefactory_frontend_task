@@ -1,57 +1,47 @@
 <script setup lang="ts">
 import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import TfImage from '@tf-app/shared/ui/data-display/tf-image/tf-image.vue'
+import { onMounted, useTemplateRef, watch } from 'vue'
 import XMarkIcon from '~icons/tf-icons/x-mark'
 
-defineOptions({
-  inheritAttrs: false,
-})
-
-defineProps<{
+const props = defineProps<{
   src: string
-  description: string
+  open: boolean
+  ariaLabel?: string
+  alt: string
 }>()
 
 const emit = defineEmits<{
   close: []
 }>()
 
-const dialogRef = ref<HTMLDialogElement>()
-const router = useRouter()
-const route = useRoute('/photo/[id]')
+const dialogRef = useTemplateRef('dialogRef')
 
-const scrollTop = window.scrollY
-
+watch(
+  () => props.open,
+  (open) => {
+    if (open) {
+      dialogRef.value?.showModal()
+    }
+    else {
+      dialogRef.value?.close()
+    }
+  },
+)
 onMounted(() => {
-  dialogRef.value?.showModal()
-
-  document.documentElement.style.top = `-${scrollTop}px`
-  document.documentElement.classList.add('lock-scrollbar')
+  if (props.open)
+    dialogRef.value?.showModal()
 })
 
-onBeforeUnmount(() => {
-  document.documentElement.classList.remove('lock-scrollbar')
-  document.documentElement.style.top = ''
-
-  globalThis.requestAnimationFrame(() => {
-    window.scrollTo({ top: scrollTop, left: 0, behavior: 'instant' })
-  })
-})
 function handleDialogClose() {
-  closeFullPhoto()
+  emit('close')
+  dialogRef.value?.close()
 }
 
 function handleBackdropClick(event: MouseEvent) {
   if (event.target === dialogRef.value) {
-    closeFullPhoto()
+    handleDialogClose()
   }
-}
-
-function closeFullPhoto() {
-  emit('close')
-  const { full, ...rest } = route.query
-  router.push({ query: rest })
 }
 </script>
 
@@ -60,27 +50,25 @@ function closeFullPhoto() {
   <!-- vue-a11y/no-static-element-interactions, this rule is disabled because it's a dialog -->
   <dialog
     ref="dialogRef"
-    v-bind="$attrs"
     aria-modal="true"
-    :class="classes.dialog"
-    :aria-label="description || 'Fullscrean viewing photo'"
+    :aria-label="ariaLabel"
     @click="handleBackdropClick"
     @close="handleDialogClose"
+    :class="classes.dialog"
   >
     <div :class="classes.wrapper">
-      <img
+      <TfImage
         :src="`${src}&w=640&h=640&dpr=2&q=80`"
         :srcset="`${src}&w=320&h=320&dpr=1&q=80 320w, ${src}&w=640&h=640&dpr=2&q=80 640w, ${src}&w=1024&h=1024&dpr=3&q=80 1024w`"
         sizes="(max-width: 400px) 320px, (max-width: 800px) 640px, 1024px"
-        :alt="description || 'Фотография в полном размере'"
+        :alt="alt"
         :class="classes.photo"
-      >
-
+      />
       <TfActionButton
         :class="classes.closeBtn"
-        aria-label="Закрыть полноэкранный режим"
+        aria-label="Close preview image"
         data-testid="close-preview-btn"
-        @click="closeFullPhoto"
+        @click="handleDialogClose"
       >
         <XMarkIcon
           width="25"
@@ -90,7 +78,7 @@ function closeFullPhoto() {
       </TfActionButton>
     </div>
   </dialog>
-  <!-- eslint-enable -->
+    <!-- eslint-enable -->
 </template>
 
 <style module="classes">
@@ -115,14 +103,16 @@ function closeFullPhoto() {
   transform: scale(0.95);
   transition:
     opacity 0.2s ease,
-    transform 0.2s easy,
-    overlay 0.2s ease allow-discrete,
-    display 0.2s ease allow-discrete;
+    transform 0.2s ease;
 }
 
 .dialog[open] {
   opacity: 1;
   transform: scale(1);
+}
+
+.dialog:not([open]) {
+  display: none;
 }
 
 .dialog::backdrop {
@@ -142,7 +132,6 @@ function closeFullPhoto() {
 
 .wrapper {
   position: relative;
-  /*padding: 60px;*/
   max-width: 100%;
   max-height: 100%;
 }

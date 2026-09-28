@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import type { Notification } from '../model'
-import XMarkIcon from '~icons/tf-icons/x-mark'
-import { useNotificationsStore } from '../model'
+import type { Notification } from "../model";
+import XMarkIcon from "~icons/tf-icons/x-mark";
+import { useNotificationsStore } from "../model";
 
-const props = defineProps<{ notification: Notification, hasRemoveButton?: boolean }>()
-const store = useNotificationsStore()
+const props = defineProps<{ notification: Notification; hasRemoveButton?: boolean }>();
+const store = useNotificationsStore();
 
 function onEnter() {
-  store.pause(props.notification.id)
+  store.pause(props.notification.id);
 }
 function onLeave() {
-  store.resume(props.notification.id)
+  store.resume(props.notification.id);
 }
 function onRemove() {
-  store.remove(props.notification.id)
+  store.remove(props.notification.id);
 }
 </script>
 
@@ -68,22 +68,22 @@ function onRemove() {
   top: 50%;
   transform: translateY(-50%);
   position: absolute;
-  content: '';
+  content: "";
   display: block;
   width: 3px;
   height: 80%;
   border-radius: var(--border-radius-small);
 }
-.item[data-type='success']::before {
+.item[data-type="success"]::before {
   background: var(--color-fruit-salad);
 }
-.item[data-type='error']::before {
+.item[data-type="error"]::before {
   background: var(--color-sunset-orange);
 }
-.item[data-type='info']::before {
+.item[data-type="info"]::before {
   background: var(--color-info, #1e3a8a);
 }
-.item[data-type='warning']::before {
+.item[data-type="warning"]::before {
   background: var(--color-warning, #8a6d1e);
 }
 .pauseOverlay {

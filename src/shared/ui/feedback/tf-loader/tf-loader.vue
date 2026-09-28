@@ -1,19 +1,10 @@
 <script setup lang="ts">
-import LoaderIcon from '~icons/tf-icons/loader'
+import LoaderIcon from "~icons/tf-icons/loader";
 </script>
 
 <template>
-  <div
-    role="status"
-    :class="classes.loader"
-  >
-    <LoaderIcon
-      width="22"
-      height="22"
-      aria-hidden="true"
-      :class="classes.spinner"
-      data-animated
-    />
+  <div role="status" :class="classes.loader">
+    <LoaderIcon width="22" height="22" aria-hidden="true" :class="classes.spinner" data-animated />
     <span class="sr-only">Загрузка...</span>
   </div>
 </template>

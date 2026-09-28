@@ -1,24 +1,28 @@
 <script lang="ts" setup>
-import { logEvent } from 'histoire/client'
-import { reactive } from 'vue'
+import { logEvent } from "histoire/client";
+import { reactive } from "vue";
 
-import TfButton from './tf-button.vue'
+import TfButton from "./tf-button.vue";
 
 const state = reactive<{
-  disabled: boolean
-  content: string
-  color: 'white' | 'yellow'
+  disabled: boolean;
+  content: string;
+  color: "white" | "yellow";
 }>({
   disabled: false,
-  content: 'Hello world',
-  color: 'white',
-})
+  content: "Hello world",
+  color: "white",
+});
 </script>
 
 <template>
   <Story>
     <Variant title="TfButton">
-      <TfButton :bg-color="state.color" :disabled="state.disabled" @click="logEvent('My event', $event)">
+      <TfButton
+        :bg-color="state.color"
+        :disabled="state.disabled"
+        @click="logEvent('My event', $event)"
+      >
         {{ state.content }}
       </TfButton>
 

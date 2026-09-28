@@ -1,37 +1,53 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
-import { watch } from 'vue'
-import { useNotificationsStore } from '../model'
-import TfNotificationItem from './tf-notification-item.vue'
+import { storeToRefs } from "pinia";
+import { watch } from "vue";
+import { useNotificationsStore } from "../model";
+import TfNotificationItem from "./tf-notification-item.vue";
 
-const props = withDefaults(defineProps<{
-  target?: string
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
-  gap?: number
-  zIndex?: number
-  transition?: 'slide' | 'fade' | 'bounce' | 'flip' | 'zoom' | 'elastic' | 'fly-in' | 'swoop' | 'glow'
-  autoHideInMs?: number
-  shouldNotHideOnHover?: boolean
-  hasRemoveButton?: boolean
-}>(), {
-  target: '#notifications',
-  position: 'bottom-left',
-  gap: 12,
-  zIndex: 100,
-  transition: 'fade',
-  autoHideInMs: 3500,
-  shouldNotHideOnHover: true,
-})
+const props = withDefaults(
+  defineProps<{
+    target?: string;
+    position?: "top-right" | "top-left" | "bottom-right" | "bottom-left";
+    gap?: number;
+    zIndex?: number;
+    transition?:
+      | "slide"
+      | "fade"
+      | "bounce"
+      | "flip"
+      | "zoom"
+      | "elastic"
+      | "fly-in"
+      | "swoop"
+      | "glow";
+    autoHideInMs?: number;
+    shouldNotHideOnHover?: boolean;
+    hasRemoveButton?: boolean;
+  }>(),
+  {
+    target: "#notifications",
+    position: "bottom-left",
+    gap: 12,
+    zIndex: 100,
+    transition: "fade",
+    autoHideInMs: 3500,
+    shouldNotHideOnHover: true,
+  },
+);
 
-const store = useNotificationsStore()
-const { items } = storeToRefs(store)
+const store = useNotificationsStore();
+const { items } = storeToRefs(store);
 
-watch(() => [props.autoHideInMs, props.shouldNotHideOnHover], () => {
-  store.configure({
-    autoHideInMs: props.autoHideInMs ?? 3500,
-    hoverPause: props.shouldNotHideOnHover ?? true,
-  })
-}, { immediate: true })
+watch(
+  () => [props.autoHideInMs, props.shouldNotHideOnHover],
+  () => {
+    store.configure({
+      autoHideInMs: props.autoHideInMs ?? 3500,
+      hoverPause: props.shouldNotHideOnHover ?? true,
+    });
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -111,47 +127,51 @@ watch(() => [props.autoHideInMs, props.shouldNotHideOnHover], () => {
 </style>
 
 <style scoped>
-[data-position='top-left'] {
+[data-position="top-left"] {
   --enter-x: -30px;
   --enter-y: -20px;
   --leave-x: -100px;
   --leave-y: 0px;
 }
 
-[data-position='top-right'] {
+[data-position="top-right"] {
   --enter-x: 30px;
   --enter-y: -20px;
   --leave-x: 100px;
   --leave-y: 0px;
 }
 
-[data-position='bottom-left'] {
+[data-position="bottom-left"] {
   --enter-x: -30px;
   --enter-y: 20px;
   --leave-x: -100px;
   --leave-y: 0px;
 }
 
-[data-position='bottom-right'] {
+[data-position="bottom-right"] {
   --enter-x: 30px;
   --enter-y: 20px;
   --leave-x: 100px;
   --leave-y: 0px;
 }
 
-[data-position^='top'] :where([class*='-enter-from'], [class*='-leave-to'], [class*='-appear-from']) {
+[data-position^="top"]
+  :where([class*="-enter-from"], [class*="-leave-to"], [class*="-appear-from"]) {
   transform-origin: top center;
 }
 
-[data-position^='bottom'] :where([class*='-enter-from'], [class*='-leave-to'], [class*='-appear-from']) {
+[data-position^="bottom"]
+  :where([class*="-enter-from"], [class*="-leave-to"], [class*="-appear-from"]) {
   transform-origin: bottom center;
 }
 
-[data-position$='left'] :where([class*='-enter-from'], [class*='-leave-to'], [class*='-appear-from']) {
+[data-position$="left"]
+  :where([class*="-enter-from"], [class*="-leave-to"], [class*="-appear-from"]) {
   transform-origin: center left;
 }
 
-[data-position$='right'] :where([class*='-enter-from'], [class*='-leave-to'], [class*='-appear-from']) {
+[data-position$="right"]
+  :where([class*="-enter-from"], [class*="-leave-to"], [class*="-appear-from"]) {
   transform-origin: center right;
 }
 

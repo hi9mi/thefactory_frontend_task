@@ -1,31 +1,32 @@
 <script setup lang="ts">
-import type { PhotoListItem } from '@tf-app/entities/photo'
-import { FAVORITE_PHOTO_STORE_TOKEN } from '@tf-app/entities/photo'
-import { useDependency } from '@tf-app/shared/libs'
-import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
-import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
-import TfTooltip from '@tf-app/shared/ui/overlays/tf-tooltip/tf-tooltip.vue'
-import { computed } from 'vue'
-import HeartIcon from '~icons/tf-icons/heart'
+import type { PhotoListItem } from "@tf-app/entities/photo";
+import { FAVORITE_PHOTO_STORE_TOKEN } from "@tf-app/entities/photo";
+import { useDependency } from "@tf-app/shared/libs";
+import TfButton from "@tf-app/shared/ui/buttons/tf-button/tf-button.vue";
+import { NOTIFIER_TOKEN } from "@tf-app/shared/ui/feedback/tf-notification";
+import TfTooltip from "@tf-app/shared/ui/overlays/tf-tooltip/tf-tooltip.vue";
+import { computed } from "vue";
+import HeartIcon from "~icons/tf-icons/heart";
 
 const props = defineProps<{
-  photo: PhotoListItem
-}>()
-const favoritesStore = useDependency(FAVORITE_PHOTO_STORE_TOKEN)
-const notify = useDependency(NOTIFIER_TOKEN)
+  photo: PhotoListItem;
+}>();
+const favoritesStore = useDependency(FAVORITE_PHOTO_STORE_TOKEN);
+const notify = useDependency(NOTIFIER_TOKEN);
 
 async function toggle(photo: PhotoListItem) {
-  const result = favoritesStore.toggle(photo)
-  if (result === 'added') {
-    notify.success('Photo added to favorites', 'Success')
-  }
-  else if (result === 'removed') {
-    notify.info('Photo removed from favorites', 'Info')
+  const result = favoritesStore.toggle(photo);
+  if (result === "added") {
+    notify.success("Photo added to favorites", "Success");
+  } else if (result === "removed") {
+    notify.info("Photo removed from favorites", "Info");
   }
 }
 
-const isFavoritePhoto = computed(() => favoritesStore.items.some(f => f.id === props.photo.id))
-const tooltipLabel = computed(() => isFavoritePhoto.value ? 'Remove from favorites' : 'Add to favorites')
+const isFavoritePhoto = computed(() => favoritesStore.items.some((f) => f.id === props.photo.id));
+const tooltipLabel = computed(() =>
+  isFavoritePhoto.value ? "Remove from favorites" : "Add to favorites",
+);
 </script>
 
 <template>

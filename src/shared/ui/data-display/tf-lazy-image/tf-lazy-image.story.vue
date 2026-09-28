@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { logEvent } from 'histoire/client'
-import { reactive } from 'vue'
+import { logEvent } from "histoire/client";
+import { reactive } from "vue";
 
-import TfLazyImage from './tf-lazy-image.vue'
+import TfLazyImage from "./tf-lazy-image.vue";
 
 const state = reactive({
-  key: 'initial',
-})
+  key: "initial",
+});
 function rerenderImage() {
-  state.key = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)
+  state.key = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
 }
 </script>
 
@@ -26,11 +26,7 @@ function rerenderImage() {
       />
 
       <template #controls>
-        <HstButton
-          color="primary"
-          class="htw-p-2"
-          @click="rerenderImage"
-        >
+        <HstButton color="primary" class="htw-p-2" @click="rerenderImage">
           Rerender image
         </HstButton>
       </template>

@@ -1,39 +1,38 @@
 <script setup lang="ts">
-import { useDependency } from '@tf-app/shared/libs'
-import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
-import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
+import { useDependency } from "@tf-app/shared/libs";
+import TfButton from "@tf-app/shared/ui/buttons/tf-button/tf-button.vue";
+import { NOTIFIER_TOKEN } from "@tf-app/shared/ui/feedback/tf-notification";
 
-import DownloadIcon from '~icons/tf-icons/download'
+import DownloadIcon from "~icons/tf-icons/download";
 
 const props = defineProps<{
-  src: string
-  name?: string
-  withText?: boolean
-}>()
+  src: string;
+  name?: string;
+  withText?: boolean;
+}>();
 
-const notifier = useDependency(NOTIFIER_TOKEN)
+const notifier = useDependency(NOTIFIER_TOKEN);
 
 async function downloadPhoto() {
   try {
-    const response = await fetch(props.src)
+    const response = await fetch(props.src);
 
-    const blobImage = await response.blob()
+    const blobImage = await response.blob();
 
-    const href = globalThis.URL.createObjectURL(blobImage)
+    const href = globalThis.URL.createObjectURL(blobImage);
 
-    const anchorElement = document.createElement('a')
-    anchorElement.href = href
-    anchorElement.download = (props.name ? props.name : 'photo')
+    const anchorElement = document.createElement("a");
+    anchorElement.href = href;
+    anchorElement.download = props.name ? props.name : "photo";
 
-    document.body.appendChild(anchorElement)
-    anchorElement.click()
+    document.body.appendChild(anchorElement);
+    anchorElement.click();
 
-    anchorElement.remove()
-    globalThis.URL.revokeObjectURL(href)
-  }
-  catch (error) {
-    console.error('Download photo error', error)
-    notifier.warning('Error while downloading photo', 'Error')
+    anchorElement.remove();
+    globalThis.URL.revokeObjectURL(href);
+  } catch (error) {
+    console.error("Download photo error", error);
+    notifier.warning("Error while downloading photo", "Error");
   }
 }
 </script>
@@ -46,11 +45,7 @@ async function downloadPhoto() {
     data-testid="download-photo-btn"
     @click="downloadPhoto"
   >
-    <DownloadIcon
-      width="23"
-      height="21"
-      aria-label="Скачать фото"
-    />
+    <DownloadIcon width="23" height="21" aria-label="Скачать фото" />
     <span v-if="withText" :class="classes.text">Скачать</span>
   </TfButton>
 </template>

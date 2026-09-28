@@ -1,55 +1,40 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from "vue";
 
-import ArrowTopIcon from '~icons/tf-icons/arrow-top'
+import ArrowTopIcon from "~icons/tf-icons/arrow-top";
 
 defineOptions({
   inheritAttrs: false,
-})
+});
 
-const isShowAffix = ref(false)
+const isShowAffix = ref(false);
 
 function onScroll() {
-  if (window.scrollY >= 100)
-    isShowAffix.value = true
-  else
-    isShowAffix.value = false
+  if (window.scrollY >= 100) isShowAffix.value = true;
+  else isShowAffix.value = false;
 }
 
 function scrollToTop() {
   window.scrollTo({
     top: 0,
     left: 0,
-    behavior: 'smooth',
-  })
+    behavior: "smooth",
+  });
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', onScroll)
-})
+  window.addEventListener("scroll", onScroll);
+});
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', onScroll)
-})
+  window.removeEventListener("scroll", onScroll);
+});
 </script>
 
 <template>
   <Teleport to="#affix">
-    <Transition
-      name="affix"
-      data-animated
-    >
-      <button
-        v-if="isShowAffix"
-        v-bind="$attrs"
-        :class="classes.affix"
-        @click="scrollToTop"
-      >
-        <ArrowTopIcon
-          fill="none"
-          width="18"
-          height="18"
-          aria-label="Вернуться наверх страницы"
-        />
+    <Transition name="affix" data-animated>
+      <button v-if="isShowAffix" v-bind="$attrs" :class="classes.affix" @click="scrollToTop">
+        <ArrowTopIcon fill="none" width="18" height="18" aria-label="Вернуться наверх страницы" />
       </button>
     </Transition>
   </Teleport>

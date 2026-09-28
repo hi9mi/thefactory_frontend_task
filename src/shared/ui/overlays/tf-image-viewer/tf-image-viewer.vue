@@ -1,46 +1,44 @@
 <script setup lang="ts">
-import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
-import TfImage from '@tf-app/shared/ui/data-display/tf-image/tf-image.vue'
-import { onMounted, useTemplateRef, watch } from 'vue'
-import XMarkIcon from '~icons/tf-icons/x-mark'
+import TfActionButton from "@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue";
+import TfImage from "@tf-app/shared/ui/data-display/tf-image/tf-image.vue";
+import { onMounted, useTemplateRef, watch } from "vue";
+import XMarkIcon from "~icons/tf-icons/x-mark";
 
 const props = defineProps<{
-  src: string
-  open: boolean
-  ariaLabel?: string
-  alt: string
-}>()
+  src: string;
+  open: boolean;
+  ariaLabel?: string;
+  alt: string;
+}>();
 
 const emit = defineEmits<{
-  close: []
-}>()
+  close: [];
+}>();
 
-const dialogRef = useTemplateRef('dialogRef')
+const dialogRef = useTemplateRef("dialogRef");
 
 watch(
   () => props.open,
   (open) => {
     if (open) {
-      dialogRef.value?.showModal()
-    }
-    else {
-      dialogRef.value?.close()
+      dialogRef.value?.showModal();
+    } else {
+      dialogRef.value?.close();
     }
   },
-)
+);
 onMounted(() => {
-  if (props.open)
-    dialogRef.value?.showModal()
-})
+  if (props.open) dialogRef.value?.showModal();
+});
 
 function handleDialogClose() {
-  emit('close')
-  dialogRef.value?.close()
+  emit("close");
+  dialogRef.value?.close();
 }
 
 function handleBackdropClick(event: MouseEvent) {
   if (event.target === dialogRef.value) {
-    handleDialogClose()
+    handleDialogClose();
   }
 }
 </script>
@@ -70,15 +68,11 @@ function handleBackdropClick(event: MouseEvent) {
         data-testid="close-preview-btn"
         @click="handleDialogClose"
       >
-        <XMarkIcon
-          width="25"
-          height="25"
-          aria-hidden="true"
-        />
+        <XMarkIcon width="25" height="25" aria-hidden="true" />
       </TfActionButton>
     </div>
   </dialog>
-    <!-- eslint-enable -->
+  <!-- eslint-enable -->
 </template>
 
 <style module="classes">

@@ -1,1 +1,1 @@
-export { CACHE_TOKEN, createLRUCache } from './create-lru-cache'
+export { CACHE_TOKEN, createLRUCache } from "./create-lru-cache";

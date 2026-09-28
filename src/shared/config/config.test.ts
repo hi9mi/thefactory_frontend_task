@@ -1,65 +1,65 @@
-import type { AppConfig } from './config'
-import { describe, expect, it } from 'vitest'
-import { createAppConfigFromEnv } from './config'
+import type { AppConfig } from "./config";
+import { describe, expect, it } from "vite-plus/test";
+import { createAppConfigFromEnv } from "./config";
 
 function makeEnv(overrides: Partial<ImportMetaEnv> = {}): ImportMetaEnv {
   return {
-    VITE_UNSPLASH_API_URL: 'https://api.unsplash.com',
-    VITE_UNSPLASH_CLIENT_ID: 'test-client-id',
-    MODE: 'development',
-    VITE_BASE_URL: '/',
+    VITE_UNSPLASH_API_URL: "https://api.unsplash.com",
+    VITE_UNSPLASH_CLIENT_ID: "test-client-id",
+    MODE: "development",
+    VITE_BASE_URL: "/",
     DEV: true,
     PROD: false,
     SSR: false,
-    BASE_URL: '/',
-    VITE_STORAGE_KIND: 'memoryStorage',
+    BASE_URL: "/",
+    VITE_STORAGE_KIND: "memoryStorage",
     ...overrides,
-  } as unknown as ImportMetaEnv
+  } as unknown as ImportMetaEnv;
 }
 
-describe('config schema: createAppConfigFromEnv', () => {
-  it('should build AppConfig from valid environment values', () => {
+describe("config schema: createAppConfigFromEnv", () => {
+  it("should build AppConfig from valid environment values", () => {
     const env = makeEnv({
-      VITE_UNSPLASH_API_URL: 'https://example.com',
-      VITE_UNSPLASH_CLIENT_ID: 'abc123',
-      MODE: 'production',
-    })
-    const cfg = createAppConfigFromEnv(env)
+      VITE_UNSPLASH_API_URL: "https://example.com",
+      VITE_UNSPLASH_CLIENT_ID: "abc123",
+      MODE: "production",
+    });
+    const cfg = createAppConfigFromEnv(env);
     const expected: AppConfig = {
-      unsplashBaseUrl: 'https://example.com',
-      unsplashClientId: 'abc123',
-      mode: 'production',
-      viteBaseUrl: '/',
+      unsplashBaseUrl: "https://example.com",
+      unsplashClientId: "abc123",
+      mode: "production",
+      viteBaseUrl: "/",
       dev: true,
       prod: false,
       ssr: false,
-      baseUrl: '/',
-      storageKind: 'memoryStorage',
-    }
-    expect(cfg).toEqual(expected)
-  })
+      baseUrl: "/",
+      storageKind: "memoryStorage",
+    };
+    expect(cfg).toEqual(expected);
+  });
 
-  it('should allow MODE to be omitted (mode remains undefined)', () => {
-    const env = makeEnv({ MODE: undefined })
-    const cfg = createAppConfigFromEnv(env)
-    expect(cfg.mode).toBeUndefined()
-  })
+  it("should allow MODE to be omitted (mode remains undefined)", () => {
+    const env = makeEnv({ MODE: undefined });
+    const cfg = createAppConfigFromEnv(env);
+    expect(cfg.mode).toBeUndefined();
+  });
 
-  it('should throw when VITE_UNSPLASH_CLIENT_ID is missing or empty', () => {
-    const envMissing = makeEnv({ VITE_UNSPLASH_CLIENT_ID: undefined as any })
-    expect(() => createAppConfigFromEnv(envMissing)).toThrow()
+  it("should throw when VITE_UNSPLASH_CLIENT_ID is missing or empty", () => {
+    const envMissing = makeEnv({ VITE_UNSPLASH_CLIENT_ID: undefined as any });
+    expect(() => createAppConfigFromEnv(envMissing)).toThrow();
 
-    const envEmpty = makeEnv({ VITE_UNSPLASH_CLIENT_ID: '' as any })
-    expect(() => createAppConfigFromEnv(envEmpty)).toThrow()
-  })
+    const envEmpty = makeEnv({ VITE_UNSPLASH_CLIENT_ID: "" as any });
+    expect(() => createAppConfigFromEnv(envEmpty)).toThrow();
+  });
 
-  it('should throw when VITE_UNSPLASH_API_URL is not a valid URL', () => {
-    const env = makeEnv({ VITE_UNSPLASH_API_URL: 'not-a-url' as any })
-    expect(() => createAppConfigFromEnv(env)).toThrow()
-  })
+  it("should throw when VITE_UNSPLASH_API_URL is not a valid URL", () => {
+    const env = makeEnv({ VITE_UNSPLASH_API_URL: "not-a-url" as any });
+    expect(() => createAppConfigFromEnv(env)).toThrow();
+  });
 
-  it('should throw when MODE has an unsupported value', () => {
-    const env = makeEnv({ MODE: 'staging' as any })
-    expect(() => createAppConfigFromEnv(env)).toThrow()
-  })
-})
+  it("should throw when MODE has an unsupported value", () => {
+    const env = makeEnv({ MODE: "staging" as any });
+    expect(() => createAppConfigFromEnv(env)).toThrow();
+  });
+});

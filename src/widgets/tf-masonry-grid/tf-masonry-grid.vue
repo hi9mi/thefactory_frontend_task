@@ -1,38 +1,41 @@
 <script setup lang="ts">
-import type { PhotoListItem } from '@tf-app/entities/photo'
-import TfSkeleton from '@tf-app/shared/ui/feedback/tf-skeleton/tf-skeleton.vue'
-import MagicGrid from 'magic-grid'
-import { nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
+import type { PhotoListItem } from "@tf-app/entities/photo";
+import TfSkeleton from "@tf-app/shared/ui/feedback/tf-skeleton/tf-skeleton.vue";
+import MagicGrid from "magic-grid";
+import { nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
 
-const props = withDefaults(defineProps<{
-  items: PhotoListItem[]
-  loading?: boolean
-  skeletonCount?: number
-  gutter?: number
-  maxCols?: number
-  initialItemsCount?: number
-  getAspectRatio?: (item: PhotoListItem) => number | undefined
-}>(), {
-  skeletonCount: 9,
-  gutter: 20,
-  initialItemsCount: 9,
-})
+const props = withDefaults(
+  defineProps<{
+    items: PhotoListItem[];
+    loading?: boolean;
+    skeletonCount?: number;
+    gutter?: number;
+    maxCols?: number;
+    initialItemsCount?: number;
+    getAspectRatio?: (item: PhotoListItem) => number | undefined;
+  }>(),
+  {
+    skeletonCount: 9,
+    gutter: 20,
+    initialItemsCount: 9,
+  },
+);
 
-const SKELETON_RATIOS = ['1 / 1', '4 / 3', '3 / 4', '16 / 9', '9 / 16', '5 / 4', '4 / 5']
-const containerRef = ref<HTMLElement | null>(null)
-const ro = shallowRef<ResizeObserver | null>(null)
-const grid = shallowRef<MagicGrid | null>(null)
-const rafId = ref(0)
+const SKELETON_RATIOS = ["1 / 1", "4 / 3", "3 / 4", "16 / 9", "9 / 16", "5 / 4", "4 / 5"];
+const containerRef = ref<HTMLElement | null>(null);
+const ro = shallowRef<ResizeObserver | null>(null);
+const grid = shallowRef<MagicGrid | null>(null);
+const rafId = ref(0);
 
 function layoutSoon() {
-  cancelAnimationFrame(rafId.value)
-  rafId.value = requestAnimationFrame(() => grid.value?.positionItems())
+  cancelAnimationFrame(rafId.value);
+  rafId.value = requestAnimationFrame(() => grid.value?.positionItems());
 }
 
 onMounted(async () => {
-  await nextTick()
-  const initialCount
-    = (props.loading ? props.skeletonCount : props.items.length) || props.initialItemsCount
+  await nextTick();
+  const initialCount =
+    (props.loading ? props.skeletonCount : props.items.length) || props.initialItemsCount;
 
   grid.value = new MagicGrid({
     container: containerRef.value!,
@@ -41,47 +44,52 @@ onMounted(async () => {
     maxColumns: props.maxCols,
     animate: true,
     items: initialCount,
-  })
+  });
 
   ro.value = new ResizeObserver((entries) => {
-    const el = entries[0].target as HTMLElement
-    const width = entries[0].contentRect.width
-    const gutter = Number.parseFloat(getComputedStyle(el).getPropertyValue('--gutter')) || 20
+    const el = entries[0].target as HTMLElement;
+    const width = entries[0].contentRect.width;
+    const gutter = Number.parseFloat(getComputedStyle(el).getPropertyValue("--gutter")) || 20;
 
-    const minCol = Number.parseFloat(getComputedStyle(el).getPropertyValue('--col-w')) || 200
-    const maxCols = props.maxCols ?? 8
+    const minCol = Number.parseFloat(getComputedStyle(el).getPropertyValue("--col-w")) || 200;
+    const maxCols = props.maxCols ?? 8;
 
-    const cols = Math.max(1, Math.min(maxCols, Math.floor((width + gutter) / (minCol + gutter))))
+    const cols = Math.max(1, Math.min(maxCols, Math.floor((width + gutter) / (minCol + gutter))));
 
-    el.style.setProperty('--cols', String(cols))
+    el.style.setProperty("--cols", String(cols));
 
     if (grid.value) {
-      grid.value.gutter = gutter
+      grid.value.gutter = gutter;
     }
-    layoutSoon()
-  })
+    layoutSoon();
+  });
 
-  layoutSoon()
-  ro.value.observe(containerRef.value!)
-})
+  layoutSoon();
+  ro.value.observe(containerRef.value!);
+});
 
 onBeforeUnmount(() => {
-  ro.value?.disconnect()
-  cancelAnimationFrame(rafId.value)
-  grid.value = null
-})
+  ro.value?.disconnect();
+  cancelAnimationFrame(rafId.value);
+  grid.value = null;
+});
 
 watch([() => props.items.length, () => props.loading], async () => {
-  await nextTick()
+  await nextTick();
   if (grid.value) {
-    grid.value.size = props.loading ? props.skeletonCount! : props.items.length
-    layoutSoon()
+    grid.value.size = props.loading ? props.skeletonCount! : props.items.length;
+    layoutSoon();
   }
-})
+});
 </script>
 
 <template>
-  <section ref="containerRef" :class="classes.masonry" :aria-busy="!!loading" data-testid="gallery-grid">
+  <section
+    ref="containerRef"
+    :class="classes.masonry"
+    :aria-busy="!!loading"
+    data-testid="gallery-grid"
+  >
     <template v-if="loading">
       <div
         v-for="i in skeletonCount"
@@ -99,7 +107,7 @@ watch([() => props.items.length, () => props.loading], async () => {
         :key="item.id"
         :class="classes.item"
         :style="{
-          aspectRatio: (getAspectRatio?.(item) ? String(getAspectRatio(item)) : undefined),
+          aspectRatio: getAspectRatio?.(item) ? String(getAspectRatio(item)) : undefined,
         }"
       >
         <slot :item="item" />

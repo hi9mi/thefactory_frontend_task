@@ -1,64 +1,71 @@
 <script setup lang="ts">
-import { PHOTO_DETAILS_STORE_TOKEN } from '@tf-app/entities/photo'
-import DownloadPhoto from '@tf-app/features/download-photo/download-photo.vue'
-import FullscreenPhoto from '@tf-app/features/fullscreen-photo/fullscreen-photo.vue'
-import ToggleFavoritePhoto from '@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue'
-import { computeRelativeBrightness, hexToRgb, useDependency } from '@tf-app/shared/libs'
-import TfActionButton from '@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue'
-import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
-import TfImage from '@tf-app/shared/ui/data-display/tf-image/tf-image.vue'
-import TfLoader from '@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue'
-import { NOTIFIER_TOKEN } from '@tf-app/shared/ui/feedback/tf-notification'
-import { computed, shallowRef, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import FullScreenIcon from '~icons/tf-icons/full-screen'
+import { PHOTO_DETAILS_STORE_TOKEN } from "@tf-app/entities/photo";
+import DownloadPhoto from "@tf-app/features/download-photo/download-photo.vue";
+import FullscreenPhoto from "@tf-app/features/fullscreen-photo/fullscreen-photo.vue";
+import ToggleFavoritePhoto from "@tf-app/features/toggle-favorite-photo/toggle-favorite-photo.vue";
+import { computeRelativeBrightness, hexToRgb, useDependency } from "@tf-app/shared/libs";
+import TfActionButton from "@tf-app/shared/ui/buttons/tf-action-button/tf-action-button.vue";
+import TfBlurhashImage from "@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue";
+import TfImage from "@tf-app/shared/ui/data-display/tf-image/tf-image.vue";
+import TfLoader from "@tf-app/shared/ui/feedback/tf-loader/tf-loader.vue";
+import { NOTIFIER_TOKEN } from "@tf-app/shared/ui/feedback/tf-notification";
+import { computed, shallowRef, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import FullScreenIcon from "~icons/tf-icons/full-screen";
 
-const notify = useDependency(NOTIFIER_TOKEN)
-const detailsStore = useDependency(PHOTO_DETAILS_STORE_TOKEN)
+const notify = useDependency(NOTIFIER_TOKEN);
+const detailsStore = useDependency(PHOTO_DETAILS_STORE_TOKEN);
 
-const router = useRouter()
-const route = useRoute('/photo/[id]')
+const router = useRouter();
+const route = useRoute("/photo/[id]");
 
-const controller = shallowRef<AbortController | null>(null)
+const controller = shallowRef<AbortController | null>(null);
 
-watch(() => route.params.id, (_val, _oldVal, onCleanup) => {
-  if (!_val)
-    return
-  controller.value?.abort()
-  const c = new AbortController()
-  controller.value = c
+watch(
+  () => route.params.id,
+  (_val, _oldVal, onCleanup) => {
+    if (!_val) return;
+    controller.value?.abort();
+    const c = new AbortController();
+    controller.value = c;
 
-  detailsStore.fetch(_val, { signal: c.signal })
+    detailsStore.fetch(_val, { signal: c.signal });
 
-  onCleanup(() => c.abort())
-}, { immediate: true })
+    onCleanup(() => c.abort());
+  },
+  { immediate: true },
+);
 
 const previewButtonStyles = computed(() => {
-  const def = { '--full-screen-icon-color': '#ffffff', '--full-screen-icon-filter': 'url("#blackShadow")' }
-  const color = detailsStore.item?.color
-  if (!color)
-    return def
-  const { r, g, b } = hexToRgb(color)
-  const brightness = computeRelativeBrightness(r, g, b)
+  const def = {
+    "--full-screen-icon-color": "#ffffff",
+    "--full-screen-icon-filter": 'url("#blackShadow")',
+  };
+  const color = detailsStore.item?.color;
+  if (!color) return def;
+  const { r, g, b } = hexToRgb(color);
+  const brightness = computeRelativeBrightness(r, g, b);
   return brightness < 128
-    ? { '--full-screen-icon-color': '#ffffff', '--full-screen-icon-filter': 'url("#blackShadow")' }
-    : { '--full-screen-icon-color': '#000000', '--full-screen-icon-filter': 'url("#whiteShadow")' }
-})
+    ? { "--full-screen-icon-color": "#ffffff", "--full-screen-icon-filter": 'url("#blackShadow")' }
+    : { "--full-screen-icon-color": "#000000", "--full-screen-icon-filter": 'url("#whiteShadow")' };
+});
 
-const isFullScreen = computed(() => route.query.full === 'true')
+const isFullScreen = computed(() => route.query.full === "true");
 
 function handleShowFullPhoto() {
   router.push({
     query: {
       ...route.query,
-      full: 'true',
+      full: "true",
     },
-  })
+  });
 }
-watch(() => detailsStore.error, (err) => {
-  if (err)
-    notify.error(err, 'Failed loading photo')
-})
+watch(
+  () => detailsStore.error,
+  (err) => {
+    if (err) notify.error(err, "Failed loading photo");
+  },
+);
 </script>
 
 <template>
@@ -81,7 +88,7 @@ watch(() => detailsStore.error, (err) => {
               :class="classes.userProfileImg"
               :src="detailsStore.item.authorAvatar"
               :alt="detailsStore.item.author"
-            >
+            />
             <div :class="classes.userBio">
               <p :class="classes.userName" data-testid="user-name">
                 {{ detailsStore.item.author }}
@@ -241,7 +248,7 @@ watch(() => detailsStore.error, (err) => {
 }
 
 .fullScreenIcon {
-  filter: var(--full-screen-icon-filter, url('#blackShadow'));
+  filter: var(--full-screen-icon-filter, url("#blackShadow"));
 }
 
 .previewBtn:focus-visible {

@@ -1,41 +1,42 @@
 <script setup lang="ts">
-import type { PhotoListItem } from '@tf-app/entities/photo'
-import { PHOTO_DETAILS_STORE_TOKEN } from '@tf-app/entities/photo'
-import { useDependency } from '@tf-app/shared/libs'
-import TfBlurhashImage from '@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue'
-import TfSkeleton from '@tf-app/shared/ui/feedback/tf-skeleton/tf-skeleton.vue'
-import { computed, onBeforeUnmount, ref } from 'vue'
+import type { PhotoListItem } from "@tf-app/entities/photo";
+import { PHOTO_DETAILS_STORE_TOKEN } from "@tf-app/entities/photo";
+import { useDependency } from "@tf-app/shared/libs";
+import TfBlurhashImage from "@tf-app/shared/ui/data-display/tf-blurhash-image/tf-blurhash-image.vue";
+import TfSkeleton from "@tf-app/shared/ui/feedback/tf-skeleton/tf-skeleton.vue";
+import { computed, onBeforeUnmount, ref } from "vue";
 
 const props = defineProps<{
-  photo: PhotoListItem
-  loading?: boolean
-}>()
-const timerId = ref<ReturnType<typeof setTimeout>>()
-const photoDetailsStore = useDependency(PHOTO_DETAILS_STORE_TOKEN)
+  photo: PhotoListItem;
+  loading?: boolean;
+}>();
+const timerId = ref<ReturnType<typeof setTimeout>>();
+const photoDetailsStore = useDependency(PHOTO_DETAILS_STORE_TOKEN);
 
 const srcset = computed(() => {
-  const base = props.photo.urlRaw
+  const base = props.photo.urlRaw;
   return [
     `${base}&w=440&h=440&q=80 440w`,
     `${base}&w=880&h=880&q=80 880w`,
     `${base}&w=1320&h=1320&q=75 1320w`,
-  ].join(', ')
-})
-const sizes = '(max-width: 600px) 100vw, (max-width: 900px) 50vw, (max-width: 1200px) 33vw, min(440px, 25vw)'
+  ].join(", ");
+});
+const sizes =
+  "(max-width: 600px) 100vw, (max-width: 900px) 50vw, (max-width: 1200px) 33vw, min(440px, 25vw)";
 
 function startPrefetch() {
   timerId.value = setTimeout(() => {
-    photoDetailsStore.prefetch(props.photo.id)
-  }, 300)
+    photoDetailsStore.prefetch(props.photo.id);
+  }, 300);
 }
 
 function cancelPrefetch() {
-  clearTimeout(timerId.value)
+  clearTimeout(timerId.value);
 }
 
 onBeforeUnmount(() => {
-  clearTimeout(timerId.value)
-})
+  clearTimeout(timerId.value);
+});
 </script>
 
 <template>
@@ -93,7 +94,12 @@ onBeforeUnmount(() => {
   position: absolute;
   z-index: 2;
   pointer-events: none;
-  background-image: linear-gradient(180deg, rgb(0 0 0 / 57%) 0%, rgb(0 0 0 / 34%) 50%, rgb(0 0 0 / 59%) 100%);
+  background-image: linear-gradient(
+    180deg,
+    rgb(0 0 0 / 57%) 0%,
+    rgb(0 0 0 / 34%) 50%,
+    rgb(0 0 0 / 59%) 100%
+  );
 }
 
 .actions {
@@ -131,7 +137,7 @@ onBeforeUnmount(() => {
 
 .photoCard > .photoLink::before {
   position: absolute;
-  content: '';
+  content: "";
   inset: 0;
   z-index: 3;
 }

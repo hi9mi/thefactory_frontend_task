@@ -1,23 +1,26 @@
 <script lang="ts" setup>
-import type { CSSProperties } from 'vue'
-import { computed } from 'vue'
+import type { CSSProperties } from "vue";
+import { computed } from "vue";
 
-const props = withDefaults(defineProps<{
-  type?: 'block' | 'inline'
-  width?: CSSProperties['width']
-  height?: CSSProperties['height']
-  maxWidth?: CSSProperties['maxWidth']
-  radius?: CSSProperties['borderRadius']
-  aspectRatio?: CSSProperties['aspectRatio']
-}>(), {
-  type: 'block',
-  width: '100%',
-  maxWidth: '100%',
-  height: 'auto',
-  radius: 'var(--border-radius-small)',
-  aspectRatio: undefined,
-})
-const element = computed(() => props.type === 'block' ? 'div' : 'span')
+const props = withDefaults(
+  defineProps<{
+    type?: "block" | "inline";
+    width?: CSSProperties["width"];
+    height?: CSSProperties["height"];
+    maxWidth?: CSSProperties["maxWidth"];
+    radius?: CSSProperties["borderRadius"];
+    aspectRatio?: CSSProperties["aspectRatio"];
+  }>(),
+  {
+    type: "block",
+    width: "100%",
+    maxWidth: "100%",
+    height: "auto",
+    radius: "var(--border-radius-small)",
+    aspectRatio: undefined,
+  },
+);
+const element = computed(() => (props.type === "block" ? "div" : "span"));
 
 const styleObject = computed(() => ({
   width: convertValueToPx(props.width),
@@ -25,17 +28,22 @@ const styleObject = computed(() => ({
   maxWidth: convertValueToPx(props.maxWidth),
   borderRadius: convertValueToPx(props.radius),
   aspectRatio: props.aspectRatio,
-}))
+}));
 
 function convertValueToPx(value: string | number) {
-  if (typeof value === 'number')
-    return `${value}px`
-  return value
+  if (typeof value === "number") return `${value}px`;
+  return value;
 }
 </script>
 
 <template>
-  <component :is="element" :class="[classes.skeleton, classes[props.type]]" :style="styleObject" aria-hidden="true" data-animated />
+  <component
+    :is="element"
+    :class="[classes.skeleton, classes[props.type]]"
+    :style="styleObject"
+    aria-hidden="true"
+    data-animated
+  />
 </template>
 
 <style module="classes">
@@ -56,7 +64,7 @@ function convertValueToPx(value: string | number) {
 
 .skeleton::after {
   display: block;
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: linear-gradient(

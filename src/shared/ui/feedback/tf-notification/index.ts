@@ -1,2 +1,2 @@
-export { createNotifier, NOTIFIER_TOKEN } from './model'
-export type { Notifier } from './model'
+export { createNotifier, NOTIFIER_TOKEN } from "./model";
+export type { Notifier } from "./model";

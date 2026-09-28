@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
 
-import SearchIcon from '~icons/tf-icons/search'
+import SearchIcon from "~icons/tf-icons/search";
 
-const props = withDefaults(defineProps<{ mode?: 'navigate' | 'inline' }>(), { mode: 'navigate' })
-const emit = defineEmits<{ submit: [searchTerm: string] }>()
+const props = withDefaults(defineProps<{ mode?: "navigate" | "inline" }>(), { mode: "navigate" });
+const emit = defineEmits<{ submit: [searchTerm: string] }>();
 
-const searchTerm = defineModel<string>({ default: '' })
+const searchTerm = defineModel<string>({ default: "" });
 
-const router = useRouter()
+const router = useRouter();
 
 function onSubmit() {
-  if (props.mode === 'navigate') {
-    router.push({ name: '/search/', query: { q: searchTerm.value, page: 1 } })
-  }
-  else {
-    emit('submit', searchTerm.value)
+  if (props.mode === "navigate") {
+    router.push({ name: "/search/", query: { q: searchTerm.value, page: 1 } });
+  } else {
+    emit("submit", searchTerm.value);
   }
 }
 </script>
@@ -23,11 +22,7 @@ function onSubmit() {
 <template>
   <div :class="classes.wrapper">
     <div class="container" :class="classes.searchContainer">
-      <form
-        :class="classes.form"
-        role="search"
-        @submit.prevent="onSubmit"
-      >
+      <form :class="classes.form" role="search" @submit.prevent="onSubmit">
         <input
           id="search-photos"
           v-model="searchTerm"
@@ -38,18 +33,9 @@ function onSubmit() {
           :class="classes.input"
           spellcheck="true"
           aria-label="Search photos"
-        >
-        <button
-          :class="classes.iconButton"
-          type="submit"
-          aria-label="Search submit"
-        >
-          <SearchIcon
-            fill="none"
-            width="23"
-            height="23"
-            :class="classes.icon"
-          />
+        />
+        <button :class="classes.iconButton" type="submit" aria-label="Search submit">
+          <SearchIcon fill="none" width="23" height="23" :class="classes.icon" />
         </button>
       </form>
     </div>
@@ -60,7 +46,7 @@ function onSubmit() {
 .wrapper {
   height: 250px;
   border-bottom: 16px solid var(--color-weathered-stone);
-  background-image: url('/img/bg-mobile.jpg');
+  background-image: url("/img/bg-mobile.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -108,10 +94,10 @@ function onSubmit() {
   color: var(--text-color-default);
 }
 
-.input[type='search']::-webkit-search-decoration,
-.input[type='search']::-webkit-search-cancel-button,
-.input[type='search']::-webkit-search-results-button,
-.input[type='search']::-webkit-search-results-decoration {
+.input[type="search"]::-webkit-search-decoration,
+.input[type="search"]::-webkit-search-cancel-button,
+.input[type="search"]::-webkit-search-results-button,
+.input[type="search"]::-webkit-search-results-decoration {
   display: none;
 }
 
@@ -151,7 +137,7 @@ function onSubmit() {
 
 @media screen and (width >= 796px) {
   .wrapper {
-    background-image: url('/img/bg.jpg');
+    background-image: url("/img/bg.jpg");
   }
 }
 </style>

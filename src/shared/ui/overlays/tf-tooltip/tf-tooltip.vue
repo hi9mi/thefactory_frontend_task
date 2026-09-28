@@ -1,86 +1,87 @@
 <script setup lang="ts">
-import type { Placement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
+import type { Placement } from "@tf-app/shared/libs/dom/compute-coords-from-placement";
 
-import { computeCoordsFromPlacement } from '@tf-app/shared/libs/dom/compute-coords-from-placement'
-import { reactive, ref, shallowRef, useId, watch } from 'vue'
+import { computeCoordsFromPlacement } from "@tf-app/shared/libs/dom/compute-coords-from-placement";
+import { reactive, ref, shallowRef, useId, watch } from "vue";
 
-const props = withDefaults(defineProps<{
-  id?: string
-  label: string
-  position?: Placement
-  offset?: number
-  multiline?: boolean
-}>(), {
-  position: 'top',
-  offset: 10,
-})
+const props = withDefaults(
+  defineProps<{
+    id?: string;
+    label: string;
+    position?: Placement;
+    offset?: number;
+    multiline?: boolean;
+  }>(),
+  {
+    position: "top",
+    offset: 10,
+  },
+);
 
-const id = props.id ?? useId()
+const id = props.id ?? useId();
 
-const TOOLTIPS_CONTAINER_ID = '__TOOLTIPS_CONTAINER__'
+const TOOLTIPS_CONTAINER_ID = "__TOOLTIPS_CONTAINER__";
 if (!document.getElementById(TOOLTIPS_CONTAINER_ID)) {
-  const tooltipsContainer = document.createElement('div')
-  tooltipsContainer.id = TOOLTIPS_CONTAINER_ID
-  document.body.append(tooltipsContainer)
+  const tooltipsContainer = document.createElement("div");
+  tooltipsContainer.id = TOOLTIPS_CONTAINER_ID;
+  document.body.append(tooltipsContainer);
 }
 
-const anchorElement = shallowRef<HTMLElement | null>(null)
-const tooltipElement = shallowRef<HTMLElement | null>(null)
+const anchorElement = shallowRef<HTMLElement | null>(null);
+const tooltipElement = shallowRef<HTMLElement | null>(null);
 const tooltipCoords = reactive({
-  '--tooltip-left': '0',
-  '--tooltip-top': '0',
-})
-const isShowTooltip = ref(false)
+  "--tooltip-left": "0",
+  "--tooltip-top": "0",
+});
+const isShowTooltip = ref(false);
 
 function showFrom(event: Event) {
-  anchorElement.value = event.currentTarget as HTMLElement
-  isShowTooltip.value = true
+  anchorElement.value = event.currentTarget as HTMLElement;
+  isShowTooltip.value = true;
 }
 function hide() {
-  isShowTooltip.value = false
-  anchorElement.value = null
+  isShowTooltip.value = false;
+  anchorElement.value = null;
 }
 function onMouseEnter(event: Event) {
-  showFrom(event)
+  showFrom(event);
 }
 function onMouseLeave() {
-  hide()
+  hide();
 }
 function onFocus(event: FocusEvent) {
-  showFrom(event)
+  showFrom(event);
 }
 function onBlur() {
-  hide()
+  hide();
 }
 function onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape')
-    hide()
+  if (event.key === "Escape") hide();
 }
 
 watch(tooltipElement, () => {
-  if (!anchorElement.value || !tooltipElement.value)
-    return
+  if (!anchorElement.value || !tooltipElement.value) return;
 
-  const coords = computeCoordsFromPlacement({
-    anchorRect: anchorElement.value.getBoundingClientRect(),
-    floatRect: tooltipElement.value.getBoundingClientRect(),
-  }, props.position, props.offset)
+  const coords = computeCoordsFromPlacement(
+    {
+      anchorRect: anchorElement.value.getBoundingClientRect(),
+      floatRect: tooltipElement.value.getBoundingClientRect(),
+    },
+    props.position,
+    props.offset,
+  );
 
-  tooltipCoords['--tooltip-left'] = `${coords.x}px`
-  tooltipCoords['--tooltip-top'] = `${coords.y}px`
-})
+  tooltipCoords["--tooltip-left"] = `${coords.x}px`;
+  tooltipCoords["--tooltip-top"] = `${coords.y}px`;
+});
 </script>
 
 <template>
   <Teleport :to="`#${TOOLTIPS_CONTAINER_ID}`">
-    <Transition
-      name="tooltip"
-      data-animated
-    >
+    <Transition name="tooltip" data-animated>
       <div
         v-if="isShowTooltip"
         :id="id"
-
         ref="tooltipElement"
         role="tooltip"
         :style="tooltipCoords"

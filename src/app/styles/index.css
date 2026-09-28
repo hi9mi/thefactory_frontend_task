@@ -1,6 +1,6 @@
-@import url('variables.css') layer(variables);
-@import url('reset.css') layer(reset);
-@import url('https://unpkg.com/open-props/easings.min.css');
+@import url("variables.css") layer(variables);
+@import url("reset.css") layer(reset);
+@import url("https://unpkg.com/open-props/easings.min.css");
 
 html:is(.light) {
   --shadow-small: 0 0 4px 0 rgb(0 0 0 / 25%);

@@ -1,8 +1,8 @@
-import type { App } from 'vue'
-import { createPinia } from 'pinia'
+import type { App } from "vue";
+import { createPinia } from "pinia";
 
 export function initPinia(app: App) {
-  const pinia = createPinia()
+  const pinia = createPinia();
 
-  app.use(pinia)
+  app.use(pinia);
 }

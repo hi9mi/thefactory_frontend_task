@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
+import TfButton from "@tf-app/shared/ui/buttons/tf-button/tf-button.vue";
 
 defineProps<{
-  disabled?: boolean
-}>()
+  disabled?: boolean;
+}>();
 defineEmits<{
-  action: [void]
-}>()
+  action: [void];
+}>();
 </script>
 
 <template>

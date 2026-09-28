@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import SunAndMoonIcon from '~icons/tf-icons/sun-and-moon'
+import SunAndMoonIcon from "~icons/tf-icons/sun-and-moon";
 
 defineProps<{
-  isDark: boolean
-}>()
+  isDark: boolean;
+}>();
 defineEmits<{
-  toggle: [value?: boolean]
-}>()
+  toggle: [value?: boolean];
+}>();
 </script>
 
 <template>

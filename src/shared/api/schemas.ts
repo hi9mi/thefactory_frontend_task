@@ -1,4 +1,4 @@
-import * as z from 'zod/mini'
+import * as z from "zod/mini";
 
 export const UnsplashPhotoSchema = z.object({
   alt_description: z.nullable(z.string()),
@@ -30,13 +30,13 @@ export const UnsplashPhotoSchema = z.object({
   }),
   width: z.number().check(z.int(), z.positive()),
   height: z.number().check(z.int(), z.positive()),
-})
+});
 
 export const UnsplashSearchSchema = z.object({
   results: z.array(UnsplashPhotoSchema),
   total: z.number().check(z.nonnegative()),
   total_pages: z.number().check(z.nonnegative()),
-})
+});
 
-export type UnsplashPhotoDTO = z.infer<typeof UnsplashPhotoSchema>
-export type UnsplashSearchDTO = z.infer<typeof UnsplashSearchSchema>
+export type UnsplashPhotoDTO = z.infer<typeof UnsplashPhotoSchema>;
+export type UnsplashSearchDTO = z.infer<typeof UnsplashSearchSchema>;

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { logEvent } from 'histoire/client'
-import { reactive } from 'vue'
+import { logEvent } from "histoire/client";
+import { reactive } from "vue";
 
-import DownloadIcon from '~icons/tf-icons/download'
+import DownloadIcon from "~icons/tf-icons/download";
 
-import TfActionButton from './tf-action-button.vue'
+import TfActionButton from "./tf-action-button.vue";
 
 const state = reactive({
   disabled: false,
-})
+});
 </script>
 
 <template>
@@ -19,10 +19,7 @@ const state = reactive({
       </TfActionButton>
 
       <template #controls>
-        <HstCheckbox
-          v-model="state.disabled"
-          title="Disabled"
-        />
+        <HstCheckbox v-model="state.disabled" title="Disabled" />
       </template>
     </Variant>
   </Story>

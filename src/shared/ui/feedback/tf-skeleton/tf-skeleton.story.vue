@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive } from "vue";
 
-import TfSkeleton from './tf-skeleton.vue'
+import TfSkeleton from "./tf-skeleton.vue";
 
 const state = reactive({
   width: 200,
   height: 200,
-  type: 'block',
+  type: "block",
 }) satisfies {
-  width: number
-  height: number
-  type: 'block' | 'inline'
-}
+  width: number;
+  height: number;
+  type: "block" | "inline";
+};
 </script>
 
 <template>

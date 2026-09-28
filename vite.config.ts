@@ -1,23 +1,34 @@
-/// <reference types="vitest" />
+/// <reference types="vite-plus/test" />
 /// <reference types="histoire" />
-import path from 'node:path'
-import { HstVue } from '@histoire/plugin-vue'
-import vue from '@vitejs/plugin-vue'
-import { FileSystemIconLoader } from 'unplugin-icons/loaders'
-import Icons from 'unplugin-icons/vite'
-import { defineConfig, loadEnv } from 'vite'
-import { createHtmlPlugin } from 'vite-plugin-html'
-import { VitePWA } from 'vite-plugin-pwa'
-import vueDevTools from 'vite-plugin-vue-devtools'
-import webfontDownload from 'vite-plugin-webfont-dl'
-import VueRouter from 'vue-router/vite'
-import { APP_INFO, META_TAGS } from './meta'
+import path from "node:path";
+import { HstVue } from "@histoire/plugin-vue";
+import vue from "@vitejs/plugin-vue";
+import { FileSystemIconLoader } from "unplugin-icons/loaders";
+import Icons from "unplugin-icons/vite";
+import { defineConfig, loadEnv } from "vite-plus";
+import { createHtmlPlugin } from "vite-plugin-html";
+import { VitePWA } from "vite-plugin-pwa";
+import vueDevTools from "vite-plugin-vue-devtools";
+import webfontDownload from "vite-plugin-webfont-dl";
+import VueRouter from "vue-router/vite";
+// import { APP_INFO, META_TAGS } from './meta'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
+  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
 
   return {
+    fmt: {
+      singleQuote: true,
+      semi: false,
+      arrowParens: "avoid",
+    },
+    lint: {
+      options: {
+        typeAware: true,
+        typeCheck: true,
+      },
+    },
     preview: {
       port: 3000,
       strictPort: true,
@@ -26,145 +37,162 @@ export default defineConfig(({ mode }) => {
       port: process.env.HISTOIRE ? 6006 : 3000,
       strictPort: true,
     },
-    base: process.env.HISTOIRE_BASE || '/',
+    base: process.env.HISTOIRE_BASE || "/",
     histoire: {
       plugins: [HstVue()],
-      setupFile: '/src/histoire.setup.ts',
+      setupFile: "/src/histoire.setup.ts",
       theme: {
-        title: 'The factory',
+        title: "The factory",
         logo: {
-          light: './src/shared/assets/logo.png',
-          dark: './src/shared/assets/logo.png',
-          square: './src/shared/assets/logo.png',
+          light: "./src/shared/assets/logo.png",
+          dark: "./src/shared/assets/logo.png",
+          square: "./src/shared/assets/logo.png",
         },
-        logoHref: 'https://thefactory-frontend-task.vercel.app/',
-        favicon: 'favicon.ico',
-        defaultColorScheme: 'auto',
+        logoHref: "https://thefactory-frontend-task.vercel.app/",
+        favicon: "favicon.ico",
+        defaultColorScheme: "auto",
       },
-      viteIgnorePlugins: ['vite-plugin-pwa:dev-sw', 'vite-plugin-pwa:build', 'vite-plugin-pwa:info', 'vite-plugin-pwa', 'vite:html'],
+      viteIgnorePlugins: [
+        "vite-plugin-pwa:dev-sw",
+        "vite-plugin-pwa:build",
+        "vite-plugin-pwa:info",
+        "vite-plugin-pwa",
+        "vite:html",
+      ],
     },
     test: {
-      environment: 'jsdom',
+      environment: "jsdom",
       css: {
         modules: {
-          classNameStrategy: 'non-scoped',
+          classNameStrategy: "non-scoped",
         },
       },
       alias: {
-        '@tf-app': path.resolve(__dirname, './src'),
+        "@tf-app": path.resolve(__dirname, "./src"),
       },
-      include: ['src/**/*.test.{ts,vue}'],
+      include: ["src/**/*.test.{ts,vue}"],
       globals: true,
       coverage: {
         enabled: true,
-        provider: 'v8',
-        reportsDirectory: './coverage',
-        reporter: ['text', 'html'],
-        include: ['src/**/*.{ts,vue}'],
-        exclude: ['**/*.d.ts', '**/*.test.*', '**/*.spec.*', '**/__fixtures__/**'],
+        provider: "v8",
+        reportsDirectory: "./coverage",
+        reporter: ["text", "html"],
+        include: ["src/**/*.{ts,vue}"],
+        exclude: ["**/*.d.ts", "**/*.test.*", "**/*.spec.*", "**/__fixtures__/**"],
       },
     },
     plugins: [
       vueDevTools(),
       VueRouter({
-        dts: 'src/route-map.d.ts',
+        dts: "src/route-map.d.ts",
       }),
       vue(),
       webfontDownload(),
       createHtmlPlugin({
         minify: true,
-        entry: '/src/app/main.ts',
+        entry: "/src/app/main.ts",
         inject: {
           data: {
-            title: APP_INFO.name,
-            meta: META_TAGS.map(tag => `<meta name="${tag.name}" content="${tag.content}" />`).join(''),
+            title: "APP_INFO.name",
+            meta: "META_TAGS",
+            // meta: META_TAGS.map(tag => `<meta name="${tag.name}" content="${tag.content}" />`).join(''),
           },
         },
       }),
       VitePWA({
         useCredentials: true,
-        mode: mode as 'production' | 'development',
-        base: '/',
+        mode: mode as "production" | "development",
+        base: "/",
         manifest: {
-          name: APP_INFO.name,
-          short_name: APP_INFO.name,
-          description: APP_INFO.shortDescription,
-          start_url: '/?source=pwa',
-          id: '/?source=pwa',
-          background_color: APP_INFO.app.background,
-          theme_color: APP_INFO.app.background,
+          name: "APP_INFO.name",
+          short_name: "APP_INFO.name",
+          description: "APP_INFO.shortDescription",
+          start_url: "/?source=pwa",
+          id: "/?source=pwa",
+          background_color: "APP_INFO.app.background",
+          theme_color: "APP_INFO.app.background",
           icons: [
             {
-              src: 'pwa-64x64.png',
-              sizes: '64x64',
-              type: 'image/png',
+              src: "pwa-64x64.png",
+              sizes: "64x64",
+              type: "image/png",
             },
             {
-              src: 'pwa-192x192.png',
-              sizes: '192x192',
-              type: 'image/png',
+              src: "pwa-192x192.png",
+              sizes: "192x192",
+              type: "image/png",
             },
             {
-              src: 'pwa-512x512.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'any',
+              src: "pwa-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "any",
             },
             {
-              src: 'maskable-icon-512x512.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'maskable',
+              src: "maskable-icon-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "maskable",
             },
           ],
         },
-        includeAssets: ['img/*.png', 'img/*.jpg'],
-        registerType: 'prompt',
+        includeAssets: ["img/*.png", "img/*.jpg"],
+        registerType: "prompt",
         workbox: {
           cleanupOutdatedCaches: true,
           maximumFileSizeToCacheInBytes: 4194304,
-          navigateFallbackDenylist: [
-            /robots.txt/,
-          ],
+          navigateFallbackDenylist: [/robots.txt/],
         },
         devOptions: {
-          enabled: mode === 'development',
-          type: 'module',
-          navigateFallback: 'index.html',
+          enabled: mode === "development",
+          type: "module",
+          navigateFallback: "index.html",
           suppressWarnings: true,
         },
       }),
       Icons({
-        compiler: 'vue3',
+        compiler: "vue3",
         customCollections: {
-          'tf-icons': FileSystemIconLoader('./src/shared/assets/icons'),
+          "tf-icons": FileSystemIconLoader("./src/shared/assets/icons"),
         },
       }),
     ],
     resolve: {
       alias: {
-        '@tf-app': path.resolve(__dirname, './src'),
+        "@tf-app": path.resolve(__dirname, "./src"),
       },
     },
 
     build: {
-      target: 'es2021',
+      target: "es2021",
       minify: true,
-      assetsDir: 'app',
+      assetsDir: "app",
       emptyOutDir: true,
-      rollupOptions: {
+      rolldownOptions: {
         output: {
-          manualChunks: {
-            ethers: ['magic-grid', 'nprogress', 'ditox', 'blurhash'],
-            zod: ['zod'],
-            router: ['vue-router'],
-            pinia: ['pinia'],
-            vue: ['vue'],
-            vueuse: ['@vueuse/core', '@vueuse/router'],
+          manualChunks: (moduleId) => {
+            if (moduleId.includes("@vueuse/core") || moduleId.includes("@vueuse/router")) {
+              return "vueuse";
+            }
+            if (moduleId.includes("vue")) {
+              return "vue";
+            }
+            if (moduleId.includes("vue-router")) {
+              return "vue-router";
+            }
+            if (moduleId.includes("pinia")) {
+              return "pinia";
+            }
+            if (moduleId.includes("zod")) {
+              return "zod";
+            }
+            if (moduleId.includes("ditox")) {
+              return "ditox";
+            }
+            return undefined;
           },
         },
       },
     },
-  }
-},
-)
+  };
+});

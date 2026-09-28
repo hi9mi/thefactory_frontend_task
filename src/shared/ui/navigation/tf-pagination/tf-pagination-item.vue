@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import TfButton from '@tf-app/shared/ui/buttons/tf-button/tf-button.vue'
+import TfButton from "@tf-app/shared/ui/buttons/tf-button/tf-button.vue";
 
-import DotsIcon from '~icons/tf-icons/dots'
+import DotsIcon from "~icons/tf-icons/dots";
 
 const props = defineProps<{
-  isDots?: boolean
-  page: number
-  disabled?: boolean
-  active?: boolean
-}>()
+  isDots?: boolean;
+  page: number;
+  disabled?: boolean;
+  active?: boolean;
+}>();
 const emit = defineEmits<{
-  change: [number]
-}>()
+  change: [number];
+}>();
 function onClick() {
-  emit('change', props.page)
+  emit("change", props.page);
 }
 </script>
 

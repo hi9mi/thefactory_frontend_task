@@ -1,8 +1,8 @@
 <script setup lang="ts">
 defineProps<{
-  bgColor: 'white' | 'yellow'
-  disabled?: boolean
-}>()
+  bgColor: "white" | "yellow";
+  disabled?: boolean;
+}>();
 </script>
 
 <template>
@@ -11,7 +11,7 @@ defineProps<{
   </button>
 </template>
 
-<style module='classes'>
+<style module="classes">
 .btn {
   border: none;
   border-radius: var(--border-radius-medium);

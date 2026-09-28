@@ -1,19 +1,14 @@
 {
   "name": "thefactory_frontend_task",
-  "type": "module",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "npm@11.8.0",
-  "engines": {
-    "node": ">=24",
-    "npm": ">=11"
-  },
+  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc && vite build",
-    "preview": "vite preview",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "dev": "vp dev",
+    "build": "vue-tsc && vp build",
+    "preview": "vp preview",
+    "lint": "vp lint .",
+    "lint:fix": "vp lint . --fix",
     "prepare": "simple-git-hooks",
     "lint-staged": "lint-staged",
     "generate-pwa-assets": "pwa-assets-generator",
@@ -22,9 +17,9 @@
     "story:preview": "histoire preview",
     "upgrade": "npx npm-check-updates -u && npm install",
     "visualize": "npx vite-bundle-visualizer",
-    "test:unit": "vitest",
+    "test:unit": "vp test",
     "test:e2e": "playwright test",
-    "coverage": "vitest run --coverage"
+    "coverage": "vp test run --coverage"
   },
   "dependencies": {
     "@vueuse/core": "^14.2.0",
@@ -41,7 +36,6 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^7.2.0",
     "@histoire/plugin-vue": "^1.0.0-beta.1",
     "@pinia/testing": "^1.0.3",
     "@playwright/test": "^1.58.1",
@@ -52,35 +46,35 @@
     "@vitest/coverage-v8": "^4.0.18",
     "@vue/test-utils": "^2.4.6",
     "dotenv": "^17.2.3",
-    "eslint": "^9.39.2",
-    "eslint-plugin-format": "^1.3.1",
-    "eslint-plugin-vuejs-accessibility": "^2.4.1",
+    "eslint-plugin-format": "^2.0.1",
     "happy-dom": "^20.4.0",
     "histoire": "^1.0.0-beta.1",
     "lint-staged": "^16.2.7",
     "postcss": "^8.5.6",
     "postcss-html": "^1.8.1",
     "simple-git-hooks": "^2.13.1",
-    "stylelint": "^17.1.0",
-    "stylelint-config-recommended-vue": "^1.6.1",
-    "stylelint-config-standard": "^40.0.0",
-    "typescript": "^5.9.3",
+    "typescript": "^7.0.2",
     "unplugin-icons": "^23.0.1",
-    "vite": "^7.3.1",
+    "vite": "npm:@voidzero-dev/vite-plus-core@latest",
     "vite-plugin-html": "^3.2.2",
     "vite-plugin-pwa": "^1.2.0",
     "vite-plugin-vue-devtools": "^8.0.5",
     "vite-plugin-webfont-dl": "^3.11.1",
-    "vitest": "^4.0.18",
+    "vite-plus": "latest",
     "vue-tsc": "^3.2.4"
   },
   "overrides": {
-    "stylelint": "$stylelint"
+    "vite": "npm:@voidzero-dev/vite-plus-core@latest"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run lint-staged"
   },
   "lint-staged": {
-    "*": "eslint --fix"
-  }
+    "*": "vp lint --fix"
+  },
+  "engines": {
+    "node": ">=24",
+    "npm": ">=11"
+  },
+  "packageManager": "npm@11.8.0"
 }
